@@ -20,175 +20,23 @@
 
 ---
 
-## ✨ Features
-
-### 📍 Placeable Work Triggers
-
-Create official workplaces anywhere on any map - buildings, parking lots, roads, anywhere.
-
-| | Feature | Description |
-|---|---|---|
-| 🏢 | **Placeable trigger zones** | Drag and drop invisible trigger volumes anywhere on the map |
-| 📝 | **Custom workplace names** | Call it "Post Office", "Feed Mill", "Grandpa's Workshop", anything you want |
-| 💰 | **Flexible pay rates** | Set hourly wage, per-shift flat rate, or daily rate per location |
-| 🎯 | **Proximity activation** | Press E when near trigger to start/stop your shift |
-| 💾 | **Full persistence** | All triggers, names, wages, and shift history save with your farm |
-
-### ⏰ Shift Tracking & Earnings
-
-Track your work time and earn income based on real in-game time.
-
-| Pay Type | How It Works | Best For |
-|---|---|---|
-| **Hourly Wage** | Earn wage × hours worked | Regular part-time jobs |
-| **Flat Rate** | Fixed payment per shift | One-off tasks, commissions |
-| **Daily Rate** | Pays once per in-game day | Salaried positions |
-
-Shifts track elapsed game time and calculate earnings automatically. Income flows to your farm account when you end your shift.
-
-### 📊 Work Shift HUD
-
-Press `Shift+W` to open the active shift overlay. Shows:
-- Current workplace name
-- Time elapsed on current shift
-- Current earnings for this shift
-- Total earnings today/season
-
-Drag the panel anywhere on screen by right-clicking to enter Edit Mode, then left-click dragging.
-
-### 🛠️ Workplace Management
-
-Press `Shift+M` to open the management interface. View all your placed triggers and:
-- Edit workplace names
-- Adjust pay rates and types
-- Remove unwanted locations
-- View shift history per location
-
-### 🤝 Multiplayer Support
-
-Each player tracks their own shifts independently. All earnings go to the shared farm account, so everyone benefits from off-farm work.
-
----
-
-## ⚙️ Settings
-
-Open via **ESC → Settings → Game Settings → Workplace Triggers**.
-
-| Setting | Options | Notes |
-|---|---|---|
-| **Enable mod** | On / Off | Disables all workplace functionality when off |
-| **HUD Position** | Bottom-Left / Bottom-Right / Top-Left / Top-Right | Default HUD location |
-| **HUD Scale** | 0.8x / 1.0x / 1.2x / 1.5x | Resize the HUD panel |
-| **HUD Visible** | On / Off | Toggle HUD visibility |
-| **Shift Notifications** | On / Off | Show pop-up when starting/stopping shifts |
-| **Auto-Save Triggers** | On / Off | Automatically save trigger changes |
-| **Debug Mode** | On / Off | Verbose logging to `log.txt` |
-
-> [!NOTE]
-> Settings are **server-authoritative** in multiplayer — the host's settings are pushed to all clients on join.
-
----
-
-## 🔌 Optional Mod Integration
-
-All integrations are detected at runtime and fail gracefully if the mod is not installed.
-
-| Mod | What it adds |
-|---|---|
-| **FS25_NPCFavor** | Working shifts at triggers near NPCs improves relationship with that NPC |
-| **FS25_WorkerCosts** | Off-farm shift income appears in WorkerCosts dashboard as "off-farm income" |
-| **FS25_BetterContracts** | Work triggers appear in contract/income overview screen |
-| **AutoDrive** | AutoDrive can route to workplace triggers as destinations |
-
----
-
-## 🛠️ Installation
-
-**1. Download** `FS25_WorkplaceTriggers.zip` from the [latest release](https://github.com/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases/latest).
-
-**2. Copy** the ZIP (do not extract) to your mods folder:
-
-| Platform | Path |
-|---|---|
-| 🪟 Windows | `%USERPROFILE%\Documents\My Games\FarmingSimulator2025\mods\` |
-| 🍎 macOS | `~/Library/Application Support/FarmingSimulator2025/mods/` |
-
-**3. Enable** *Workplace Triggers* in the in-game mod manager.
-
-**4. Load** any career save — the mod activates automatically on load.
-
----
-
-## 🎮 Quick Start
-
-```
-1. Load your farm — workplace system activates immediately
-2. Open Shop → Buildings → Tools → Workplace Trigger
-3. Place the trigger anywhere on your map
-4. Press E near the trigger → set workplace name and pay rate
-5. Press Shift+M → open management to view/edit all triggers
-6. Enter a trigger zone → press E to start your shift
-7. Press E again to end shift and collect earnings
-8. Press Shift+W → view active shift HUD
-```
-
-> [!TIP]
-> Open **ESC → Help → Workplace Triggers** for a full in-game guide covering everything from placement to shift management.
-
----
-
-## ⌨️ Key Bindings
-
-| Keys | Action |
-|---|---|
-| `Shift+W` | Toggle the Work Shift HUD |
-| `Shift+M` | Open Workplace Management dialog |
-| `E` *(near trigger)* | Start/stop shift at current workplace |
-| `RMB` *(on HUD)* | Toggle Edit Mode — drag with `LMB` to reposition |
-
----
-
-## 🖥️ Console Commands
-
-Open the developer console with the **`~`** key:
-
-| Command | Arguments | Description |
-|---|---|---|
-| `wtHelp` | — | List all Workplace Triggers commands |
-| `wtStatus` | — | System overview: triggers, active shifts, total earnings |
-| `wtList` | — | List all placed workplace triggers |
-| `wtDebug` | — | Toggle verbose debug logging to `log.txt` |
-
----
-
-## ⚠️ Known Limitations
-
-| Issue | Details |
-|---|---|
-| 🏗️ **WIP Status** | Core trigger placement and wage system complete. Management GUI and advanced features in development. |
-| 🎨 **Visual Feedback** | Triggers are invisible zones. No 3D marker or visual indicator currently. |
-| 💰 **Economy Balance** | Pay rates are suggestions. Players should adjust based on their map's economy. |
-| 🌐 **Multiplayer** | Shift tracking runs on host only. Clients see synced state but have no direct simulation authority. |
-
----
-
 ## 🚧 Development Status
 
 **Current Version:** v0.1 WIP
 
-**Phase 1 Complete:** Core trigger placement and wage system
-- ✅ Placeable trigger zones
-- ✅ Custom workplace names
-- ✅ Flexible pay rates (hourly/flat/daily)
-- ✅ Shift tracking and earnings calculation
-- ✅ Basic HUD display
-- ✅ Save/load functionality
+**Phase 1 Planned:** Core trigger placement and wage system
+- ⏳ Placeable trigger zones
+- ⏳ Custom workplace names
+- ⏳ Flexible pay rates (hourly/flat/daily)
+- ⏳ Shift tracking and earnings calculation
+- ⏳ Basic HUD display
+- ⏳ Save/load functionality
 
-**Phase 2 In Progress:** Management GUI + Pay Options
-- 🔄 Workplace Management Dialog
-- 🔄 Edit workplace names and wages
-- 🔄 Shift history tracking
-- 🔄 HUD drag and scale functionality
+**Phase 2 Planned:** Management GUI + Pay Options
+- ⏳ Workplace Management Dialog
+- ⏳ Edit workplace names and wages
+- ⏳ Shift history tracking
+- ⏳ HUD drag and scale functionality
 
 **Phase 3 Planned:** Shift History + Quality-of-Life
 - ⏳ Detailed shift history per workplace
