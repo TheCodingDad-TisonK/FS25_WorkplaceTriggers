@@ -27,6 +27,7 @@ print("[WorkplaceTriggers] Starting mod initialization...")
 if modDirectory then
     print("[WorkplaceTriggers] Loading source files...")
 
+    source(modDirectory .. "src/WTMapHotspot.lua")
     source(modDirectory .. "src/WorkplaceTriggerManager.lua")
     source(modDirectory .. "src/WorkplaceTrigger.lua")
     source(modDirectory .. "src/WorkplaceShiftTracker.lua")
