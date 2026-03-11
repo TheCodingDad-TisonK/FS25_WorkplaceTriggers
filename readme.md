@@ -20,35 +20,7 @@
 
 ---
 
-## 🚧 Development Status
-
-**Current Version:** v0.1 WIP
-
-**Phase 1 Planned:** Core trigger placement and wage system
-- ⏳ Placeable trigger zones
-- ⏳ Custom workplace names
-- ⏳ Flexible pay rates (hourly/flat/daily)
-- ⏳ Shift tracking and earnings calculation
-- ⏳ Basic HUD display
-- ⏳ Save/load functionality
-
-**Phase 2 Planned:** Management GUI + Pay Options
-- ⏳ Workplace Management Dialog
-- ⏳ Edit workplace names and wages
-- ⏳ Shift history tracking
-- ⏳ HUD drag and scale functionality
-
-**Phase 3 Planned:** Shift History + Quality-of-Life
-- ⏳ Detailed shift history per workplace
-- ⏳ Earnings summary HUD
-- ⏳ Multiplayer event synchronization
-- ⏳ Additional console commands
-
-**Phase 4 Future:** Third-Party Integration
-- ⏳ NPCFavor relationship integration
-- ⏳ WorkerCosts dashboard integration
-- ⏳ BetterContracts income overview
-- ⏳ AutoDrive destination routing
+## 🚧 Currently In Development
 
 ---
 
@@ -57,12 +29,6 @@
 See [CONTRIBUTING.md](CONTRIBUTING.md) for setup instructions, code standards, and the PR checklist.
 
 Found a bug? [Open an issue](https://github.com/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues/new/choose) — the template will guide you through what information is needed.
-
-Have ideas for new features? We're especially interested in:
-- Different pay calculation methods
-- Workplace-specific bonuses or penalties
-- Integration with more mods in the ecosystem
-- Visual indicators for active workplaces
 
 ---
 
