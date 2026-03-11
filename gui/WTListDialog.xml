@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<!--
+    FS25_WorkplaceTriggers - Workplace Manager (List View)
+    3-layer button pattern: Bitmap bg + Text label + invisible Button hit area
+    Rows: up to 8 triggers shown with Edit and Delete buttons per row.
+    anchorTopCenter: X=0 is center, negative=left, positive=right
+-->
+<GUI onOpen="onOpen" onClose="wtOnClose" onCreate="onCreate">
+    <GuiElement profile="newLayer" />
+    <Bitmap profile="dialogFullscreenBg" id="dialogBg" />
+
+    <GuiElement profile="dialogBg" id="dialogElement" size="750px 520px">
+        <ThreePartBitmap profile="fs25_dialogBgMiddle" />
+        <ThreePartBitmap profile="fs25_dialogBgTop" />
+        <ThreePartBitmap profile="fs25_dialogBgBottom" />
+
+        <GuiElement profile="fs25_dialogContentContainer">
+
+            <!-- Title -->
+            <Text profile="wtTitle" id="titleText" position="0px -12px" text="Workplace Triggers"/>
+            <Text profile="wtSubtitle" id="subtitleText" position="0px -34px" text="Manage your workplace trigger zones"/>
+
+            <!-- Header divider -->
+            <Bitmap profile="wtDivider" position="0px -50px"/>
+
+            <!-- Column headers -->
+            <Text profile="wtHdrName"  position="-280px -54px" text="Workplace Name"/>
+            <Text profile="wtHdrWage"  position="80px -54px"   text="Wage/hr"/>
+            <Text profile="wtHdrPos"   position="195px -54px"  text="Position"/>
+
+            <!-- Header underline -->
+            <Bitmap profile="wtDivider" position="0px -68px"/>
+
+            <!-- ROW 1 -->
+            <Bitmap profile="wtRowOdd"  id="r1bg"  position="0px -71px"/>
+            <Text profile="wtCellName"  id="r1name" position="-280px -72px" text=""/>
+            <Text profile="wtCellWage"  id="r1wage" position="80px -72px"   text=""/>
+            <Text profile="wtCellPos"   id="r1pos"  position="195px -72px"  text=""/>
+            <Bitmap profile="wtBtnBg"   id="r1editbg"  position="285px -72px"/>
+            <Text   profile="wtBtnText" id="r1edittxt" position="285px -73px" text="Edit"/>
+            <Button profile="wtBtnHit"  id="r1edit"    position="285px -72px" onClick="onClickEdit1"/>
+            <Bitmap profile="wtBtnDelBg"   id="r1delbg"  position="340px -72px"/>
+            <Text   profile="wtBtnText"    id="r1deltxt" position="340px -73px" text="Del"/>
+            <Button profile="wtBtnHit"     id="r1del"    position="340px -72px" onClick="onClickDel1"/>
+
+            <!-- ROW 2 -->
+            <Bitmap profile="wtRowEven" id="r2bg"  position="0px -92px"/>
+            <Text profile="wtCellName"  id="r2name" position="-280px -93px" text=""/>
+            <Text profile="wtCellWage"  id="r2wage" position="80px -93px"   text=""/>
+            <Text profile="wtCellPos"   id="r2pos"  position="195px -93px"  text=""/>
+            <Bitmap profile="wtBtnBg"   id="r2editbg"  position="285px -93px"/>
+            <Text   profile="wtBtnText" id="r2edittxt" position="285px -94px" text="Edit"/>
+            <Button profile="wtBtnHit"  id="r2edit"    position="285px -93px" onClick="onClickEdit2"/>
+            <Bitmap profile="wtBtnDelBg"   id="r2delbg"  position="340px -93px"/>
+            <Text   profile="wtBtnText"    id="r2deltxt" position="340px -94px" text="Del"/>
+            <Button profile="wtBtnHit"     id="r2del"    position="340px -93px" onClick="onClickDel2"/>
+
+            <!-- ROW 3 -->
+            <Bitmap profile="wtRowOdd"  id="r3bg"  position="0px -113px"/>
+            <Text profile="wtCellName"  id="r3name" position="-280px -114px" text=""/>
+            <Text profile="wtCellWage"  id="r3wage" position="80px -114px"   text=""/>
+            <Text profile="wtCellPos"   id="r3pos"  position="195px -114px"  text=""/>
+            <Bitmap profile="wtBtnBg"   id="r3editbg"  position="285px -114px"/>
+            <Text   profile="wtBtnText" id="r3edittxt" position="285px -115px" text="Edit"/>
+            <Button profile="wtBtnHit"  id="r3edit"    position="285px -114px" onClick="onClickEdit3"/>
+            <Bitmap profile="wtBtnDelBg"   id="r3delbg"  position="340px -114px"/>
+            <Text   profile="wtBtnText"    id="r3deltxt" position="340px -115px" text="Del"/>
+            <Button profile="wtBtnHit"     id="r3del"    position="340px -114px" onClick="onClickDel3"/>
+
+            <!-- ROW 4 -->
+            <Bitmap profile="wtRowEven" id="r4bg"  position="0px -134px"/>
+            <Text profile="wtCellName"  id="r4name" position="-280px -135px" text=""/>
+            <Text profile="wtCellWage"  id="r4wage" position="80px -135px"   text=""/>
+            <Text profile="wtCellPos"   id="r4pos"  position="195px -135px"  text=""/>
+            <Bitmap profile="wtBtnBg"   id="r4editbg"  position="285px -135px"/>
+            <Text   profile="wtBtnText" id="r4edittxt" position="285px -136px" text="Edit"/>
+            <Button profile="wtBtnHit"  id="r4edit"    position="285px -135px" onClick="onClickEdit4"/>
+            <Bitmap profile="wtBtnDelBg"   id="r4delbg"  position="340px -135px"/>
+            <Text   profile="wtBtnText"    id="r4deltxt" position="340px -136px" text="Del"/>
+            <Button profile="wtBtnHit"     id="r4del"    position="340px -135px" onClick="onClickDel4"/>
+
+            <!-- ROW 5 -->
+            <Bitmap profile="wtRowOdd"  id="r5bg"  position="0px -155px"/>
+            <Text profile="wtCellName"  id="r5name" position="-280px -156px" text=""/>
+            <Text profile="wtCellWage"  id="r5wage" position="80px -156px"   text=""/>
+            <Text profile="wtCellPos"   id="r5pos"  position="195px -156px"  text=""/>
+            <Bitmap profile="wtBtnBg"   id="r5editbg"  position="285px -156px"/>
+            <Text   profile="wtBtnText" id="r5edittxt" position="285px -157px" text="Edit"/>
+            <Button profile="wtBtnHit"  id="r5edit"    position="285px -156px" onClick="onClickEdit5"/>
+            <Bitmap profile="wtBtnDelBg"   id="r5delbg"  position="340px -156px"/>
+            <Text   profile="wtBtnText"    id="r5deltxt" position="340px -157px" text="Del"/>
+            <Button profile="wtBtnHit"     id="r5del"    position="340px -156px" onClick="onClickDel5"/>
+
+            <!-- ROW 6 -->
+            <Bitmap profile="wtRowEven" id="r6bg"  position="0px -176px"/>
+            <Text profile="wtCellName"  id="r6name" position="-280px -177px" text=""/>
+            <Text profile="wtCellWage"  id="r6wage" position="80px -177px"   text=""/>
+            <Text profile="wtCellPos"   id="r6pos"  position="195px -177px"  text=""/>
+            <Bitmap profile="wtBtnBg"   id="r6editbg"  position="285px -177px"/>
+            <Text   profile="wtBtnText" id="r6edittxt" position="285px -178px" text="Edit"/>
+            <Button profile="wtBtnHit"  id="r6edit"    position="285px -177px" onClick="onClickEdit6"/>
+            <Bitmap profile="wtBtnDelBg"   id="r6delbg"  position="340px -177px"/>
+            <Text   profile="wtBtnText"    id="r6deltxt" position="340px -178px" text="Del"/>
+            <Button profile="wtBtnHit"     id="r6del"    position="340px -177px" onClick="onClickDel6"/>
+
+            <!-- ROW 7 -->
+            <Bitmap profile="wtRowOdd"  id="r7bg"  position="0px -197px"/>
+            <Text profile="wtCellName"  id="r7name" position="-280px -198px" text=""/>
+            <Text profile="wtCellWage"  id="r7wage" position="80px -198px"   text=""/>
+            <Text profile="wtCellPos"   id="r7pos"  position="195px -198px"  text=""/>
+            <Bitmap profile="wtBtnBg"   id="r7editbg"  position="285px -198px"/>
+            <Text   profile="wtBtnText" id="r7edittxt" position="285px -199px" text="Edit"/>
+            <Button profile="wtBtnHit"  id="r7edit"    position="285px -198px" onClick="onClickEdit7"/>
+            <Bitmap profile="wtBtnDelBg"   id="r7delbg"  position="340px -198px"/>
+            <Text   profile="wtBtnText"    id="r7deltxt" position="340px -199px" text="Del"/>
+            <Button profile="wtBtnHit"     id="r7del"    position="340px -198px" onClick="onClickDel7"/>
+
+            <!-- ROW 8 -->
+            <Bitmap profile="wtRowEven" id="r8bg"  position="0px -218px"/>
+            <Text profile="wtCellName"  id="r8name" position="-280px -219px" text=""/>
+            <Text profile="wtCellWage"  id="r8wage" position="80px -219px"   text=""/>
+            <Text profile="wtCellPos"   id="r8pos"  position="195px -219px"  text=""/>
+            <Bitmap profile="wtBtnBg"   id="r8editbg"  position="285px -219px"/>
+            <Text   profile="wtBtnText" id="r8edittxt" position="285px -220px" text="Edit"/>
+            <Button profile="wtBtnHit"  id="r8edit"    position="285px -219px" onClick="onClickEdit8"/>
+            <Bitmap profile="wtBtnDelBg"   id="r8delbg"  position="340px -219px"/>
+            <Text   profile="wtBtnText"    id="r8deltxt" position="340px -220px" text="Del"/>
+            <Button profile="wtBtnHit"     id="r8del"    position="340px -219px" onClick="onClickDel8"/>
+
+            <!-- Bottom divider -->
+            <Bitmap profile="wtDivider" id="bottomDivider" position="0px -240px"/>
+
+            <!-- Status / count text -->
+            <Text profile="wtFooter" id="statusText" position="0px -246px" text=""/>
+
+            <!-- Scroll indicators -->
+            <Bitmap profile="wtScrollBg"   id="scrollUpBg"  position="355px -72px"/>
+            <Text   profile="wtScrollText" id="scrollUpTxt" position="355px -73px" text="^"/>
+            <Button profile="wtBtnHit"     id="scrollUp"    position="355px -72px" onClick="onClickScrollUp"/>
+
+            <Bitmap profile="wtScrollBg"   id="scrollDnBg"  position="355px -218px"/>
+            <Text   profile="wtScrollText" id="scrollDnTxt" position="355px -219px" text="v"/>
+            <Button profile="wtBtnHit"     id="scrollDn"    position="355px -218px" onClick="onClickScrollDown"/>
+
+        </GuiElement>
+
+        <!-- Bottom button bar: New Trigger | Close -->
+        <BoxLayout profile="fs25_dialogButtonBox">
+            <Bitmap profile="wtBtnOkBg"   id="btnNewBg"  />
+            <Text   profile="wtBtnOkText" id="btnNewTxt" text="+ New Trigger"/>
+            <Button profile="buttonOK"    id="btnNew"    text="+ New Trigger" onClick="onClickNew"/>
+            <Button profile="buttonBack"  id="btnClose"  text="Close"         onClick="onClickClose"/>
+        </BoxLayout>
+
+    </GuiElement>
+
+    <GUIProfiles>
+        <Profile name="fs25_guiElement" extends="baseReference"/>
+
+        <Profile name="wtTitle" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="700px 22px"/>
+            <textSize value="20px"/>
+            <textBold value="true"/>
+            <textColor value="1 1 1 1"/>
+            <textAlignment value="center"/>
+        </Profile>
+
+        <Profile name="wtSubtitle" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="700px 16px"/>
+            <textSize value="12px"/>
+            <textColor value="0.55 0.75 0.9 1"/>
+            <textAlignment value="center"/>
+        </Profile>
+
+        <Profile name="wtDivider" extends="baseReference" with="anchorTopCenter">
+            <size value="690px 1px"/>
+            <imageColor value="0.28 0.38 0.55 0.8"/>
+        </Profile>
+
+        <Profile name="wtHdrName" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="220px 14px"/>
+            <textSize value="11px"/>
+            <textBold value="true"/>
+            <textColor value="0.55 0.7 0.9 1"/>
+            <textAlignment value="left"/>
+        </Profile>
+        <Profile name="wtHdrWage" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="90px 14px"/>
+            <textSize value="11px"/>
+            <textBold value="true"/>
+            <textColor value="0.55 0.7 0.9 1"/>
+            <textAlignment value="right"/>
+        </Profile>
+        <Profile name="wtHdrPos" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="120px 14px"/>
+            <textSize value="11px"/>
+            <textBold value="true"/>
+            <textColor value="0.55 0.7 0.9 1"/>
+            <textAlignment value="left"/>
+        </Profile>
+
+        <Profile name="wtRowOdd" extends="baseReference" with="anchorTopCenter">
+            <size value="690px 19px"/>
+            <imageColor value="0.08 0.09 0.13 0.6"/>
+        </Profile>
+        <Profile name="wtRowEven" extends="baseReference" with="anchorTopCenter">
+            <size value="690px 19px"/>
+            <imageColor value="0.06 0.06 0.10 0.4"/>
+        </Profile>
+
+        <Profile name="wtCellName" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="220px 17px"/>
+            <textSize value="12px"/>
+            <textColor value="1 1 1 1"/>
+            <textAlignment value="left"/>
+        </Profile>
+        <Profile name="wtCellWage" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="90px 17px"/>
+            <textSize value="12px"/>
+            <textColor value="0.35 0.88 0.42 1"/>
+            <textAlignment value="right"/>
+        </Profile>
+        <Profile name="wtCellPos" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="120px 17px"/>
+            <textSize value="11px"/>
+            <textColor value="0.62 0.62 0.65 1"/>
+            <textAlignment value="left"/>
+        </Profile>
+
+        <!-- 3-layer Edit button -->
+        <Profile name="wtBtnBg" extends="baseReference" with="anchorTopCenter">
+            <size value="48px 17px"/>
+            <imageColor value="0.12 0.22 0.42 0.95"/>
+        </Profile>
+        <Profile name="wtBtnText" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="48px 15px"/>
+            <textSize value="10px"/>
+            <textBold value="true"/>
+            <textColor value="0.7 0.85 1 1"/>
+            <textAlignment value="center"/>
+        </Profile>
+        <Profile name="wtBtnHit" extends="emptyPanel" with="anchorTopCenter">
+            <size value="48px 17px"/>
+            <isFocusable value="true"/>
+        </Profile>
+
+        <!-- 3-layer Delete button -->
+        <Profile name="wtBtnDelBg" extends="baseReference" with="anchorTopCenter">
+            <size value="48px 17px"/>
+            <imageColor value="0.38 0.08 0.08 0.95"/>
+        </Profile>
+
+        <!-- Scroll buttons -->
+        <Profile name="wtScrollBg" extends="baseReference" with="anchorTopCenter">
+            <size value="22px 17px"/>
+            <imageColor value="0.15 0.18 0.25 0.9"/>
+        </Profile>
+        <Profile name="wtScrollText" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="22px 15px"/>
+            <textSize value="10px"/>
+            <textBold value="true"/>
+            <textColor value="0.7 0.75 0.85 1"/>
+            <textAlignment value="center"/>
+        </Profile>
+
+        <Profile name="wtFooter" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="700px 16px"/>
+            <textSize value="11px"/>
+            <textColor value="0.45 0.55 0.65 1"/>
+            <textAlignment value="center"/>
+        </Profile>
+
+        <Profile name="wtBtnOkBg" extends="baseReference" with="anchorTopCenter">
+            <size value="0px 0px"/>
+        </Profile>
+        <Profile name="wtBtnOkText" extends="baseReference" with="anchorTopCenter">
+            <size value="0px 0px"/>
+        </Profile>
+
+    </GUIProfiles>
+</GUI>

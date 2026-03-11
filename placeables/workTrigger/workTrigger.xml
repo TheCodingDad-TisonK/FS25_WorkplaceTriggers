@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    workTrigger.xml
+    Placeable type declaration for the work trigger zone.
+    Referenced by modDesc.xml <storeItems>.
+    Lua class (WorkTriggerPlaceable) is registered via modDesc.xml <placeableSpecializations>.
+-->
+<placeable type="workTrigger" descVersion="105">
+
+    <storeData>
+        <n>$l10n_wt_store_name</n>
+        <desc>$l10n_wt_store_desc</desc>
+        <image>$data/placeables/brandless/waterTanks/level01/store_waterTankLevel01.dds</image>
+        <functions>
+            <function>$l10n_wt_store_function</function>
+        </functions>
+        <price>0</price>
+        <dailyUpkeep>0</dailyUpkeep>
+        <canBeSold>true</canBeSold>
+        <showInStore>true</showInStore>
+        <lifetime>0</lifetime>
+        <rotation>0</rotation>
+        <brand>NONE</brand>
+        <species>PLACEABLE</species>
+        <category>construction</category>
+        <brush>
+            <type>placeable</type>
+            <category>construction</category>
+            <tab>tools</tab>
+        </brush>
+    </storeData>
+
+    <base>
+        <filename>placeables/workTrigger/workTrigger.i3d</filename>
+    </base>
+
+    <placement useRandomYRotation="false" useManualYRotation="true">
+        <testAreas>
+            <testArea startNode="testAreaStart" endNode="testAreaEnd"/>
+        </testAreas>
+    </placement>
+
+    <!-- Required but empty sections to suppress log warnings -->
+    <clearAreas/>
+    <indoorAreas/>
+    <aiUpdateAreas/>
+    <levelingAreas/>
+
+    <i3dMappings>
+        <i3dMapping id="testAreaStart" node="0>0|1"/>
+        <i3dMapping id="testAreaEnd"   node="0>0|1|0"/>
+        <i3dMapping id="groundRing"    node="0>0|2"/>
+    </i3dMappings>
+
+    <!--
+        Default workplace configuration.
+        These values are read by WorkTriggerPlaceable:onLoad()
+        and overridden by saved player data.
+    -->
+    <workTriggerConfig
+        defaultName="Workplace"
+        hourlyWage="500"
+        triggerRadius="4.0"
+    />
+
+</placeable>

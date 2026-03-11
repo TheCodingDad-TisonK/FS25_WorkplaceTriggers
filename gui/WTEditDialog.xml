@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<!--
+    FS25_WorkplaceTriggers - Edit / Create Trigger Dialog
+    Used for both creating new triggers and editing existing ones.
+    Name: TextInput element
+    Wage: +/- buttons (3-layer pattern) with display text
+    Radius: +/- buttons with display text
+-->
+<GUI onOpen="onOpen" onClose="wtOnClose" onCreate="onCreate">
+    <GuiElement profile="newLayer" />
+    <Bitmap profile="dialogFullscreenBg" id="dialogBg" />
+
+    <GuiElement profile="dialogBg" id="dialogElement" size="600px 420px">
+        <ThreePartBitmap profile="fs25_dialogBgMiddle" />
+        <ThreePartBitmap profile="fs25_dialogBgTop" />
+        <ThreePartBitmap profile="fs25_dialogBgBottom" />
+
+        <GuiElement profile="fs25_dialogContentContainer">
+
+            <!-- Title -->
+            <Text profile="wtEditTitle" id="titleText" position="0px -12px" text="Edit Trigger"/>
+            <Bitmap profile="wtEditDivider" position="0px -34px"/>
+
+            <!-- NAME FIELD -->
+            <Text profile="wtEditLabel" position="-220px -42px" text="Workplace Name:"/>
+            <TextInput profile="wtNameInput" id="nameInput" position="0px -58px"
+                onEnterPress="onClickSave"/>
+
+            <!-- WAGE ROW -->
+            <Text profile="wtEditLabel" position="-220px -88px" text="Hourly Wage:"/>
+            <Bitmap profile="wtAdjBtnBg"   id="wageDecBg"  position="-80px -104px"/>
+            <Text   profile="wtAdjBtnText" id="wageDecTxt" position="-80px -105px" text="-"/>
+            <Button profile="wtAdjBtnHit"  id="wageDec"    position="-80px -104px" onClick="onClickWageDec"/>
+            <Text profile="wtValueText" id="wageText" position="0px -104px" text="$500/hr"/>
+            <Bitmap profile="wtAdjBtnBg"   id="wageIncBg"  position="80px -104px"/>
+            <Text   profile="wtAdjBtnText" id="wageIncTxt" position="80px -105px" text="+"/>
+            <Button profile="wtAdjBtnHit"  id="wageInc"    position="80px -104px" onClick="onClickWageInc"/>
+
+            <!-- Wage step selector: x1, x10, x100 -->
+            <Text profile="wtHintText" position="0px -124px" text="Step:"/>
+            <Bitmap profile="wtStepBg"   id="step1bg"  position="-55px -136px"/>
+            <Text   profile="wtStepText" id="step1txt" position="-55px -137px" text="1"/>
+            <Button profile="wtStepHit"  id="step1"    position="-55px -136px" onClick="onClickStep1"/>
+            <Bitmap profile="wtStepBg"   id="step10bg"  position="0px -136px"/>
+            <Text   profile="wtStepText" id="step10txt" position="0px -137px" text="10"/>
+            <Button profile="wtStepHit"  id="step10"    position="0px -136px" onClick="onClickStep10"/>
+            <Bitmap profile="wtStepBg"   id="step100bg"  position="55px -136px"/>
+            <Text   profile="wtStepText" id="step100txt" position="55px -137px" text="100"/>
+            <Button profile="wtStepHit"  id="step100"    position="55px -136px" onClick="onClickStep100"/>
+
+            <!-- RADIUS ROW -->
+            <Text profile="wtEditLabel" position="-220px -158px" text="Trigger Radius (m):"/>
+            <Bitmap profile="wtAdjBtnBg"   id="radDecBg"  position="-80px -174px"/>
+            <Text   profile="wtAdjBtnText" id="radDecTxt" position="-80px -175px" text="-"/>
+            <Button profile="wtAdjBtnHit"  id="radDec"    position="-80px -174px" onClick="onClickRadDec"/>
+            <Text profile="wtValueText" id="radText" position="0px -174px" text="4 m"/>
+            <Bitmap profile="wtAdjBtnBg"   id="radIncBg"  position="80px -174px"/>
+            <Text   profile="wtAdjBtnText" id="radIncTxt" position="80px -175px" text="+"/>
+            <Button profile="wtAdjBtnHit"  id="radInc"    position="80px -174px" onClick="onClickRadInc"/>
+
+            <!-- POSITION display -->
+            <Bitmap profile="wtEditDivider" position="0px -196px"/>
+            <Text profile="wtHintText" id="posText"    position="0px -206px" text="Position: X=0 Z=0"/>
+            <Bitmap profile="wtSnapBg"   id="snapBg"  position="220px -204px"/>
+            <Text   profile="wtSnapText" id="snapTxt" position="220px -205px" text="Snap to Player"/>
+            <Button profile="wtSnapHit"  id="snapBtn" position="220px -204px" onClick="onClickSnap"/>
+
+            <!-- Status line -->
+            <Text profile="wtStatusText" id="statusText" position="0px -226px" text=""/>
+
+        </GuiElement>
+
+        <BoxLayout profile="fs25_dialogButtonBox">
+            <Button profile="buttonOK"   id="btnSave"   text="Save"   onClick="onClickSave"/>
+            <Button profile="buttonBack" id="btnCancel" text="Cancel" onClick="onClickCancel"/>
+        </BoxLayout>
+
+    </GuiElement>
+
+    <GUIProfiles>
+        <Profile name="fs25_guiElement" extends="baseReference"/>
+
+        <Profile name="wtEditTitle" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="560px 22px"/>
+            <textSize value="18px"/>
+            <textBold value="true"/>
+            <textColor value="1 1 1 1"/>
+            <textAlignment value="center"/>
+        </Profile>
+
+        <Profile name="wtEditDivider" extends="baseReference" with="anchorTopCenter">
+            <size value="560px 1px"/>
+            <imageColor value="0.28 0.38 0.55 0.8"/>
+        </Profile>
+
+        <Profile name="wtEditLabel" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="200px 16px"/>
+            <textSize value="13px"/>
+            <textColor value="0.82 0.82 0.82 1"/>
+            <textAlignment value="left"/>
+        </Profile>
+
+        <Profile name="wtNameInput" extends="fs25_textInput" with="anchorTopCenter">
+            <size value="480px 22px"/>
+        </Profile>
+
+        <!-- Adjust +/- button (3-layer) -->
+        <Profile name="wtAdjBtnBg" extends="baseReference" with="anchorTopCenter">
+            <size value="36px 18px"/>
+            <imageColor value="0.12 0.22 0.42 0.95"/>
+        </Profile>
+        <Profile name="wtAdjBtnText" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="36px 16px"/>
+            <textSize value="14px"/>
+            <textBold value="true"/>
+            <textColor value="0.7 0.85 1 1"/>
+            <textAlignment value="center"/>
+        </Profile>
+        <Profile name="wtAdjBtnHit" extends="emptyPanel" with="anchorTopCenter">
+            <size value="36px 18px"/>
+            <isFocusable value="true"/>
+        </Profile>
+
+        <Profile name="wtValueText" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="120px 18px"/>
+            <textSize value="14px"/>
+            <textBold value="true"/>
+            <textColor value="0.35 0.88 0.42 1"/>
+            <textAlignment value="center"/>
+        </Profile>
+
+        <Profile name="wtHintText" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="400px 14px"/>
+            <textSize value="11px"/>
+            <textColor value="0.5 0.55 0.65 1"/>
+            <textAlignment value="center"/>
+        </Profile>
+
+        <!-- Step selector (3-layer) -->
+        <Profile name="wtStepBg" extends="baseReference" with="anchorTopCenter">
+            <size value="44px 16px"/>
+            <imageColor value="0.10 0.15 0.28 0.9"/>
+        </Profile>
+        <Profile name="wtStepText" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="44px 14px"/>
+            <textSize value="11px"/>
+            <textBold value="true"/>
+            <textColor value="0.65 0.75 0.9 1"/>
+            <textAlignment value="center"/>
+        </Profile>
+        <Profile name="wtStepHit" extends="emptyPanel" with="anchorTopCenter">
+            <size value="44px 16px"/>
+            <isFocusable value="true"/>
+        </Profile>
+
+        <!-- Snap button (3-layer) -->
+        <Profile name="wtSnapBg" extends="baseReference" with="anchorTopCenter">
+            <size value="130px 18px"/>
+            <imageColor value="0.30 0.22 0.05 0.95"/>
+        </Profile>
+        <Profile name="wtSnapText" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="130px 16px"/>
+            <textSize value="10px"/>
+            <textBold value="true"/>
+            <textColor value="1 0.85 0.4 1"/>
+            <textAlignment value="center"/>
+        </Profile>
+        <Profile name="wtSnapHit" extends="emptyPanel" with="anchorTopCenter">
+            <size value="130px 18px"/>
+            <isFocusable value="true"/>
+        </Profile>
+
+        <Profile name="wtStatusText" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="560px 16px"/>
+            <textSize value="11px"/>
+            <textColor value="0.5 0.88 0.5 1"/>
+            <textAlignment value="center"/>
+        </Profile>
+
+    </GUIProfiles>
+</GUI>

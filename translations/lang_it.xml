@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<l10n>
+    <texts>
+        <text name="input_WT_INTERACT"       text="Inizia/Termina turno"/>
+        <text name="wt_input_interact"       text="[E] Interagisci con il posto di lavoro"/>
+        <text name="wt_input_start_shift"    text="[E] Inizia turno a %s"/>
+        <text name="wt_input_end_shift"      text="[E] Termina turno a %s"/>
+        <text name="wt_hud_on_shift"         text="IN TURNO"/>
+        <text name="wt_hud_location"         text="Luogo:"/>
+        <text name="wt_hud_time"             text="Tempo:"/>
+        <text name="wt_hud_earned"           text="Guadagnato:"/>
+        <text name="wt_hud_shift_started"    text="Turno iniziato a %s\n$%d/ora"/>
+        <text name="wt_hud_shift_ended"      text="Turno terminato\n+$%d guadagnato"/>
+        <text name="wt_store_name"           text="Zona di lavoro"/>
+        <text name="wt_store_desc"           text="Posiziona ovunque per designare un posto di lavoro. Entra nella zona e premi [E] per iniziare il turno."/>
+        <text name="wt_store_function"       text="Designa un luogo di lavoro con nome e stipendio orario configurabili"/>
+        <text name="wt_notify_shift_started" text="Turno iniziato a '%s'"/>
+        <text name="wt_notify_shift_ended"   text="Turno terminato - guadagnato $%d"/>
+        <text name="wt_notify_left_trigger"  text="Hai lasciato la zona di lavoro - turno terminato"/>
+    </texts>
+</l10n>

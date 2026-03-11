@@ -1,0 +1,302 @@
+-- =========================================================
+-- WorkplaceTrigger.lua
+-- Trigger for workplace interactions with floating green marker
+-- Based on ShopTrigger pattern from ShopTrigger.md
+-- =========================================================
+
+WorkplaceTrigger = {}
+WorkplaceTrigger_mt = Class(WorkplaceTrigger)
+
+function WorkplaceTrigger.new(node, workplaceName, workplaceId, system)
+    local self = setmetatable({}, WorkplaceTrigger_mt)
+    
+    self.node = node
+    self.workplaceName = workplaceName or "Workplace"
+    self.workplaceId = workplaceId
+    self.system = system
+    self.isEnabled = true
+    
+    -- Get child nodes (following ShopTrigger pattern: index 0 = marker, index 1 = spawn point)
+    self.markerNode = getChildAt(node, 0)      -- Floating green marker
+    self.spawnNode = getChildAt(node, 1)       -- Player spawn point for shift start/end
+    
+    -- Store position for proximity checks
+    self.posX, self.posY, self.posZ = getWorldTranslation(node)
+    
+    -- Get trigger radius from node or use default
+    if hasAttribute(node, "triggerRadius") then
+        self.triggerRadius = getAttribute(node, "triggerRadius")
+    else
+        self.triggerRadius = WorkplaceTriggerManager.INTERACT_RADIUS or 3.0
+    end
+    
+    -- Get visibility settings
+    if hasAttribute(node, "visibleForFarm") then
+        self.visibleForFarm = getAttribute(node, "visibleForFarm")
+    else
+        self.visibleForFarm = true  -- Default visible for all farms
+    end
+    
+    -- Client-side setup (following ShopTrigger pattern)
+    if g_currentMission:getIsClient() then
+        self.id = node
+        self.triggerId = node
+        
+        -- Verify collision mask (following ShopTrigger pattern)
+        if not CollisionFlag.getHasMaskFlagSet(node, CollisionFlag.PLAYER) then
+            Logging.warning(
+                "Missing collision mask bit '%d'. Please add this bit to workplace trigger node '%s'",
+                CollisionFlag.getBit(CollisionFlag.PLAYER),
+                I3DUtil.getNodePath(node)
+            )
+        end
+        
+        -- Add trigger callback
+        addTrigger(node, "triggerCallback", self)
+    end
+    
+    -- Subscribe to messages (following ShopTrigger pattern)
+    g_messageCenter:subscribe(MessageType.PLAYER_FARM_CHANGED, self.playerFarmChanged, self)
+    g_messageCenter:subscribe(MessageType.SETTING_CHANGED[GameSettings.SETTING.SHOW_TRIGGER_MARKER], self.onTriggerVisibilityChanged, self)
+    
+    -- Initialize visibility
+    self:updateIconVisibility()
+    
+    -- Register with manager
+    if self.system and self.system.triggerManager then
+        self.system.triggerManager:registerTrigger(self)
+    end
+    
+    -- Create activatable object for interaction prompt
+    self.activatable = WorkplaceTriggerActivatable.new(self)
+    
+    return self
+end
+
+-- =========================================================
+-- Creation callback (following ShopTrigger.onCreate pattern)
+-- =========================================================
+function WorkplaceTrigger:onCreate(id)
+    g_currentMission:addNonUpdateable(WorkplaceTrigger.new(id))
+end
+
+-- =========================================================
+-- Delete/Destroy (following ShopTrigger.delete pattern)
+-- =========================================================
+function WorkplaceTrigger:delete()
+    g_messageCenter:unsubscribeAll(self)
+    
+    if self.triggerId ~= nil then
+        removeTrigger(self.triggerId)
+    end
+    
+    -- Hide marker
+    self.markerNode = nil
+    
+    -- Remove from manager
+    if self.system and self.system.triggerManager then
+        self.system.triggerManager:deregisterTrigger(self.triggerId or self.node)
+    end
+    
+    -- Remove activatable
+    if g_currentMission and g_currentMission.activatableObjectsSystem then
+        g_currentMission.activatableObjectsSystem:removeActivatable(self.activatable)
+    end
+end
+
+-- =========================================================
+-- Trigger Callback (following ShopTrigger.triggerCallback pattern)
+-- =========================================================
+function WorkplaceTrigger:triggerCallback(triggerId, otherId, onEnter, onLeave, onStay)
+    if not self.isEnabled then return end
+    
+    if onEnter or onLeave then
+        if g_localPlayer ~= nil and otherId == g_localPlayer.rootNode then
+            if onEnter then
+                -- Auto-activate if setting enabled (following ShopTrigger pattern)
+                if Platform.gameplay and Platform.gameplay.autoActivateTrigger and 
+                   self.activatable and self.activatable:getIsActivatable() then
+                    self.activatable:run()
+                    return
+                end
+                
+                -- Add to activatable system for interaction prompt
+                if g_currentMission and g_currentMission.activatableObjectsSystem then
+                    g_currentMission.activatableObjectsSystem:addActivatable(self.activatable)
+                end
+                
+                -- Notify manager of player entry
+                if self.system then
+                    self.system:onPlayerEnteredTrigger(self)
+                end
+            else
+                -- Remove from activatable system
+                if g_currentMission and g_currentMission.activatableObjectsSystem then
+                    g_currentMission.activatableObjectsSystem:removeActivatable(self.activatable)
+                end
+                
+                -- Notify manager of player exit
+                if self.system then
+                    self.system:onPlayerExitedTrigger(self)
+                end
+            end
+        end
+    end
+end
+
+-- =========================================================
+-- Open/Activate Workplace (following ShopTrigger.openShop pattern)
+-- Called when player interacts with the trigger
+-- =========================================================
+function WorkplaceTrigger:openWorkplace()
+    -- Check if guided tour is running
+    if g_guidedTourManager and g_guidedTourManager:getIsTourRunning() then
+        InfoDialog.show(g_i18n:getText("guidedTour_feature_deactivated"))
+        return
+    end
+    
+    -- Check if we have a spawn node
+    if not self.spawnNode then
+        Logging.warning("WorkplaceTrigger: No spawn node defined for " .. tostring(self.workplaceName))
+        return
+    end
+    
+    -- Teleport player to spawn point (following ShopTrigger pattern)
+    local x, y, z = getWorldTranslation(self.spawnNode)
+    local dx, _, dz = localDirectionToWorld(self.spawnNode, 0, 0, -1)
+    
+    if g_localPlayer then
+        g_localPlayer:teleportTo(x, y, z)
+        g_localPlayer:setMovementYaw(MathUtil.getYRotationFromDirection(dx, dz))
+    end
+    
+    -- Open workplace UI
+    if self.system then
+        self.system:openWorkplaceUI(self)
+    end
+end
+
+-- =========================================================
+-- Visibility Management (following ShopTrigger pattern)
+-- =========================================================
+
+-- Called when player farm changes
+function WorkplaceTrigger:playerFarmChanged(player)
+    if player == g_localPlayer then
+        self:updateIconVisibility()
+    end
+end
+
+-- Called when trigger marker visibility setting changes
+function WorkplaceTrigger:onTriggerVisibilityChanged()
+    self:updateIconVisibility()
+end
+
+-- Update marker visibility based on game state and farm ownership
+function WorkplaceTrigger:updateIconVisibility()
+    if self.markerNode == nil then return end
+    
+    -- Check if trigger is enabled
+    local isAvailable = self.isEnabled
+    
+    -- Check farm visibility (if farm-specific)
+    local visibleForFarm = true
+    if self.visibleForFarm ~= nil then
+        local farmId = g_currentMission:getFarmId()
+        visibleForFarm = (farmId == self.visibleForFarm) or (farmId ~= FarmManager.SPECTATOR_FARM_ID)
+    end
+    
+    -- Check global setting for trigger markers
+    local settingVisible = g_gameSettings:getValue(GameSettings.SETTING.SHOW_TRIGGER_MARKER)
+    
+    -- Set visibility (following ShopTrigger pattern)
+    setVisibility(self.markerNode, isAvailable and visibleForFarm and settingVisible)
+end
+
+-- =========================================================
+-- Public Methods
+-- =========================================================
+
+-- Enable/disable the trigger
+function WorkplaceTrigger:setEnabled(enabled)
+    self.isEnabled = enabled
+    self:updateIconVisibility()
+    
+    -- Update activatable state
+    if self.activatable then
+        self.activatable:setActive(enabled)
+    end
+end
+
+-- Get trigger position
+function WorkplaceTrigger:getPosition()
+    return self.posX, self.posY, self.posZ
+end
+
+-- Check if point is inside trigger
+function WorkplaceTrigger:isPointInside(x, z)
+    local dx = x - self.posX
+    local dz = z - self.posZ
+    return (dx*dx + dz*dz) <= (self.triggerRadius * self.triggerRadius)
+end
+
+-- Update workplace name (called when renamed)
+function WorkplaceTrigger:setWorkplaceName(newName)
+    self.workplaceName = newName
+    -- Marker text will be updated via the manager's draw hook
+end
+
+-- =========================================================
+-- WorkplaceTriggerActivatable (for interaction prompt)
+-- =========================================================
+
+WorkplaceTriggerActivatable = {}
+WorkplaceTriggerActivatable_mt = Class(WorkplaceTriggerActivatable, ActivatableObject)
+
+function WorkplaceTriggerActivatable.new(trigger)
+    local self = ActivatableObject.new()
+    setmetatable(self, WorkplaceTriggerActivatable_mt)
+    
+    self.trigger = trigger
+    
+    -- Set up activatable properties
+    self.isActivatable = true
+    self.isRegistered = false
+    
+    return self
+end
+
+function WorkplaceTriggerActivatable:getIsActivatable()
+    return self.trigger and self.trigger.isEnabled and self.isActivatable
+end
+
+function WorkplaceTriggerActivatable:getIsActive()
+    return self.trigger and self.trigger.isEnabled
+end
+
+function WorkplaceTriggerActivatable:getIsVisibleForPlayer()
+    return self:getIsActivatable()
+end
+
+function WorkplaceTriggerActivatable:getText()
+    if not self.trigger then return "" end
+    
+    -- Get localized text
+    local action = g_i18n:getText("action_WORKPLACE_INTERACT") or "Work"
+    return string.format("%s %s", action, self.trigger.workplaceName or "Workplace")
+end
+
+function WorkplaceTriggerActivatable:run()
+    if self.trigger then
+        self.trigger:openWorkplace()
+    end
+end
+
+function WorkplaceTriggerActivatable:setActive(active)
+    self.isActivatable = active
+end
+
+function WorkplaceTriggerActivatable:delete()
+    self.trigger = nil
+    ActivatableObject.delete(self)
+end
