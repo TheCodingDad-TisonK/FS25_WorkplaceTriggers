@@ -251,9 +251,14 @@ end
 -- =========================================================
 
 WorkplaceTriggerActivatable = {}
-WorkplaceTriggerActivatable_mt = Class(WorkplaceTriggerActivatable, ActivatableObject)
+-- NOTE: ActivatableObject is only available after mission load, not at source() time.
+-- WorkplaceTriggerActivatable_mt is set lazily on first .new() call to avoid the
+-- "Given base class is not defined" error when the file is first loaded.
 
 function WorkplaceTriggerActivatable.new(trigger)
+    if not WorkplaceTriggerActivatable_mt then
+        WorkplaceTriggerActivatable_mt = Class(WorkplaceTriggerActivatable, ActivatableObject)
+    end
     local self = ActivatableObject.new()
     setmetatable(self, WorkplaceTriggerActivatable_mt)
     

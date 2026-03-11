@@ -215,26 +215,68 @@ function WTEditDialog:onClickSave()
     if name == "" then name = "Workplace" end
 
     if self.isNew then
-        -- Build new runtime trigger
-        local id = "gui_" .. tostring(g_currentMission and math.floor(g_currentMission.time) or 0)
-                   .. "_" .. tostring(WTEditDialog.idCounter or 0)
-        WTEditDialog.idCounter = (WTEditDialog.idCounter or 0) + 1
+        -- Spawn the actual workTrigger placeable so its i3d markerNode exists in
+        -- the world and the floating marker is visible.
+        -- The placeable's onLoad() will call triggerManager:registerTrigger() itself,
+        -- so we do NOT register a separate data record here.
+        local xmlFilename = (self.system and self.system.modDirectory or "") .. "placeables/workTrigger/workTrigger.xml"
+        local posX = self.posX or 0
+        local posY = self.posY or 0
+        local posZ = self.posZ or 0
 
-        local t = {
-            id            = id,
-            workplaceName = name,
-            hourlyWage    = self.wage,
-            triggerRadius = self.radius,
-            posX          = self.posX,
-            posY          = self.posY,
-            posZ          = self.posZ,
-            rotY          = 0,
-            playerInside  = false,
-            placeableRef  = nil,
-            isRuntimeOnly = true,
-        }
-        if self.system and self.system.triggerManager then
-            self.system.triggerManager:registerTrigger(t)
+        -- Queue the name/wage so workTrigger.lua:onLoad() can pick them up via
+        -- saveLoad:applyPendingRestore() after the placeable registers itself.
+        if self.system and self.system.saveLoad then
+            self.system.saveLoad:queuePendingCreate({
+                workplaceName = name,
+                hourlyWage    = self.wage,
+                triggerRadius = self.radius,
+                posX          = posX,
+                posY          = posY,
+                posZ          = posZ,
+            })
+        end
+
+        -- Use PlaceableSystem to load and place the placeable at the chosen position.
+        -- Price=0 so the player is never charged; farm=local player's farm.
+        local farmId = g_currentMission:getFarmId()
+        if g_placeableSystem and g_placeableSystem.loadPlaceable then
+            -- FS25 public API: loadPlaceable(xmlFilename, x, y, z, rotX, rotY, rotZ,
+            --                                farmId, price, isServer, isClient, callback)
+            g_placeableSystem:loadPlaceable(
+                xmlFilename,
+                posX, posY, posZ,
+                0, 0, 0,
+                farmId,
+                0,        -- price: free
+                true,     -- isServer
+                true,     -- isClient
+                nil       -- no extra callback needed; onLoad handles registration
+            )
+            print("[WorkplaceTriggers] Spawning placeable for trigger: " .. name)
+        else
+            -- Fallback: PlaceableSystem API unavailable - fall back to data-only record
+            -- (marker will not show, but the trigger zone will still function)
+            print("[WorkplaceTriggers] WARNING: g_placeableSystem unavailable - creating data-only trigger (no floating marker)")
+            local id = "gui_" .. tostring(g_currentMission and math.floor(g_currentMission.time) or 0)
+                       .. "_" .. tostring(WTEditDialog.idCounter or 0)
+            WTEditDialog.idCounter = (WTEditDialog.idCounter or 0) + 1
+            local t = {
+                id            = id,
+                workplaceName = name,
+                hourlyWage    = self.wage,
+                triggerRadius = self.radius,
+                posX          = posX,
+                posY          = posY,
+                posZ          = posZ,
+                rotY          = 0,
+                playerInside  = false,
+                placeableRef  = nil,
+                isRuntimeOnly = true,
+            }
+            if self.system and self.system.triggerManager then
+                self.system.triggerManager:registerTrigger(t)
+            end
         end
         print("[WorkplaceTriggers] Created trigger: " .. name)
     else

@@ -116,11 +116,25 @@ function WorkTriggerPlaceable.onLoad(self, savegame)
 
     -- Register with system
     if g_WorkplaceSystem and g_WorkplaceSystem.triggerManager then
-        g_WorkplaceSystem.triggerManager:registerTrigger(triggerData)
-        -- Apply any saved name/wage that arrived before this placeable loaded
         if g_WorkplaceSystem.saveLoad then
+            -- For saved placeables: restore name/wage by id
             g_WorkplaceSystem.saveLoad:applyPendingRestore(triggerData)
+            -- For GUI-spawned placeables (new, no saved id match): pop the create queue
+            -- savegame == nil means this is a fresh placement, not a load
+            if savegame == nil then
+                local pending = g_WorkplaceSystem.saveLoad:popPendingCreate()
+                if pending then
+                    triggerData.workplaceName = pending.workplaceName
+                    triggerData.hourlyWage    = pending.hourlyWage
+                    triggerData.triggerRadius = pending.triggerRadius
+                    self.workplaceName        = pending.workplaceName
+                    self.hourlyWage           = pending.hourlyWage
+                    self.triggerRadius        = pending.triggerRadius
+                    wtLog(string.format("Applied pending create config: '%s' $%d/hr", pending.workplaceName, pending.hourlyWage))
+                end
+            end
         end
+        g_WorkplaceSystem.triggerManager:registerTrigger(triggerData)
         -- Keep reference so trigger node callback can update it
         self._triggerData = triggerData
     else

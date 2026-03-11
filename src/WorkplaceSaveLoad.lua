@@ -78,18 +78,23 @@ function WorkplaceSaveLoad:initialize()
     wtLog("Initialized")
 end
 
+
 -- =========================================================
 -- SAVE
--- Called from main.lua FSCareerMissionInfo.saveToXMLFile hook.
--- xmlFile is an XMLFile OBJECT (FS25 OOP style).
+-- Writes to a standalone mod XML file in the savegame directory.
 -- =========================================================
 function WorkplaceSaveLoad:saveToXMLFile(missionInfo)
     if not self.isInitialized then return end
 
-    -- Get the xmlFile object from missionInfo (same as NPCFavor)
-    local xmlFile = missionInfo and missionInfo.xmlFile
+    local savePath = self:getSavePath(missionInfo)
+    if savePath == nil then
+        wtLog("saveToXMLFile: could not determine save path - skipping")
+        return
+    end
+
+    local xmlFile = XMLFile.create("workplaceTriggersSave", savePath, "workplaceTriggers")
     if xmlFile == nil then
-        wtLog("saveToXMLFile: no xmlFile on missionInfo - skipping")
+        wtLog("saveToXMLFile: XMLFile.create failed for " .. tostring(savePath))
         return
     end
 
@@ -97,34 +102,34 @@ function WorkplaceSaveLoad:saveToXMLFile(missionInfo)
     local count = 0
 
     for idx, trigger in ipairs(triggers) do
-        local i = idx - 1  -- 0-based index for XML array
-        local key = string.format("%s.triggers.trigger(%d)", ROOT, i)
-        setString(xmlFile, key .. "#id",          tostring(trigger.id or ""))
-        setString(xmlFile, key .. "#name",         trigger.workplaceName or "Workplace")
-        setInt(   xmlFile, key .. "#hourlyWage",   trigger.hourlyWage or 500)
-        setFloat( xmlFile, key .. "#posX",         trigger.posX or 0)
-        setFloat( xmlFile, key .. "#posY",         trigger.posY or 0)
-        setFloat( xmlFile, key .. "#posZ",         trigger.posZ or 0)
-        setFloat( xmlFile, key .. "#rotY",         trigger.rotY or 0)
+        local i = idx - 1
+        local key = string.format("workplaceTriggers.triggers.trigger(%d)", i)
+        xmlFile:setString(key .. "#id",         tostring(trigger.id or ""))
+        xmlFile:setString(key .. "#name",        trigger.workplaceName or "Workplace")
+        xmlFile:setInt(   key .. "#hourlyWage",  trigger.hourlyWage or 500)
+        xmlFile:setFloat( key .. "#posX",        trigger.posX or 0)
+        xmlFile:setFloat( key .. "#posY",        trigger.posY or 0)
+        xmlFile:setFloat( key .. "#posZ",        trigger.posZ or 0)
+        xmlFile:setFloat( key .. "#rotY",        trigger.rotY or 0)
         count = count + 1
     end
 
-    -- Save trigger count for clean load iteration
-    setInt(xmlFile, ROOT .. ".triggers#count", count)
+    xmlFile:setInt("workplaceTriggers.triggers#count", count)
 
-    -- Save HUD layout
     local hud = self.system.hud
     if hud then
-        setFloat(xmlFile, ROOT .. ".hudLayout#posX",      hud.posX)
-        setFloat(xmlFile, ROOT .. ".hudLayout#posY",      hud.posY)
-        setFloat(xmlFile, ROOT .. ".hudLayout#scale",     hud.scale)
-        setFloat(xmlFile, ROOT .. ".hudLayout#widthMult", hud.widthMult)
+        xmlFile:setFloat("workplaceTriggers.hudLayout#posX",      hud.posX)
+        xmlFile:setFloat("workplaceTriggers.hudLayout#posY",      hud.posY)
+        xmlFile:setFloat("workplaceTriggers.hudLayout#scale",     hud.scale)
+        xmlFile:setFloat("workplaceTriggers.hudLayout#widthMult", hud.widthMult)
         wtLog("Saved HUD layout")
     end
 
-    wtLog(string.format("Saved %d triggers", count))
+    xmlFile:save()
+    xmlFile:delete()
 
-    -- Delegate settings save to WorkplaceSettings (writes its own separate XML)
+    wtLog(string.format("Saved %d triggers to %s", count, savePath))
+
     if self.system.settings then
         self.system.settings:saveToXMLFile(missionInfo)
     end
@@ -132,46 +137,42 @@ end
 
 -- =========================================================
 -- LOAD
--- Called from main.lua Mission00.onStartMission hook.
--- Reads saved trigger metadata and pushes it back into the
--- TriggerManager. The placeables themselves are respawned
--- by FS25's own placeable system - we only restore the names
--- and wages which are stored in our XML, not in placeable XML.
+-- Reads from the standalone mod XML file in the savegame directory.
 -- =========================================================
 function WorkplaceSaveLoad:loadFromXMLFile(missionInfo)
     if not self.isInitialized then return end
 
-    local xmlFile = missionInfo and missionInfo.xmlFile
-    if xmlFile == nil then
-        wtLog("loadFromXMLFile: no xmlFile - fresh game")
+    local savePath = self:getSavePath(missionInfo)
+    if savePath == nil then
+        wtLog("loadFromXMLFile: could not determine save path - fresh game")
         return
     end
 
-    local count = 0
+    local xmlFile = XMLFile.load("workplaceTriggersSave", savePath)
+    if xmlFile == nil then
+        wtLog("loadFromXMLFile: no save file at " .. tostring(savePath) .. " - fresh game")
+        return
+    end
+
     local i = 0
 
     while true do
-        local key = string.format("%s.triggers.trigger(%d)", ROOT, i)
-        local savedId = getString(xmlFile, key .. "#id", nil)
+        local key = string.format("workplaceTriggers.triggers.trigger(%d)", i)
+        local savedId = xmlFile:getString(key .. "#id", nil)
         if savedId == nil or savedId == "" then break end
 
-        local savedName = getString(xmlFile, key .. "#name", "Workplace")
-        local savedWage = getInt(   xmlFile, key .. "#hourlyWage", 500)
-        local savedPosX = getFloat( xmlFile, key .. "#posX", 0)
-        local savedPosY = getFloat( xmlFile, key .. "#posY", 0)
-        local savedPosZ = getFloat( xmlFile, key .. "#posZ", 0)
+        local savedName = xmlFile:getString(key .. "#name",       "Workplace")
+        local savedWage = xmlFile:getInt(   key .. "#hourlyWage", 500)
+        local savedPosX = xmlFile:getFloat( key .. "#posX",       0)
+        local savedPosY = xmlFile:getFloat( key .. "#posY",       0)
+        local savedPosZ = xmlFile:getFloat( key .. "#posZ",       0)
 
-        -- Find the matching trigger in the TriggerManager by id
-        -- (placeable was re-created by FS25 before this runs)
         local trigger = self.system.triggerManager:getTriggerById(savedId)
         if trigger then
             trigger.workplaceName = savedName
             trigger.hourlyWage    = savedWage
-            wtLog(string.format("Restored trigger '%s' (id=%s) wage=$%d", savedName, savedId, savedWage))
-            count = count + 1
+            wtLog(string.format("Restored trigger '%s' (id=%s)", savedName, savedId))
         else
-            -- Trigger placeable not re-created yet (save/load timing edge case)
-            -- Store as pending restore - will be applied by registerTrigger()
             self:storePendingRestore(savedId, savedName, savedWage, savedPosX, savedPosY, savedPosZ)
         end
 
@@ -180,11 +181,10 @@ function WorkplaceSaveLoad:loadFromXMLFile(missionInfo)
 
     wtLog(string.format("Loaded %d trigger configs", i))
 
-    -- Load HUD layout
-    local hudPosX      = getFloat(xmlFile, ROOT .. ".hudLayout#posX",      nil)
-    local hudPosY      = getFloat(xmlFile, ROOT .. ".hudLayout#posY",      nil)
-    local hudScale     = getFloat(xmlFile, ROOT .. ".hudLayout#scale",     nil)
-    local hudWidthMult = getFloat(xmlFile, ROOT .. ".hudLayout#widthMult", nil)
+    local hudPosX      = xmlFile:getFloat("workplaceTriggers.hudLayout#posX",      nil)
+    local hudPosY      = xmlFile:getFloat("workplaceTriggers.hudLayout#posY",      nil)
+    local hudScale     = xmlFile:getFloat("workplaceTriggers.hudLayout#scale",     nil)
+    local hudWidthMult = xmlFile:getFloat("workplaceTriggers.hudLayout#widthMult", nil)
     if hudPosX and self.system.hud then
         self.system.hud:loadFromSettings({
             hudPosX      = hudPosX,
@@ -194,30 +194,27 @@ function WorkplaceSaveLoad:loadFromXMLFile(missionInfo)
         })
         wtLog("Loaded HUD layout")
     end
+
+    xmlFile:delete()
 end
 
 -- =========================================================
--- Immediate HUD Position Save (called on drag/resize release)
--- Writes directly to the career savegame XML if available.
+-- Helper: resolve path for mod save file
+-- =========================================================
+function WorkplaceSaveLoad:getSavePath(missionInfo)
+    local mi = missionInfo
+        or (g_currentMission and g_currentMission.missionInfo)
+    local dir = mi and mi.savegameDirectory
+    if dir == nil then return nil end
+    return dir .. "/FS25_WorkplaceTriggers.xml"
+end
+
+-- =========================================================
+-- Immediate HUD Position Save
+-- HUD layout is written on the next full game save.
 -- =========================================================
 function WorkplaceSaveLoad:savePendingHUD()
-    local hud = self.system and self.system.hud
-    if not hud then return end
-
-    -- Try to write to the active missionInfo xmlFile if available
-    local missionInfo = g_currentMission and g_currentMission.missionInfo
-    local xmlFile = missionInfo and missionInfo.xmlFile
-    if xmlFile then
-        setFloat(xmlFile, ROOT .. ".hudLayout#posX",      hud.posX)
-        setFloat(xmlFile, ROOT .. ".hudLayout#posY",      hud.posY)
-        setFloat(xmlFile, ROOT .. ".hudLayout#scale",     hud.scale)
-        setFloat(xmlFile, ROOT .. ".hudLayout#widthMult", hud.widthMult)
-        wtLog(string.format("HUD layout quick-saved: pos=%.3f,%.3f scale=%.2f width=%.2f",
-            hud.posX, hud.posY, hud.scale, hud.widthMult))
-    else
-        -- Will be written on next full save - that is fine
-        wtLog("HUD layout queued for next full save")
-    end
+    wtLog("HUD layout queued for next full save")
 end
 
 -- =========================================================
@@ -256,4 +253,24 @@ function WorkplaceSaveLoad:delete()
     self.pendingRestores = nil
     self.isInitialized = false
     wtLog("Deleted")
+end
+-- =========================================================
+-- Pending Create (GUI-spawned placeables pick up name/wage on onLoad)
+-- =========================================================
+-- When WTEditDialog spawns a new placeable, it queues the desired config here.
+-- workTrigger.lua:onLoad() calls popPendingCreate() to claim the first entry.
+function WorkplaceSaveLoad:queuePendingCreate(data)
+    if self.pendingCreates == nil then self.pendingCreates = {} end
+    table.insert(self.pendingCreates, data)
+    wtLog(string.format("Queued pending create for '%s' at (%.1f,%.1f,%.1f)",
+        data.workplaceName or "?", data.posX or 0, data.posY or 0, data.posZ or 0))
+end
+
+-- Called by WorkTriggerPlaceable:onLoad() for newly placed placeables (no saved id).
+-- Returns the queued config table and removes it from the queue, or nil if empty.
+function WorkplaceSaveLoad:popPendingCreate()
+    if self.pendingCreates == nil or #self.pendingCreates == 0 then return nil end
+    local data = table.remove(self.pendingCreates, 1)
+    wtLog(string.format("Popped pending create for '%s'", data.workplaceName or "?"))
+    return data
 end

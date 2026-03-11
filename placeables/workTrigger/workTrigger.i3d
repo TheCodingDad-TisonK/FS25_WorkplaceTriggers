@@ -10,6 +10,7 @@
         |-- testAreaStart (TransformGroup, nodeId=3) -- placement validation start
         |     |-- testAreaEnd (TransformGroup, nodeId=4) -- placement validation end
         |-- groundRing    (Shape, nodeId=5)          -- flat green disc on terrain
+        |-- markerNode    (TransformGroup, nodeId=6) -- link node for floating marker i3d
 
     groundRing is a flat Cylinder (r=1m, h=0.04m) with a semi-transparent green
     unlit material. Scaled at runtime by WorkTriggerPlaceable:onLoad() to match
@@ -61,6 +62,12 @@
                    translation="0 0.02 0" rotation="0 0 0" scale="1 1 1"
                    castsShadows="false" receiveShadows="false"
                    distanceBlending="false" depthless="false"/>
+
+            <!-- Marker link node: floating at Y=1.5m.
+                 PlaceableTriggerMarkers spec async-loads the base-game glowing
+                 circle i3d and links it here. Visibility is controlled by
+                 setShowMarkers() which respects the SHOW_TRIGGER_MARKER setting. -->
+            <TransformGroup name="markerNode" nodeId="6" translation="0 1.5 0" rotation="0 0 0" scale="1 1 1"/>
 
         </TransformGroup>
     </Scene>
