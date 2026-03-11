@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<l10n>
+    <texts>
+        <!-- Input action descriptions -->
+        <text name="input_WT_INTERACT"       text="Start/End Shift"/>
+        <text name="input_WT_MENU"           text="Open Workplace Manager"/>
+        <text name="input_WT_HUD_EDIT"       text="Toggle HUD Edit Mode"/>
+
+        <!-- E-key prompt strings (dynamic, set via setActionEventText) -->
+        <text name="wt_input_interact"       text="Interact with Workplace"/>
+        <text name="wt_input_start_shift"    text="Start Shift at %s"/>
+        <text name="wt_input_end_shift"      text="End Shift at %s"/>
+        <text name="wt_input_open_menu"      text="Workplace Manager"/>
+        <text name="wt_input_hud_edit"       text="[Shift] HUD Edit Mode"/>
+
+        <!-- HUD panel -->
+        <text name="wt_hud_on_shift"         text="ON SHIFT"/>
+        <text name="wt_hud_edit_mode"        text="HUD EDIT MODE"/>
+        <text name="wt_hud_edit_hint"        text="Drag | Corners=Scale | Edges=Width | Shift=Exit"/>
+        <text name="wt_hud_location"         text="Location:"/>
+        <text name="wt_hud_time"             text="Time:"/>
+        <text name="wt_hud_earned"           text="Earned:"/>
+        <text name="wt_hud_shift_started"    text="Shift started at %s\n$%d/hr"/>
+        <text name="wt_hud_shift_ended"      text="Shift ended\n+$%d earned"/>
+
+        <!-- Store item -->
+        <text name="wt_store_name"           text="Work Trigger Zone"/>
+        <text name="wt_store_desc"           text="Place anywhere to designate a workplace. Walk inside and press [E] to start your shift and earn income."/>
+        <text name="wt_store_function"       text="Designates a placeable work location with configurable name and hourly wage"/>
+
+        <!-- Notifications -->
+        <text name="wt_notify_shift_started" text="Shift started at '%s'"/>
+        <text name="wt_notify_shift_ended"   text="Shift ended - earned $%d"/>
+        <text name="wt_notify_left_trigger"  text="You left the work zone - shift ended"/>
+
+        <!-- Leave-zone warning overlay -->
+        <text name="wt_warn_title"      text="RETURN TO WORK AREA"/>
+        <text name="wt_warn_countdown"  text="Shift cancels in %d seconds"/>
+        <text name="wt_warn_cancelling" text="Cancelling shift..."/>
+
+        <!-- Settings menu (ESC > Settings > General Settings) -->
+        <text name="wt_settings_section"              text="Workplace Triggers"/>
+        <text name="wt_settings_show_hud_short"       text="Show Shift HUD"/>
+        <text name="wt_settings_show_hud_long"        text="Display the shift info panel while on shift"/>
+        <text name="wt_settings_hud_scale_short"      text="HUD Scale"/>
+        <text name="wt_settings_hud_scale_long"       text="Size of the shift HUD panel on screen"/>
+        <text name="wt_settings_show_notif_short"     text="Show Notifications"/>
+        <text name="wt_settings_show_notif_long"      text="Show flash messages when a shift starts or ends"/>
+        <text name="wt_settings_wage_mult_short"      text="Wage Multiplier"/>
+        <text name="wt_settings_wage_mult_long"       text="Global multiplier applied on top of each trigger's hourly wage"/>
+        <text name="wt_settings_end_on_leave_short"   text="End Shift on Leave"/>
+        <text name="wt_settings_end_on_leave_long"    text="Automatically end your shift when you leave the trigger zone"/>
+        <text name="wt_settings_show_earnings_short"  text="Show Earnings in HUD"/>
+        <text name="wt_settings_show_earnings_long"   text="Show the current earnings row in the shift HUD panel"/>
+        <text name="wt_settings_debug_short"          text="Debug Mode"/>
+        <text name="wt_settings_debug_long"           text="Output extra debug information to the console"/>
+    </texts>
+</l10n>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<modDesc descVersion="105">
+    <author>TisonK</author>
+    <version>0.1.0.0</version>
+    <modName>FS25_WorkplaceTriggers</modName>
+
+    <title>
+        <en>Workplace Triggers - Work Anywhere</en>
+        <de>Arbeitsstellen-Trigger - Überall arbeiten</de>
+        <fr>Déclencheurs de lieu de travail - Travaillez partout</fr>
+        <it>Trigger di lavoro - Lavora ovunque</it>
+        <nl>Werkplek triggers - Werk overal</nl>
+        <pl>Wyzwalacze miejsca pracy - Pracuj wszedzie</pl>
+    </title>
+
+    <description>
+        <en><![CDATA[Turn any location on any map into a legitimate workplace.
+
+Place a trigger anywhere, name it, set a wage, and earn income while you are on the clock. Perfect for roleplayers who want their farmers to have side jobs, or anyone who wants to supplement farm income with off-farm work.
+
+FEATURES:
+- Placeable trigger zones - invisible zones you drop anywhere on any map
+- Custom workplace names - call it Post Office, Feed Mill, or anything you want
+- Hourly wage system - earn income based on real in-game time
+- Shift tracking HUD - see your active workplace, earnings, and shift time
+- Persistent saves - all triggers, names, and wages survive game reloads
+- Singleplayer and multiplayer (host-authoritative)
+
+HOW TO USE:
+1. Buy the Work Trigger from the store (under Objects)
+2. Place it at any location you want to designate as a workplace
+3. Walk into the trigger zone - press [E] to start your shift
+4. Press [E] again to end your shift and collect your wages
+
+Type wtHelp in the developer console for debug commands.
+        ]]></en>
+        <de><![CDATA[Verwandle jeden Ort auf jeder Karte in einen legitimen Arbeitsplatz.
+
+Platziere einen Trigger, benenne ihn, lege einen Lohn fest und verdiene Einnahmen, waehrend du auf der Uhr bist.
+
+FUNKTIONEN:
+- Platzierbare Trigger-Zonen
+- Benutzerdefinierte Arbeitsplatznamen
+- Stuendliches Lohnsystem
+- Schicht-HUD
+- Persistente Speicherung
+        ]]></de>
+        <fr><![CDATA[Transformez n'importe quel endroit en lieu de travail.
+
+Placez un declencheur, nommez-le, definissez un salaire et gagnez des revenus pendant que vous etes au travail.
+        ]]></fr>
+        <it><![CDATA[Trasforma qualsiasi luogo in un posto di lavoro legittimo.
+
+Posiziona un trigger, assegnagli un nome, imposta uno stipendio e guadagna durante il turno.
+        ]]></it>
+        <nl><![CDATA[Maak van elke locatie een legitieme werkplek.
+
+Plaats een trigger, geef het een naam, stel een loon in en verdien inkomen terwijl je aan het werk bent.
+        ]]></nl>
+        <pl><![CDATA[Zamien dowolna lokalizacje w legalne miejsce pracy.
+
+Umiec wyzwalacz, nadaj mu nazwe, ustaw stawke i zarabiaj podczas dyspozycji.
+        ]]></pl>
+    </description>
+
+    <iconFilename>icon_wt.dds</iconFilename>
+
+    <l10n filenamePrefix="translations/lang" defaultLanguage="en"/>
+
+    <multiplayer supported="true"/>
+
+    <extraSourceFiles>
+        <sourceFile filename="main.lua"/>
+    </extraSourceFiles>
+
+    <actions>
+        <action name="WT_INTERACT"/>
+        <action name="WT_MENU"/>
+        <action name="WT_HUD_EDIT"/>
+    </actions>
+    <inputBinding>
+        <actionBinding action="WT_INTERACT">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_e"/>
+        </actionBinding>
+        <actionBinding action="WT_MENU">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_F4"/>
+        </actionBinding>
+        <actionBinding action="WT_HUD_EDIT">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_lshift"/>
+        </actionBinding>
+    </inputBinding>
+
+    <placeableSpecializations>
+        <specialization name="workTrigger" className="WorkTriggerPlaceable" filename="placeables/workTrigger/workTrigger.lua"/>
+    </placeableSpecializations>
+
+    <placeableTypes>
+        <type name="workTrigger" parent="simplePlaceable" filename="$dataS/scripts/placeables/Placeable.lua">
+            <specialization name="workTrigger"/>
+        </type>
+    </placeableTypes>
+
+    <storeItems>
+        <storeItem xmlFilename="placeables/workTrigger/workTrigger.xml"/>
+    </storeItems>
+
+</modDesc>

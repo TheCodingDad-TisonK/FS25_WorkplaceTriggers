@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    workTrigger.i3d
+    Trigger-only placeable for FS25_WorkplaceTriggers.
+
+    CRITICAL: Root node MUST NOT be named "root" (silent load failure in FS25).
+    Node structure:
+        workTrigger_base  (TransformGroup, nodeId=1) -- placeable root / self.nodeId
+        |-- triggerVolume (TransformGroup, nodeId=2) -- trigger callback node
+        |-- testAreaStart (TransformGroup, nodeId=3) -- placement validation start
+        |     |-- testAreaEnd (TransformGroup, nodeId=4) -- placement validation end
+        |-- groundRing    (Shape, nodeId=5)          -- flat green disc on terrain
+        |-- markerNode    (TransformGroup, nodeId=6) -- link node for floating marker i3d
+
+    groundRing is a flat Cylinder (r=1m, h=0.04m) with a semi-transparent green
+    unlit material. Scaled at runtime by WorkTriggerPlaceable:onLoad() to match
+    the configured triggerRadius.
+-->
+<i3D name="workTrigger" version="1.6"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+
+    <Asset>
+        <Export program="GIANTS Editor 64bit" version="10.0.10"/>
+    </Asset>
+
+    <Files/>
+
+    <Materials>
+        <!-- Green semi-transparent unlit disc material -->
+        <Material name="wtRingMat" materialId="1" ambientColor="0 0 0"
+                  diffuseColor="0.15 0.85 0.30 0.55"
+                  specularColor="0 0 0"
+                  emissiveColor="0.10 0.60 0.20"
+                  alphaBlending="true"
+                  customShaderId=""/>
+    </Materials>
+
+    <Shapes>
+        <!-- Flat cylinder: radius=1, height=0.04, 32 sides -->
+        <Cylinder name="RingCylinder" shapeId="1" radius="1" height="0.04"
+                  sides="32" isEnds="true" materialIds="1"/>
+    </Shapes>
+
+    <Dynamics/>
+
+    <Scene>
+        <!-- Root: MUST NOT be named "root" -->
+        <TransformGroup name="workTrigger_base" nodeId="1" translation="0 0 0" rotation="0 0 0" scale="1 1 1">
+
+            <!-- Trigger volume: 4x4m area (triggerRadius=4 in workTrigger.xml).
+                 addTrigger() is called on this node from workTrigger.lua. -->
+            <TransformGroup name="triggerVolume" nodeId="2" translation="0 0 0" rotation="0 0 0" scale="4 2 4"/>
+
+            <!-- Placement test area: 4x4m footprint (start and end corners) -->
+            <TransformGroup name="testAreaStart" nodeId="3" translation="-2 0 -2" rotation="0 0 0" scale="1 1 1">
+                <TransformGroup name="testAreaEnd" nodeId="4" translation="4 0.1 4" rotation="0 0 0" scale="1 1 1"/>
+            </TransformGroup>
+
+            <!-- Ground ring: flat green disc, radius=1m. Scaled at runtime. -->
+            <Shape name="groundRing" nodeId="5" shapeId="1"
+                   translation="0 0.02 0" rotation="0 0 0" scale="1 1 1"
+                   castsShadows="false" receiveShadows="false"
+                   distanceBlending="false" depthless="false"/>
+
+            <!-- Marker link node: floating at Y=1.5m.
+                 PlaceableTriggerMarkers spec async-loads the base-game glowing
+                 circle i3d and links it here. Visibility is controlled by
+                 setShowMarkers() which respects the SHOW_TRIGGER_MARKER setting. -->
+            <TransformGroup name="markerNode" nodeId="6" translation="0 1.5 0" rotation="0 0 0" scale="1 1 1"/>
+
+        </TransformGroup>
+    </Scene>
+
+</i3D>

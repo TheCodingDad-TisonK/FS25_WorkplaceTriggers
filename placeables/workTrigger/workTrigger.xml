@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    workTrigger.xml
+    Placeable type declaration for the work trigger zone.
+    Referenced by modDesc.xml <storeItems>.
+    Lua class (WorkTriggerPlaceable) is registered via modDesc.xml <placeableSpecializations>.
+-->
+<placeable type="workTrigger" descVersion="105">
+
+    <storeData>
+        <n>Work Trigger Zone</n>
+        <desc>Place anywhere to designate a workplace. Walk inside and press [E] to start your shift and earn income.</desc>
+        <image>$data/placeables/brandless/waterTanks/level01/store_waterTankLevel01.dds</image>
+        <functions>
+            <function>Configurable workplace with custom name and hourly wage</function>
+        </functions>
+        <price>0</price>
+        <dailyUpkeep>0</dailyUpkeep>
+        <canBeSold>true</canBeSold>
+        <showInStore>true</showInStore>
+        <lifetime>0</lifetime>
+        <rotation>0</rotation>
+        <brand>NONE</brand>
+        <species>PLACEABLE</species>
+        <category>construction</category>
+        <brush>
+            <type>placeable</type>
+            <category>construction</category>
+            <tab>tools</tab>
+        </brush>
+    </storeData>
+
+    <base>
+        <filename>placeables/workTrigger/workTrigger.i3d</filename>
+    </base>
+
+    <placement useRandomYRotation="false" useManualYRotation="true">
+        <testAreas>
+            <testArea startNode="testAreaStart" endNode="testAreaEnd"/>
+        </testAreas>
+    </placement>
+
+    <!-- Required but empty sections to suppress log warnings -->
+    <clearAreas/>
+    <indoorAreas/>
+    <aiUpdateAreas/>
+    <levelingAreas/>
+
+    <i3dMappings>
+        <i3dMapping id="testAreaStart" node="0>0|1"/>
+        <i3dMapping id="testAreaEnd"   node="0>0|1|0"/>
+        <i3dMapping id="groundRing"    node="0>0|2"/>
+        <i3dMapping id="markerNode"    node="0>0|3"/>
+    </i3dMappings>
+
+    <!--
+        Floating marker: base-game glowing circle (same as ShopTrigger, unload triggers, etc).
+        PlaceableTriggerMarkers spec loads the i3d async and links it to markerNode.
+        adjustToGround="false" keeps it floating at the Y=1.5m set in the i3d.
+        Visibility is driven by setShowMarkers() which respects:
+          - SHOW_TRIGGER_MARKER game setting
+          - player farm access (PLAYER_FARM_CHANGED message)
+    -->
+    <triggerMarkers>
+        <triggerMarker node="markerNode"
+                       filename="$data/shared/assets/marker/markerIconInteraction.i3d"
+                       adjustToGround="false"/>
+    </triggerMarkers>
+
+    <!--
+        Default workplace configuration.
+        These values are read by WorkTriggerPlaceable:onLoad()
+        and overridden by saved player data.
+    -->
+    <workTriggerConfig
+        defaultName="Workplace"
+        hourlyWage="500"
+        triggerRadius="4.0"
+    />
+
+</placeable>

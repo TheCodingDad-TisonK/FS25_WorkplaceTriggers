@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<l10n>
+    <texts>
+        <text name="input_WT_INTERACT"       text="Commencer/Terminer le travail"/>
+        <text name="wt_input_interact"       text="[E] Interagir avec le lieu de travail"/>
+        <text name="wt_input_start_shift"    text="[E] Commencer le travail a %s"/>
+        <text name="wt_input_end_shift"      text="[E] Terminer le travail a %s"/>
+        <text name="wt_hud_on_shift"         text="EN SERVICE"/>
+        <text name="wt_hud_location"         text="Lieu:"/>
+        <text name="wt_hud_time"             text="Temps:"/>
+        <text name="wt_hud_earned"           text="Gagne:"/>
+        <text name="wt_hud_shift_started"    text="Travail commence a %s\n%d$/h"/>
+        <text name="wt_hud_shift_ended"      text="Travail termine\n+%d$ gagne"/>
+        <text name="wt_store_name"           text="Zone de travail"/>
+        <text name="wt_store_desc"           text="Placez n'importe ou pour designer un lieu de travail. Entrez dans la zone et appuyez sur [E] pour commencer votre quart."/>
+        <text name="wt_store_function"       text="Designe un lieu de travail placable avec un nom et un salaire horaire configurables"/>
+        <text name="wt_notify_shift_started" text="Quart commence a '%s'"/>
+        <text name="wt_notify_shift_ended"   text="Quart termine - %d$ gagne"/>
+        <text name="wt_notify_left_trigger"  text="Vous avez quitte la zone de travail - quart termine"/>
+    </texts>
+</l10n>
