@@ -17,5 +17,13 @@
         <text name="wt_notify_shift_started" text="Dienst begonnen bij '%s'"/>
         <text name="wt_notify_shift_ended"   text="Dienst beeindigd - $%d verdiend"/>
         <text name="wt_notify_left_trigger"  text="Je hebt de werkzone verlaten - dienst beeindigd"/>
+        <!-- Help Line category titles -->
+        <text name="helpLine_wt_cat_overview"  text="Overzicht"/>
+        <text name="helpLine_wt_cat_setup"     text="Aan de slag"/>
+        <text name="helpLine_wt_cat_shift"     text="Een dienst werken"/>
+        <text name="helpLine_wt_cat_manage"    text="Werkplekken beheren"/>
+        <text name="helpLine_wt_cat_hud"       text="HUD en instellingen"/>
+        <text name="helpLine_wt_cat_tips"      text="Tips en multiplayer"/>
+        <text name="helpLine_wt_cat_about"     text="Over en credits"/>
     </texts>
 </l10n>

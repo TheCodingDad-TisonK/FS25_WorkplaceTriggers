@@ -17,5 +17,13 @@
         <text name="wt_notify_shift_started" text="Turno iniziato a '%s'"/>
         <text name="wt_notify_shift_ended"   text="Turno terminato - guadagnato $%d"/>
         <text name="wt_notify_left_trigger"  text="Hai lasciato la zona di lavoro - turno terminato"/>
+        <!-- Help Line category titles -->
+        <text name="helpLine_wt_cat_overview"  text="Panoramica"/>
+        <text name="helpLine_wt_cat_setup"     text="Per iniziare"/>
+        <text name="helpLine_wt_cat_shift"     text="Lavorare un turno"/>
+        <text name="helpLine_wt_cat_manage"    text="Gestire i luoghi di lavoro"/>
+        <text name="helpLine_wt_cat_hud"       text="HUD e impostazioni"/>
+        <text name="helpLine_wt_cat_tips"      text="Suggerimenti e multigiocatore"/>
+        <text name="helpLine_wt_cat_about"     text="Informazioni e crediti"/>
     </texts>
 </l10n>

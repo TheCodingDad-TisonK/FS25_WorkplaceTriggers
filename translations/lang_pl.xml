@@ -17,5 +17,13 @@
         <text name="wt_notify_shift_started" text="Zmiana rozpoczeta w '%s'"/>
         <text name="wt_notify_shift_ended"   text="Zmiana zakonczona - zarobiono $%d"/>
         <text name="wt_notify_left_trigger"  text="Opusciles strefe pracy - zmiana zakonczona"/>
+        <!-- Help Line category titles -->
+        <text name="helpLine_wt_cat_overview"  text="Przeglad"/>
+        <text name="helpLine_wt_cat_setup"     text="Pierwsze kroki"/>
+        <text name="helpLine_wt_cat_shift"     text="Praca na zmianie"/>
+        <text name="helpLine_wt_cat_manage"    text="Zarzadzanie miejscami pracy"/>
+        <text name="helpLine_wt_cat_hud"       text="HUD i ustawienia"/>
+        <text name="helpLine_wt_cat_tips"      text="Wskazowki i multiplayer"/>
+        <text name="helpLine_wt_cat_about"     text="O modzie i autorzy"/>
     </texts>
 </l10n>

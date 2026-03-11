@@ -104,4 +104,270 @@ Umiec wyzwalacz, nadaj mu nazwe, ustaw stawke i zarabiaj podczas dyspozycji.
         <storeItem xmlFilename="placeables/workTrigger/workTrigger.xml"/>
     </storeItems>
 
+    <!-- ═══════════════════════════════════════════════════════════
+         HELP LINES  —  accessible via ESC > Help > Workplace Triggers
+         ═══════════════════════════════════════════════════════════ -->
+    <helpLines>
+
+        <!-- ── Category 1: Overview ──────────────────────────── -->
+        <category title="$l10n_helpLine_wt_cat_overview">
+
+            <page title="$l10n_helpLine_wt_ov_p1_title" iconSliceId="icon_workers">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_ov_p1_what_title" />
+                    <text  text="$l10n_helpLine_wt_ov_p1_what_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_ov_p1_who_title" />
+                    <text  text="$l10n_helpLine_wt_ov_p1_who_text"  />
+                </paragraph>
+            </page>
+
+            <page title="$l10n_helpLine_wt_ov_p2_title" iconSliceId="icon_workers">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_ov_p2_concept_title" />
+                    <text  text="$l10n_helpLine_wt_ov_p2_concept_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_ov_p2_money_title" />
+                    <text  text="$l10n_helpLine_wt_ov_p2_money_text"  />
+                </paragraph>
+            </page>
+
+        </category>
+
+        <!-- ── Category 2: Getting Started ───────────────────── -->
+        <category title="$l10n_helpLine_wt_cat_setup">
+
+            <page title="$l10n_helpLine_wt_su_p1_title" iconSliceId="icon_shop">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_su_p1_buy_title" />
+                    <text  text="$l10n_helpLine_wt_su_p1_buy_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_su_p1_place_title" />
+                    <text  text="$l10n_helpLine_wt_su_p1_place_text"  />
+                </paragraph>
+            </page>
+
+            <page title="$l10n_helpLine_wt_su_p2_title" iconSliceId="icon_shop">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_su_p2_name_title" />
+                    <text  text="$l10n_helpLine_wt_su_p2_name_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_su_p2_wage_title" />
+                    <text  text="$l10n_helpLine_wt_su_p2_wage_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_su_p2_radius_title" />
+                    <text  text="$l10n_helpLine_wt_su_p2_radius_text"  />
+                </paragraph>
+            </page>
+
+            <page title="$l10n_helpLine_wt_su_p3_title" iconSliceId="icon_shop">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_su_p3_map_title" />
+                    <text  text="$l10n_helpLine_wt_su_p3_map_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_su_p3_multi_title" />
+                    <text  text="$l10n_helpLine_wt_su_p3_multi_text"  />
+                </paragraph>
+            </page>
+
+        </category>
+
+        <!-- ── Category 3: Working a Shift ───────────────────── -->
+        <category title="$l10n_helpLine_wt_cat_shift">
+
+            <page title="$l10n_helpLine_wt_sh_p1_title" iconSliceId="icon_workers">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_sh_p1_enter_title" />
+                    <text  text="$l10n_helpLine_wt_sh_p1_enter_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_sh_p1_start_title" />
+                    <text  text="$l10n_helpLine_wt_sh_p1_start_text"  />
+                </paragraph>
+            </page>
+
+            <page title="$l10n_helpLine_wt_sh_p2_title" iconSliceId="icon_workers">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_sh_p2_hud_title" />
+                    <text  text="$l10n_helpLine_wt_sh_p2_hud_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_sh_p2_leave_title" />
+                    <text  text="$l10n_helpLine_wt_sh_p2_leave_text"  />
+                </paragraph>
+            </page>
+
+            <page title="$l10n_helpLine_wt_sh_p3_title" iconSliceId="icon_workers">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_sh_p3_end_title" />
+                    <text  text="$l10n_helpLine_wt_sh_p3_end_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_sh_p3_pay_title" />
+                    <text  text="$l10n_helpLine_wt_sh_p3_pay_text"  />
+                </paragraph>
+            </page>
+
+        </category>
+
+        <!-- ── Category 4: Managing Workplaces ───────────────── -->
+        <category title="$l10n_helpLine_wt_cat_manage">
+
+            <page title="$l10n_helpLine_wt_mg_p1_title" iconSliceId="icon_contracts">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_mg_p1_open_title" />
+                    <text  text="$l10n_helpLine_wt_mg_p1_open_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_mg_p1_list_title" />
+                    <text  text="$l10n_helpLine_wt_mg_p1_list_text"  />
+                </paragraph>
+            </page>
+
+            <page title="$l10n_helpLine_wt_mg_p2_title" iconSliceId="icon_contracts">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_mg_p2_edit_title" />
+                    <text  text="$l10n_helpLine_wt_mg_p2_edit_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_mg_p2_delete_title" />
+                    <text  text="$l10n_helpLine_wt_mg_p2_delete_text"  />
+                </paragraph>
+            </page>
+
+            <page title="$l10n_helpLine_wt_mg_p3_title" iconSliceId="icon_contracts">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_mg_p3_save_title" />
+                    <text  text="$l10n_helpLine_wt_mg_p3_save_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_mg_p3_limit_title" />
+                    <text  text="$l10n_helpLine_wt_mg_p3_limit_text"  />
+                </paragraph>
+            </page>
+
+        </category>
+
+        <!-- ── Category 5: HUD and Settings ──────────────────── -->
+        <category title="$l10n_helpLine_wt_cat_hud">
+
+            <page title="$l10n_helpLine_wt_hd_p1_title" iconSliceId="icon_hud_speedometer">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_hd_p1_panel_title" />
+                    <text  text="$l10n_helpLine_wt_hd_p1_panel_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_hd_p1_edit_title" />
+                    <text  text="$l10n_helpLine_wt_hd_p1_edit_text"  />
+                </paragraph>
+            </page>
+
+            <page title="$l10n_helpLine_wt_hd_p2_title" iconSliceId="icon_hud_speedometer">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_hd_p2_drag_title" />
+                    <text  text="$l10n_helpLine_wt_hd_p2_drag_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_hd_p2_resize_title" />
+                    <text  text="$l10n_helpLine_wt_hd_p2_resize_text"  />
+                </paragraph>
+            </page>
+
+            <page title="$l10n_helpLine_wt_hd_p3_title" iconSliceId="icon_hud_speedometer">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_hd_p3_settings_title" />
+                    <text  text="$l10n_helpLine_wt_hd_p3_settings_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_hd_p3_mult_title" />
+                    <text  text="$l10n_helpLine_wt_hd_p3_mult_text"  />
+                </paragraph>
+            </page>
+
+        </category>
+
+        <!-- ── Category 6: Tips and Multiplayer ──────────────── -->
+        <category title="$l10n_helpLine_wt_cat_tips">
+
+            <page title="$l10n_helpLine_wt_tp_p1_title" iconSliceId="icon_multiplayer">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_tp_p1_mp_title" />
+                    <text  text="$l10n_helpLine_wt_tp_p1_mp_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_tp_p1_host_title" />
+                    <text  text="$l10n_helpLine_wt_tp_p1_host_text"  />
+                </paragraph>
+            </page>
+
+            <page title="$l10n_helpLine_wt_tp_p2_title" iconSliceId="icon_multiplayer">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_tp_p2_console_title" />
+                    <text  text="$l10n_helpLine_wt_tp_p2_console_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_tp_p2_cmds_title" />
+                    <text  text="$l10n_helpLine_wt_tp_p2_cmds_text"  />
+                </paragraph>
+            </page>
+
+            <page title="$l10n_helpLine_wt_tp_p3_title" iconSliceId="icon_multiplayer">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_tp_p3_roleplay_title" />
+                    <text  text="$l10n_helpLine_wt_tp_p3_roleplay_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_tp_p3_ideas_title" />
+                    <text  text="$l10n_helpLine_wt_tp_p3_ideas_text"  />
+                </paragraph>
+            </page>
+
+        </category>
+
+        <!-- ── Category 7: About and Credits ─────────────────── -->
+        <category title="$l10n_helpLine_wt_cat_about">
+
+            <page title="$l10n_helpLine_wt_ab_p1_title" iconSliceId="icon_info">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_ab_p1_version_title" />
+                    <text  text="$l10n_helpLine_wt_ab_p1_version_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_ab_p1_author_title" />
+                    <text  text="$l10n_helpLine_wt_ab_p1_author_text"  />
+                </paragraph>
+            </page>
+
+            <page title="$l10n_helpLine_wt_ab_p2_title" iconSliceId="icon_info">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_ab_p2_github_title" />
+                    <text  text="$l10n_helpLine_wt_ab_p2_github_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_ab_p2_contrib_title" />
+                    <text  text="$l10n_helpLine_wt_ab_p2_contrib_text"  />
+                </paragraph>
+            </page>
+
+            <page title="$l10n_helpLine_wt_ab_p3_title" iconSliceId="icon_info">
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_ab_p3_license_title" />
+                    <text  text="$l10n_helpLine_wt_ab_p3_license_text"  />
+                </paragraph>
+                <paragraph>
+                    <title text="$l10n_helpLine_wt_ab_p3_thanks_title" />
+                    <text  text="$l10n_helpLine_wt_ab_p3_thanks_text"  />
+                </paragraph>
+            </page>
+
+        </category>
+
+    </helpLines>
+
 </modDesc>

@@ -17,5 +17,13 @@
         <text name="wt_notify_shift_started" text="Quart commence a '%s'"/>
         <text name="wt_notify_shift_ended"   text="Quart termine - %d$ gagne"/>
         <text name="wt_notify_left_trigger"  text="Vous avez quitte la zone de travail - quart termine"/>
+        <!-- Help Line category titles -->
+        <text name="helpLine_wt_cat_overview"  text="Vue d'ensemble"/>
+        <text name="helpLine_wt_cat_setup"     text="Demarrage"/>
+        <text name="helpLine_wt_cat_shift"     text="Travailler un quart"/>
+        <text name="helpLine_wt_cat_manage"    text="Gerer les lieux de travail"/>
+        <text name="helpLine_wt_cat_hud"       text="HUD et parametres"/>
+        <text name="helpLine_wt_cat_tips"      text="Conseils et multijoueur"/>
+        <text name="helpLine_wt_cat_about"     text="A propos et credits"/>
     </texts>
 </l10n>

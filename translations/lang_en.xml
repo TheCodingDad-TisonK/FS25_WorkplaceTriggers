@@ -54,5 +54,158 @@
         <text name="wt_settings_show_earnings_long"   text="Show the current earnings row in the shift HUD panel"/>
         <text name="wt_settings_debug_short"          text="Debug Mode"/>
         <text name="wt_settings_debug_long"           text="Output extra debug information to the console"/>
+
+        <!-- ── Help Line strings ─────────────────────────────── -->
+
+        <!-- Category titles -->
+        <text name="helpLine_wt_cat_overview"  text="Overview"/>
+        <text name="helpLine_wt_cat_setup"     text="Getting Started"/>
+        <text name="helpLine_wt_cat_shift"     text="Working a Shift"/>
+        <text name="helpLine_wt_cat_manage"    text="Managing Workplaces"/>
+        <text name="helpLine_wt_cat_hud"       text="HUD and Settings"/>
+        <text name="helpLine_wt_cat_tips"      text="Tips and Multiplayer"/>
+        <text name="helpLine_wt_cat_about"     text="About and Credits"/>
+
+        <!-- ── Overview, Page 1: What is this mod ── -->
+        <text name="helpLine_wt_ov_p1_title"        text="What is Workplace Triggers?"/>
+        <text name="helpLine_wt_ov_p1_what_title"   text="Concept"/>
+        <text name="helpLine_wt_ov_p1_what_text"    text="Workplace Triggers lets you turn any location on any map into a legitimate off-farm job. You place an invisible trigger zone somewhere in the world, give it a name and an hourly wage, then walk inside and clock in. While your shift is running the mod tracks in-game time and deposits the earned wages directly into your farm account when you clock out. There are no missions, no deliveries and no vehicles required - just show up, press E, and get paid."/>
+        <text name="helpLine_wt_ov_p1_who_title"    text="Who is it for?"/>
+        <text name="helpLine_wt_ov_p1_who_text"     text="The mod is designed for roleplayers who want their farmer character to hold a side job alongside running the farm, for players who want a steady income stream early in a new save while the farm is still growing, and for anyone who enjoys adding more life and variety to their farming world. Because triggers can be placed anywhere and renamed freely, the possibilities are as wide as your imagination."/>
+
+        <!-- ── Overview, Page 2: How earnings work ── -->
+        <text name="helpLine_wt_ov_p2_title"           text="How Earnings Work"/>
+        <text name="helpLine_wt_ov_p2_concept_title"   text="In-Game Time vs Real Time"/>
+        <text name="helpLine_wt_ov_p2_concept_text"    text="Wages are calculated using in-game time, not real-world clock time. By default one real-world second equals one in-game minute in Farming Simulator, so a one-hour in-game shift takes 60 real seconds. If you raise the game time-speed in settings your shifts will pay out faster. The mod reads the game time-scale automatically so the numbers always reflect what you actually experience in the game world."/>
+        <text name="helpLine_wt_ov_p2_money_title"     text="Where the Money Goes"/>
+        <text name="helpLine_wt_ov_p2_money_text"      text="When you end a shift the total earned amount is added to your farm account via the standard FS25 finance system. It appears as a positive transaction in your financial history under the income category, the same way selling crops or completing contracts works. In multiplayer each player tracks their own shift independently and receives their own payout."/>
+
+        <!-- ── Getting Started, Page 1: Buy and place ── -->
+        <text name="helpLine_wt_su_p1_title"         text="Step 1 - Buy and Place"/>
+        <text name="helpLine_wt_su_p1_buy_title"     text="Finding the Trigger in the Shop"/>
+        <text name="helpLine_wt_su_p1_buy_text"      text="Open the shop (default key B) and navigate to the Objects category. Look for Work Trigger Zone. The item has no ongoing cost and can be purchased as many times as you need - one for each workplace you want to create. Place it from your construction menu just like any other placeable object. The trigger zone itself is invisible during normal gameplay so it will not clutter your map visually."/>
+        <text name="helpLine_wt_su_p1_place_title"   text="Choosing a Good Location"/>
+        <text name="helpLine_wt_su_p1_place_text"    text="Stand at the location you want to designate as a workplace before placing. The trigger spawns at the position you choose in the placement preview. Good locations include near buildings you already have, at road junctions you pass frequently, beside delivery points, or anywhere that fits the roleplay story of the job. The default trigger radius is 4 metres so you need to be inside that circle to interact with it."/>
+
+        <!-- ── Getting Started, Page 2: Configure ── -->
+        <text name="helpLine_wt_su_p2_title"           text="Step 2 - Configure Your Workplace"/>
+        <text name="helpLine_wt_su_p2_name_title"      text="Naming Your Workplace"/>
+        <text name="helpLine_wt_su_p2_name_text"       text="After placing the trigger, open the Workplace Manager with F4 and select your new trigger from the list. Press Edit. Type any name you like into the name field - Post Office, Feed Mill, Lumber Yard, Town Hall, whatever fits your story. This name appears on the map icon, in the shift HUD panel while you are working, in the clock-in and clock-out prompts, and in your notification messages."/>
+        <text name="helpLine_wt_su_p2_wage_title"      text="Setting the Hourly Wage"/>
+        <text name="helpLine_wt_su_p2_wage_text"       text="Use the plus and minus buttons in the Edit dialog to set an hourly wage between 0 and 99,999 per in-game hour. The default is 500. Use the step selector to change whether each button press adjusts by 10, 100, or 1,000 at a time. A global Wage Multiplier setting (0.5x to 2.0x) is available in the game settings menu and applies on top of every trigger's wage, so you can tune the overall income level without editing each trigger individually."/>
+        <text name="helpLine_wt_su_p2_radius_title"    text="Adjusting the Trigger Radius"/>
+        <text name="helpLine_wt_su_p2_radius_text"     text="The radius controls how large the work zone is. The minimum is 1 metre and the maximum is 50 metres. A small radius (3-5 m) is good for a specific spot like a shop counter. A larger radius (10-20 m) suits a whole building or yard area. If you find you cannot trigger the E-key prompt when standing where you expect, try increasing the radius slightly. Radius changes take effect immediately without needing to restart."/>
+
+        <!-- ── Getting Started, Page 3: Map icon and multi-trigger ── -->
+        <text name="helpLine_wt_su_p3_title"           text="Step 3 - On the Map"/>
+        <text name="helpLine_wt_su_p3_map_title"       text="Your Workplace on the Map"/>
+        <text name="helpLine_wt_su_p3_map_text"        text="Each placed trigger automatically gets a map icon - a coloured square with the workplace name label above it. The icon is green when the workplace is idle and turns gold while a shift is actively running there. You can see all your workplaces at a glance by opening the full-screen map. The icons appear on both the mini-map and the full map screen and scale with the map zoom level."/>
+        <text name="helpLine_wt_su_p3_multi_title"     text="Multiple Workplaces"/>
+        <text name="helpLine_wt_su_p3_multi_text"      text="There is no hard limit on how many workplaces you can create. Buy and place as many Work Trigger Zones as you need. Each one is fully independent with its own name, wage, and radius. You can only be on shift at one workplace at a time - starting a new shift automatically ends any currently running shift and pays out what you earned so far. All workplaces are saved with your savegame and restored when you reload."/>
+
+        <!-- ── Working a Shift, Page 1: Clocking in ── -->
+        <text name="helpLine_wt_sh_p1_title"          text="Clocking In"/>
+        <text name="helpLine_wt_sh_p1_enter_title"    text="Entering the Work Zone"/>
+        <text name="helpLine_wt_sh_p1_enter_text"     text="Walk or drive to the location of your workplace. When your character steps inside the trigger radius you will see an action prompt appear at the bottom of the screen showing the workplace name. This confirms you are inside the zone and ready to start. If the prompt does not appear, check that you are standing close enough to the centre of the zone or increase the trigger radius in the Edit dialog."/>
+        <text name="helpLine_wt_sh_p1_start_title"    text="Starting the Shift"/>
+        <text name="helpLine_wt_sh_p1_start_text"     text="Press E (or your rebound Interact key) while inside the zone. You will hear a confirmation sound, a brief notification message will appear on screen, and the shift HUD panel will open in the corner of the screen. The panel shows your workplace name, the current in-game time, and a live earnings counter that updates as time passes. From this moment in-game time is being tracked and wages are accumulating."/>
+
+        <!-- ── Working a Shift, Page 2: During and leaving ── -->
+        <text name="helpLine_wt_sh_p2_title"          text="During Your Shift"/>
+        <text name="helpLine_wt_sh_p2_hud_title"      text="The Shift HUD Panel"/>
+        <text name="helpLine_wt_sh_p2_hud_text"       text="The HUD panel stays visible in the corner of the screen for the entire duration of your shift. It displays the name of the workplace you are currently working at, a shift timer counting up in in-game hours and minutes, and the total amount earned so far this shift. You can move and resize the panel at any time by pressing Shift to enter HUD Edit Mode. Your panel position and size are remembered between play sessions."/>
+        <text name="helpLine_wt_sh_p2_leave_title"    text="Leaving the Zone During a Shift"/>
+        <text name="helpLine_wt_sh_p2_leave_text"     text="If you walk outside the trigger radius while on shift a warning overlay appears on screen with a countdown timer. You have a short grace period to return before the shift is automatically cancelled. If you return in time the shift continues as normal with no penalty. If the countdown reaches zero the shift ends and you are paid for the time worked up to that point. This behaviour can be changed in settings - you can disable the auto-end and stay on shift even when away from the zone."/>
+
+        <!-- ── Working a Shift, Page 3: Clocking out ── -->
+        <text name="helpLine_wt_sh_p3_title"          text="Clocking Out"/>
+        <text name="helpLine_wt_sh_p3_end_title"      text="Ending the Shift Manually"/>
+        <text name="helpLine_wt_sh_p3_end_text"       text="To end your shift voluntarily, stand inside the trigger zone and press E again. The prompt will now read End Shift. Pressing it immediately stops the timer, calculates the final wage, and deposits it into your farm account. A summary notification appears briefly showing how much you earned. The HUD panel closes and the map icon returns to green. You can start a new shift at the same or any other workplace straight away."/>
+        <text name="helpLine_wt_sh_p3_pay_title"      text="How the Payout is Calculated"/>
+        <text name="helpLine_wt_sh_p3_pay_text"       text="The formula is simple: payout equals the hourly wage of the workplace multiplied by the number of in-game hours worked, multiplied by the global Wage Multiplier from settings. For example, a 500 per hour workplace worked for 2 in-game hours with a 1.0x multiplier pays 1,000. With a 1.5x multiplier the same shift pays 1,500. Fractions of an hour are included - a 30-minute shift at 500 per hour pays 250."/>
+
+        <!-- ── Managing Workplaces, Page 1: The manager ── -->
+        <text name="helpLine_wt_mg_p1_title"         text="The Workplace Manager"/>
+        <text name="helpLine_wt_mg_p1_open_title"    text="Opening the Manager"/>
+        <text name="helpLine_wt_mg_p1_open_text"     text="Press F4 at any time (even while on shift) to open the Workplace Manager dialog. This is the central hub for viewing and administering all your placed workplaces. It lists every trigger you have created with its name, hourly wage, and current status shown at a glance. The manager can also be opened from the game console by typing wtGui if you prefer."/>
+        <text name="helpLine_wt_mg_p1_list_title"    text="Reading the List"/>
+        <text name="helpLine_wt_mg_p1_list_text"     text="Each row in the list shows the workplace name on the left and the configured hourly wage on the right. If a shift is currently active at a workplace, that row is highlighted. You can scroll through the list if you have many workplaces. Clicking a row selects it, and the Edit and Delete buttons at the bottom of the dialog become available for the selected workplace."/>
+
+        <!-- ── Managing Workplaces, Page 2: Edit and delete ── -->
+        <text name="helpLine_wt_mg_p2_title"           text="Editing and Deleting"/>
+        <text name="helpLine_wt_mg_p2_edit_title"      text="Editing a Workplace"/>
+        <text name="helpLine_wt_mg_p2_edit_text"       text="Select a workplace in the Manager and press Edit to open the Edit dialog for that trigger. You can change the name, adjust the hourly wage, and modify the trigger radius. Changes take effect immediately when you confirm. The map icon label updates instantly to reflect a new name. You can edit a workplace even while a shift is running at it - the new wage will apply to any future shifts but the current shift uses the wage that was set when it started."/>
+        <text name="helpLine_wt_mg_p2_delete_title"    text="Deleting a Workplace"/>
+        <text name="helpLine_wt_mg_p2_delete_text"     text="Select a workplace and press Delete to remove it permanently. If a shift is currently active at that workplace the shift is ended first and you are paid for the time worked before the trigger is removed. The map icon disappears immediately. The floating 3D marker above the workplace location is also removed. Deletion cannot be undone so make sure you have selected the right trigger before confirming. The placeable object itself remains in the world and can be sold separately."/>
+
+        <!-- ── Managing Workplaces, Page 3: Saving ── -->
+        <text name="helpLine_wt_mg_p3_title"          text="Saving and Persistence"/>
+        <text name="helpLine_wt_mg_p3_save_title"     text="Automatic Saving"/>
+        <text name="helpLine_wt_mg_p3_save_text"      text="All workplace data is saved automatically whenever the game saves. This includes every trigger's name, hourly wage, position, and radius. Your HUD panel position and scale are also saved. When you load a save the mod restores all workplaces exactly as you left them including their map icons. You do not need to do anything special to save - just use the normal Save Game option and everything is preserved."/>
+        <text name="helpLine_wt_mg_p3_limit_title"    text="A Note About the Placeable Object"/>
+        <text name="helpLine_wt_mg_p3_limit_text"     text="The Work Trigger Zone you buy from the shop is a standard FS25 placeable. The Workplace Triggers mod manages the shift logic, wages, and UI separately from the placeable object itself. If you sell the placeable from the construction menu the visual marker disappears but the workplace data entry will remain in the Manager until you also delete it there. For a clean removal always delete the trigger from the Manager first, then sell the placeable from the construction menu."/>
+
+        <!-- ── HUD and Settings, Page 1: Panel overview ── -->
+        <text name="helpLine_wt_hd_p1_title"         text="The Shift HUD Panel"/>
+        <text name="helpLine_wt_hd_p1_panel_title"   text="What the Panel Shows"/>
+        <text name="helpLine_wt_hd_p1_panel_text"    text="The shift HUD panel appears automatically when you start a shift and closes when the shift ends. It shows three rows of information: the name of the workplace where you are currently working, the elapsed in-game shift time in hours and minutes, and the total amount earned so far this shift in your farm currency. All three values update in real time every few seconds. If you do not want to see the earnings row you can hide it in the settings menu."/>
+        <text name="helpLine_wt_hd_p1_edit_title"    text="Entering HUD Edit Mode"/>
+        <text name="helpLine_wt_hd_p1_edit_text"     text="Press Left Shift at any time (even when not on shift) to enter HUD Edit Mode. The panel border highlights in yellow and the text EDIT MODE appears above it to confirm you are in edit mode. In this mode the game camera stops rotating when you move the mouse so you can freely interact with the panel. Press Shift again to leave edit mode and return to normal. Your layout changes are saved automatically when you exit edit mode."/>
+
+        <!-- ── HUD and Settings, Page 2: Repositioning ── -->
+        <text name="helpLine_wt_hd_p2_title"           text="Moving and Resizing the HUD"/>
+        <text name="helpLine_wt_hd_p2_drag_title"      text="Moving the Panel"/>
+        <text name="helpLine_wt_hd_p2_drag_text"       text="In HUD Edit Mode, click and drag anywhere on the body of the panel to move it to a new position on screen. The panel snaps to wherever you release the mouse button. You can place it in any corner or along any edge of the screen. The position is stored as a normalised screen coordinate so it stays proportionally placed regardless of your screen resolution or aspect ratio."/>
+        <text name="helpLine_wt_hd_p2_resize_title"    text="Resizing the Panel"/>
+        <text name="helpLine_wt_hd_p2_resize_text"     text="The panel has two resize handles in edit mode. Drag any corner handle to scale the entire panel uniformly - both the size and the text scale together. Drag the left or right edge handle to change only the width of the panel without affecting the height or text size. This lets you widen the panel to show longer workplace names without making the text enormous. Minimum and maximum bounds apply to prevent the panel from becoming unusably small or oversized."/>
+
+        <!-- ── HUD and Settings, Page 3: Settings options ── -->
+        <text name="helpLine_wt_hd_p3_title"           text="Settings Menu Options"/>
+        <text name="helpLine_wt_hd_p3_settings_title"  text="Finding the Settings"/>
+        <text name="helpLine_wt_hd_p3_settings_text"   text="All Workplace Triggers settings are found in the main game Settings screen under the General Settings tab. Scroll down to the Workplace Triggers section. Available options include: toggling the shift HUD panel on or off, adjusting the HUD scale preset, enabling or disabling shift start and end notifications, toggling the earnings row in the HUD, and controlling whether leaving the trigger zone automatically ends your shift. Changes apply immediately without needing to restart."/>
+        <text name="helpLine_wt_hd_p3_mult_title"      text="The Wage Multiplier"/>
+        <text name="helpLine_wt_hd_p3_mult_text"       text="The Wage Multiplier setting is a global factor applied on top of every workplace's configured wage. The available values are 0.5x, 0.75x, 1.0x, 1.25x, 1.5x, and 2.0x. At 1.0x (the default) wages are exactly as configured. At 0.5x every workplace pays half. At 2.0x every workplace pays double. This is useful for quickly tuning the overall income level of the mod to suit your game economy without editing each trigger individually."/>
+
+        <!-- ── Tips and Multiplayer, Page 1: Multiplayer ── -->
+        <text name="helpLine_wt_tp_p1_title"         text="Multiplayer"/>
+        <text name="helpLine_wt_tp_p1_mp_title"      text="Multiplayer Support"/>
+        <text name="helpLine_wt_tp_p1_mp_text"       text="Workplace Triggers supports multiplayer sessions. All placed workplaces are visible on the map for all players in the session. Each player manages their own shifts independently - one player clocking in does not affect another player's shift status. Wages are paid to the individual player's farm account. The placement and configuration of workplaces is managed by the host and changes are reflected for all connected players."/>
+        <text name="helpLine_wt_tp_p1_host_title"    text="Host Authority"/>
+        <text name="helpLine_wt_tp_p1_host_text"     text="The mod uses a host-authoritative design. This means the host controls the game state for workplace data. If you are a client in someone else's session you can start and end shifts at any configured workplace, but creating, editing, or deleting workplaces may require host permission depending on the session settings. The host's save file stores all workplace configurations and these are loaded for all players when the session starts."/>
+
+        <!-- ── Tips and Multiplayer, Page 2: Console commands ── -->
+        <text name="helpLine_wt_tp_p2_title"           text="Console Commands"/>
+        <text name="helpLine_wt_tp_p2_console_title"   text="Opening the Console"/>
+        <text name="helpLine_wt_tp_p2_console_text"    text="The developer console can be opened with the tilde key (~) or grave accent (`) on most keyboards. It is only available when developer mode is active in the game launcher. Console commands are useful for debugging problems, inspecting the current state of the mod, or quickly testing settings. All Workplace Triggers commands start with the prefix wt so they are easy to find by typing wt in the console."/>
+        <text name="helpLine_wt_tp_p2_cmds_title"      text="Available Commands"/>
+        <text name="helpLine_wt_tp_p2_cmds_text"       text="wtHelp - lists all available commands with descriptions. wtStatus - shows whether a shift is currently active, which workplace, how long, and the current earnings. wtList - prints all placed workplaces to the console with their IDs, names, wages, and positions. wtDebug - toggles verbose debug logging on or off, useful for bug reports. wtGui - opens or closes the Workplace Manager dialog from the console."/>
+
+        <!-- ── Tips and Multiplayer, Page 3: Roleplay ideas ── -->
+        <text name="helpLine_wt_tp_p3_title"           text="Roleplay Ideas"/>
+        <text name="helpLine_wt_tp_p3_roleplay_title"  text="Making the Most of the Mod"/>
+        <text name="helpLine_wt_tp_p3_roleplay_text"   text="The mod becomes most immersive when you commit to the roleplay side of it. Set a realistic wage for each job - a minimum wage labourer might earn 150 per hour, a skilled tradesperson 600, and a specialist contractor 1500 or more. Only clock in when your character would realistically be at that location. Combine with other roleplay mods to build a full daily routine for your farmer character beyond just tending the fields."/>
+        <text name="helpLine_wt_tp_p3_ideas_title"     text="Workplace Ideas"/>
+        <text name="helpLine_wt_tp_p3_ideas_text"      text="Here are some ideas to get you started: place a trigger at the gas station and call it Fuel Attendant, put one at a large barn and name it Livestock Caretaker, set one at the grain elevator for Grain Handler, drop one at a road junction for Road Maintenance Crew, or place one at your shop building for Farm Equipment Mechanic. On multiplayer servers each player can have their own set of jobs creating a whole economy of different professions sharing the same map."/>
+
+        <!-- ── About and Credits, Page 1: Version info ── -->
+        <text name="helpLine_wt_ab_p1_title"           text="Version and Author"/>
+        <text name="helpLine_wt_ab_p1_version_title"   text="Current Version"/>
+        <text name="helpLine_wt_ab_p1_version_text"    text="Workplace Triggers version 0.1.0.0 - Early Release. This is an active development project. Features, settings, and save formats may change between versions. When updating to a new version it is always a good idea to take a backup copy of your savegame folder first. If you experience issues after an update the release notes on GitHub will describe any breaking changes and migration steps."/>
+        <text name="helpLine_wt_ab_p1_author_title"    text="Author"/>
+        <text name="helpLine_wt_ab_p1_author_text"     text="Created by TisonK. This mod started as a personal tool for roleplay-oriented gameplay and grew into a full release after positive feedback from the community. The goal has always been to keep it lightweight, save-game safe, and compatible with as many other mods as possible. If you enjoy using it, consider leaving a rating or comment on the mod page - it genuinely helps motivate continued development."/>
+
+        <!-- ── About and Credits, Page 2: GitHub ── -->
+        <text name="helpLine_wt_ab_p2_title"           text="GitHub and Contributions"/>
+        <text name="helpLine_wt_ab_p2_github_title"    text="Source Code and Repository"/>
+        <text name="helpLine_wt_ab_p2_github_text"     text="The full source code for Workplace Triggers is publicly available on GitHub at: github.com/TisonK/FS25_WorkplaceTriggers. The repository contains all Lua source files, the modDesc, translation files, and the complete version history. If you want to inspect how something works, verify what data is saved, or build on top of the mod for your own server or project the code is there for you to read and use under the licence terms."/>
+        <text name="helpLine_wt_ab_p2_contrib_title"   text="Suggestions and Contributions"/>
+        <text name="helpLine_wt_ab_p2_contrib_text"    text="Bug reports, feature requests, and pull requests are all welcome on the GitHub Issues page. When reporting a bug please include your game log file (log.txt from your FarmingSimulator2025 folder), the exact steps to reproduce the problem, and which other mods were active. For feature suggestions open a GitHub Issue with the label enhancement and describe the use case you have in mind. Translation improvements for any supported language are especially appreciated."/>
+
+        <!-- ── About and Credits, Page 3: Licence and thanks ── -->
+        <text name="helpLine_wt_ab_p3_title"           text="Licence and Thanks"/>
+        <text name="helpLine_wt_ab_p3_license_title"   text="Licence"/>
+        <text name="helpLine_wt_ab_p3_license_text"    text="Workplace Triggers is released under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International licence (CC BY-NC-ND 4.0). You are free to include it in modpacks and share it with others provided credit is given to the original author. You may not sell it, monetise it, or publish modified versions without permission. The full licence text is available at creativecommons.org/licenses/by-nc-nd/4.0."/>
+        <text name="helpLine_wt_ab_p3_thanks_title"    text="Special Thanks"/>
+        <text name="helpLine_wt_ab_p3_thanks_text"     text="Thanks to the FS25 modding community for documentation, reference implementations, and feedback that made this mod possible. Special thanks to the authors of NPCFavor for their open and well-commented code which served as a reference for several FS25 API patterns used in this mod. Thanks to everyone who tested early versions and reported bugs - your patience with the rough edges during development is very much appreciated."/>
     </texts>
 </l10n>
