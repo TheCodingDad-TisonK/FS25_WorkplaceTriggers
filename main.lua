@@ -329,7 +329,7 @@ if FSBaseMission and FSBaseMission.update then
         if wtInteractActionEventId == nil then return end
 
         local shouldShow = false
-        local promptText = g_i18n:getText("wt_input_interact") or "[E] Start Shift"
+        local promptText = g_i18n:getText("wt_input_interact") or "Start Shift"
         local isDialogOpen = g_gui:getIsDialogVisible()
 
         if not isDialogOpen and workplaceSystem.triggerManager then
@@ -339,13 +339,13 @@ if FSBaseMission and FSBaseMission.update then
                 if workplaceSystem.shiftTracker and workplaceSystem.shiftTracker:isShiftActive() then
                     local activeName = workplaceSystem.shiftTracker:getActiveWorkplaceName()
                     promptText = string.format(
-                        g_i18n:getText("wt_input_end_shift") or "[E] End Shift at %s",
+                        g_i18n:getText("wt_input_end_shift") or "End Shift at %s",
                         activeName or "Workplace"
                     )
                 else
                     local name = nearbyTrigger.workplaceName or "Workplace"
                     promptText = string.format(
-                        g_i18n:getText("wt_input_start_shift") or "[E] Start Shift at %s",
+                        g_i18n:getText("wt_input_start_shift") or "Start Shift at %s",
                         name
                     )
                 end

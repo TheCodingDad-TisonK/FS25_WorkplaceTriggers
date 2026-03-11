@@ -7,10 +7,10 @@
         <text name="input_WT_HUD_EDIT"       text="Toggle HUD Edit Mode"/>
 
         <!-- E-key prompt strings (dynamic, set via setActionEventText) -->
-        <text name="wt_input_interact"       text="[E] Interact with Workplace"/>
-        <text name="wt_input_start_shift"    text="[E] Start Shift at %s"/>
-        <text name="wt_input_end_shift"      text="[E] End Shift at %s"/>
-        <text name="wt_input_open_menu"      text="[F4] Workplace Manager"/>
+        <text name="wt_input_interact"       text="Interact with Workplace"/>
+        <text name="wt_input_start_shift"    text="Start Shift at %s"/>
+        <text name="wt_input_end_shift"      text="End Shift at %s"/>
+        <text name="wt_input_open_menu"      text="Workplace Manager"/>
         <text name="wt_input_hud_edit"       text="[Shift] HUD Edit Mode"/>
 
         <!-- HUD panel -->

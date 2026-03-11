@@ -110,7 +110,7 @@ end
 -- The second arg is a baseDirectory; for $data paths the engine ignores it and
 -- resolves against its own data root, so an empty string is fine.
 local MARKER_I3D_RAW  = "$data/shared/assets/marker/markerIconUnload.i3d"
-local MARKER_Y_OFFSET = 1.8   -- metres above trigger origin
+local MARKER_Y_OFFSET = 0.5   -- metres above trigger origin
 
 function WorkplaceTriggerManager:spawnMarkerForTrigger(triggerData)
     if triggerData == nil then return end
