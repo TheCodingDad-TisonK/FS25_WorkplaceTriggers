@@ -46,7 +46,30 @@ end
 
 function WorkplaceTriggerManager:initialize()
     self.isInitialized = true
+
+    -- Subscribe to the game setting so markers hide/show when player toggles it
+    if g_messageCenter then
+        g_messageCenter:subscribe(
+            MessageType.SETTING_CHANGED[GameSettings.SETTING.SHOW_TRIGGER_MARKER],
+            self.onTriggerMarkerSettingChanged, self)
+    end
+
     wtLog("Initialized")
+end
+
+function WorkplaceTriggerManager:onTriggerMarkerSettingChanged()
+    local visible = true
+    if g_gameSettings then
+        local ok, v = pcall(function()
+            return g_gameSettings:getValue(GameSettings.SETTING.SHOW_TRIGGER_MARKER)
+        end)
+        if ok and v ~= nil then visible = v end
+    end
+    for _, trigger in ipairs(self.triggers) do
+        if trigger._markerRootNode and trigger._markerRootNode ~= 0 then
+            setVisibility(trigger._markerRootNode, visible)
+        end
+    end
 end
 
 -- =========================================================
@@ -57,15 +80,120 @@ function WorkplaceTriggerManager:registerTrigger(triggerData)
     table.insert(self.triggers, triggerData)
     wtLog(string.format("Registered trigger '%s' (id=%s)",
         triggerData.workplaceName or "?", tostring(triggerData.id)))
+
+    -- Spawn a floating marker i3d at the trigger position (same asset the base game uses)
+    self:spawnMarkerForTrigger(triggerData)
 end
 
 function WorkplaceTriggerManager:deregisterTrigger(triggerId)
     for i = #self.triggers, 1, -1 do
         if self.triggers[i].id == triggerId then
+            -- Clean up the marker node we created
+            self:destroyMarkerForTrigger(self.triggers[i])
             wtLog(string.format("Deregistered trigger id=%s", tostring(triggerId)))
             table.remove(self.triggers, i)
             return
         end
+    end
+end
+
+-- =========================================================
+-- Floating Marker Management
+-- Loads $data/shared/assets/marker/markerIconUnload.i3d async
+-- (the FS25 shared trigger marker used by silos, stations, etc.)
+-- and links it to a transform at the trigger world position.
+--
+-- API used: g_i3DManager:loadSharedI3DFileAsync / releaseSharedI3DFile
+-- (replaces the FS22 streamSharedI3DFile global which is gone in FS25)
+-- =========================================================
+-- Utils.getFilename() must be called at runtime (not load time) to expand $data.
+-- The second arg is a baseDirectory; for $data paths the engine ignores it and
+-- resolves against its own data root, so an empty string is fine.
+local MARKER_I3D_RAW  = "$data/shared/assets/marker/markerIconUnload.i3d"
+local MARKER_Y_OFFSET = 1.8   -- metres above trigger origin
+
+function WorkplaceTriggerManager:spawnMarkerForTrigger(triggerData)
+    if triggerData == nil then return end
+    -- Skip if a marker is already present
+    if triggerData._markerRootNode and triggerData._markerRootNode ~= 0 then return end
+
+    -- Create a world-space root transform at the trigger position
+    local rootNode = createTransformGroup("wt_marker_" .. tostring(triggerData.id))
+    if rootNode == nil or rootNode == 0 then
+        wtLog("spawnMarkerForTrigger: createTransformGroup failed")
+        return
+    end
+
+    local x = triggerData.posX or 0
+    local y = (triggerData.posY or 0) + MARKER_Y_OFFSET
+    local z = triggerData.posZ or 0
+    setWorldTranslation(rootNode, x, y, z)
+
+    if getRootNode then
+        link(getRootNode(), rootNode)
+    end
+
+    triggerData._markerRootNode = rootNode
+
+    -- Async load via the FS25 i3d manager
+    local markerI3D = Utils.getFilename(MARKER_I3D_RAW, "")
+    local sharedLoadRequestId = g_i3DManager:loadSharedI3DFileAsync(
+        markerI3D,
+        false,   -- addPhysics
+        false,   -- asyncCallbackFunction (use method below)
+        self.onMarkerI3DLoaded,
+        self,
+        { triggerData = triggerData }
+    )
+    triggerData._markerLoadRequestId = sharedLoadRequestId
+    triggerData._markerI3DResolved   = markerI3D   -- store for release
+end
+
+function WorkplaceTriggerManager:onMarkerI3DLoaded(i3dNode, failedReason, args)
+    local td = args and args.triggerData
+    if td == nil then return end
+
+    td._markerLoadRequestId = nil
+
+    if i3dNode == nil or i3dNode == 0 then
+        wtLog(string.format("onMarkerI3DLoaded: load failed (reason=%s) for '%s'",
+            tostring(failedReason), tostring(td.workplaceName)))
+        return
+    end
+
+    -- Trigger may have been deleted while the async load was in flight
+    if td._markerRootNode == nil or td._markerRootNode == 0 then
+        g_i3DManager:releaseSharedI3DFile(td._markerI3DResolved or Utils.getFilename(MARKER_I3D_RAW, ""))
+        return
+    end
+
+    link(td._markerRootNode, i3dNode)
+    setTranslation(i3dNode, 0, 0, 0)
+    td._markerI3DNode = i3dNode
+
+    -- Respect the global SHOW_TRIGGER_MARKER setting
+    local visible = true
+    if g_gameSettings then
+        local ok, v = pcall(function()
+            return g_gameSettings:getValue(GameSettings.SETTING.SHOW_TRIGGER_MARKER)
+        end)
+        if ok and v ~= nil then visible = v end
+    end
+    setVisibility(td._markerRootNode, visible)
+
+    wtLog(string.format("Marker loaded for '%s'", tostring(td.workplaceName)))
+end
+
+function WorkplaceTriggerManager:destroyMarkerForTrigger(triggerData)
+    if triggerData == nil then return end
+    -- Setting _markerRootNode to nil before the async callback arrives is enough
+    -- to make onMarkerI3DLoaded bail out safely.
+    triggerData._markerLoadRequestId = nil
+    if triggerData._markerRootNode and triggerData._markerRootNode ~= 0 then
+        delete(triggerData._markerRootNode)   -- deletes root + all linked children
+        triggerData._markerRootNode = nil
+        triggerData._markerI3DNode  = nil
+        g_i3DManager:releaseSharedI3DFile(triggerData._markerI3DResolved or Utils.getFilename(MARKER_I3D_RAW, ""))
     end
 end
 
@@ -258,8 +386,14 @@ end
 -- Cleanup
 -- =========================================================
 function WorkplaceTriggerManager:delete()
-    self.triggers       = {}
+    if g_messageCenter then
+        g_messageCenter:unsubscribeAll(self)
+    end
+    for _, trigger in ipairs(self.triggers) do
+        self:destroyMarkerForTrigger(trigger)
+    end
+    self.triggers        = {}
     self.mapHookInstalled = false
-    self.isInitialized  = false
+    self.isInitialized   = false
     wtLog("Deleted")
 end
