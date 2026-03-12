@@ -88,8 +88,8 @@ function WTDialogLoader.showList(system)
         return false
     end
 
-    -- Force refresh after show in case onOpen already fired before setSystem
-    if inst and inst.refresh then
+    -- onOpen may fire before setSystem is applied on first load; refresh ensures data is visible.
+    if inst and inst.system and inst.refresh then
         inst:refresh()
     end
 

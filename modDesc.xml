@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <modDesc descVersion="105">
     <author>TisonK</author>
-    <version>0.1.0.0</version>
+    <version>1.0.0.0</version>
     <modName>FS25_WorkplaceTriggers</modName>
 
     <title>
@@ -21,16 +21,20 @@ Place a trigger anywhere, name it, set a wage, and earn income while you are on 
 FEATURES:
 - Placeable trigger zones - invisible zones you drop anywhere on any map
 - Custom workplace names - call it Post Office, Feed Mill, or anything you want
-- Hourly wage system - earn income based on real in-game time
+- Flexible pay schedules - Hourly, Flat Rate per shift, or Daily rate
 - Shift tracking HUD - see your active workplace, earnings, and shift time
-- Persistent saves - all triggers, names, and wages survive game reloads
-- Singleplayer and multiplayer (host-authoritative)
+- Workplace manager - full GUI to view, edit, and delete all triggers
+- Persistent saves - all triggers, names, wages, and pay schedules survive reloads
+- Multiplayer-aware - each player tracks their own shifts; earnings go to the shared farm account
+- Optional FS25_NPCFavor integration - working shifts builds relationship with employer NPCs
+- Optional FS25_WorkerCosts integration - shift income is tracked alongside AI worker wages
 
 HOW TO USE:
 1. Buy the Work Trigger from the store (under Objects)
 2. Place it at any location you want to designate as a workplace
-3. Walk into the trigger zone - press [E] to start your shift
-4. Press [E] again to end your shift and collect your wages
+3. Press [F4] to open the Workplace Manager and name it, set a wage and pay schedule
+4. Walk into the trigger zone - press [E] to start your shift
+5. Press [E] again to end your shift and collect your wages
 
 Type wtHelp in the developer console for debug commands.
         ]]></en>

@@ -57,14 +57,18 @@ function WTListDialog:refresh()
 
     -- Title
     if self.titleText then
-        self.titleText:setText(g_i18n:getText("wt_dialog_list_title") or "Workplace Triggers")
+        local titleStr = g_i18n:getText("wt_dialog_list_title")
+        self.titleText:setText((titleStr and titleStr ~= "") and titleStr or "Workplace Triggers")
     end
     if self.subtitleText then
         local sub
         if total == 1 then
-            sub = g_i18n:getText("wt_dialog_list_subtitle_one") or "1 trigger placed"
+            local s = g_i18n:getText("wt_dialog_list_subtitle_one")
+            sub = (s and s ~= "") and s or "1 trigger placed"
         else
-            sub = string.format(g_i18n:getText("wt_dialog_list_subtitle_many") or "%d triggers placed", total)
+            local fmt = g_i18n:getText("wt_dialog_list_subtitle_many")
+            fmt = (fmt and fmt ~= "") and fmt or "%d triggers placed"
+            sub = string.format(fmt, total)
         end
         self.subtitleText:setText(sub)
     end
@@ -89,11 +93,14 @@ function WTListDialog:refresh()
     -- Empty state message
     if self.statusText then
         if total == 0 then
-            self.statusText:setText(g_i18n:getText("wt_dialog_list_empty") or "No triggers placed. Click '+ New Trigger' to add one.")
+            local emptyStr = g_i18n:getText("wt_dialog_list_empty")
+            self.statusText:setText((emptyStr and emptyStr ~= "") and emptyStr or "No triggers placed. Click '+ New Trigger' to add one.")
         else
             local showing = (startIdx == endIdx) and tostring(startIdx)
                 or (tostring(startIdx) .. "-" .. tostring(endIdx))
-            self.statusText:setText(string.format(g_i18n:getText("wt_dialog_list_showing") or "Showing %s of %d", showing, total))
+            local fmt = g_i18n:getText("wt_dialog_list_showing")
+            fmt = (fmt and fmt ~= "") and fmt or "Showing %s of %d"
+            self.statusText:setText(string.format(fmt, showing, total))
         end
     end
 
@@ -149,7 +156,7 @@ function WTListDialog:fillRow(rowNum, trigger)
     local nameEl = show(p .. "name")
     if nameEl then
         local name = trigger.workplaceName or "Workplace"
-        if #name > 24 then name = string.sub(name, 1, 22) .. ".." end
+        if #name > 24 then name = string.sub(name, 1, 21) .. "..." end
         nameEl:setText(name)
     end
 

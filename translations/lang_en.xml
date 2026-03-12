@@ -11,17 +11,18 @@
         <text name="wt_input_start_shift"    text="Start Shift at %s"/>
         <text name="wt_input_end_shift"      text="End Shift at %s"/>
         <text name="wt_input_open_menu"      text="Workplace Manager"/>
-        <text name="wt_input_hud_edit"       text="[Shift] HUD Edit Mode"/>
+        <text name="wt_input_hud_edit"       text="HUD Edit Mode"/>
 
         <!-- HUD panel -->
         <text name="wt_hud_on_shift"         text="ON SHIFT"/>
-        <text name="wt_hud_edit_mode"        text="HUD EDIT MODE"/>
+        <text name="wt_hud_edit_mode"        text="Move/Scale Workplace HUD"/>
         <text name="wt_hud_edit_hint"        text="Drag | Corners=Scale | Edges=Width | Shift=Exit"/>
         <text name="wt_hud_location"         text="Location:"/>
         <text name="wt_hud_time"             text="Time:"/>
         <text name="wt_hud_earned"           text="Earned:"/>
-        <text name="wt_hud_shift_started"    text="Shift started at %s\n$%d/hr"/>
-        <text name="wt_hud_shift_ended"      text="Shift ended\n+$%d earned"/>
+        <text name="wt_hud_shift_started"    text="Shift started at %s | $%d/hr"/>
+        <text name="wt_hud_shift_ended"      text="Shift ended | +$%d earned"/>
+        <text name="wt_hud_shift_abandoned"  text="Shift ended - you left the work area! Only 20%% paid | Always end your shift manually for full pay."/>
 
         <!-- Dialog strings (WTListDialog / WTEditDialog) -->
         <text name="wt_dialog_list_title"        text="Workplace Triggers"/>
@@ -33,6 +34,22 @@
         <text name="wt_dialog_edit_title_edit"   text="Edit Trigger"/>
         <text name="wt_dialog_edit_name_default" text="New Workplace"/>
         <text name="wt_dialog_snap_done"         text="Position snapped to player location."/>
+
+        <!-- Pay schedule labels -->
+        <text name="wt_sched_hourly"   text="Hourly"/>
+        <text name="wt_sched_flat"     text="Flat Rate"/>
+        <text name="wt_sched_daily"    text="Daily"/>
+        <text name="wt_sched_hint_hourly" text="Earns wage x hours worked"/>
+        <text name="wt_sched_hint_flat"   text="Fixed payout at end of shift"/>
+        <text name="wt_sched_hint_daily"  text="Earns wage x in-game days worked"/>
+        <text name="wt_wage_label_hourly" text="Hourly Wage"/>
+        <text name="wt_wage_label_flat"   text="Flat Rate (per shift)"/>
+        <text name="wt_wage_label_daily"  text="Daily Rate"/>
+
+        <!-- Shift history -->
+        <text name="wt_history_title"    text="Shift History"/>
+        <text name="wt_history_empty"    text="No shifts completed yet."/>
+        <text name="wt_history_entry"    text="%s | %.1f hrs | $%d"/>
 
         <!-- Store item -->
         <text name="storePack_wt_title"       text="Workplace Triggers"/>

@@ -1,30 +1,240 @@
 <?xml version="1.0" encoding="utf-8"?>
 <l10n>
     <texts>
+        <!-- Input action descriptions -->
         <text name="input_WT_INTERACT"       text="Schicht beginnen/beenden"/>
+        <text name="input_WT_MENU"           text="Arbeitsplatz-Manager öffnen"/>
+        <text name="input_WT_HUD_EDIT"       text="HUD-Bearbeitungsmodus umschalten"/>
+
+        <!-- E-key prompt strings (dynamic, set via setActionEventText) -->
         <text name="wt_input_interact"       text="[E] Mit Arbeitsplatz interagieren"/>
         <text name="wt_input_start_shift"    text="[E] Schicht beginnen bei %s"/>
         <text name="wt_input_end_shift"      text="[E] Schicht beenden bei %s"/>
+        <text name="wt_input_open_menu"      text="Arbeitsplatz-Manager"/>
+        <text name="wt_input_hud_edit"       text="HUD-Bearbeitungsmodus"/>
+
+        <!-- HUD panel -->
         <text name="wt_hud_on_shift"         text="IM DIENST"/>
+        <text name="wt_hud_edit_mode"        text="Arbeitsplatz-HUD verschieben/skalieren"/>
+        <text name="wt_hud_edit_hint"        text="Ziehen | Ecken=Skalieren | Kanten=Breite | Umschalt=Beenden"/>
         <text name="wt_hud_location"         text="Ort:"/>
         <text name="wt_hud_time"             text="Zeit:"/>
         <text name="wt_hud_earned"           text="Verdient:"/>
         <text name="wt_hud_shift_started"    text="Schicht begonnen bei %s\n$%d/Std"/>
         <text name="wt_hud_shift_ended"      text="Schicht beendet\n+$%d verdient"/>
+        <text name="wt_hud_shift_abandoned"  text="Schicht beendet - Sie haben den Arbeitsbereich verlassen! Nur 20%% bezahlt | Beenden Sie Ihre Schicht immer manuell für volle Bezahlung."/>
+
+        <!-- Dialog strings (WTListDialog / WTEditDialog) -->
+        <text name="wt_dialog_list_title"        text="Arbeitsbereich-Trigger"/>
+        <text name="wt_dialog_list_subtitle_one" text="1 Trigger platziert"/>
+        <text name="wt_dialog_list_subtitle_many" text="%d Trigger platziert"/>
+        <text name="wt_dialog_list_empty"        text="Keine Trigger platziert. Klicken Sie '+ Neuer Trigger', um einen hinzuzufügen."/>
+        <text name="wt_dialog_list_showing"      text="Zeige %s von %d"/>
+        <text name="wt_dialog_edit_title_new"    text="Neuer Arbeitsbereich-Trigger"/>
+        <text name="wt_dialog_edit_title_edit"   text="Trigger bearbeiten"/>
+        <text name="wt_dialog_edit_name_default" text="Neuer Arbeitsbereich"/>
+        <text name="wt_dialog_snap_done"         text="Position an Spielerposition ausgerichtet."/>
+
+        <!-- Pay schedule labels -->
+        <text name="wt_sched_hourly"   text="Stündlich"/>
+        <text name="wt_sched_flat"     text="Pauschale"/>
+        <text name="wt_sched_daily"    text="Täglich"/>
+        <text name="wt_sched_hint_hourly" text="Verdient Lohn × gearbeitete Stunden"/>
+        <text name="wt_sched_hint_flat"   text="Feste Auszahlung am Schichtende"/>
+        <text name="wt_sched_hint_daily"  text="Verdient Lohn × gearbeitete Spieltage"/>
+        <text name="wt_wage_label_hourly" text="Stundenlohn"/>
+        <text name="wt_wage_label_flat"   text="Pauschale (pro Schicht)"/>
+        <text name="wt_wage_label_daily"  text="Tagessatz"/>
+
+        <!-- Shift history -->
+        <text name="wt_history_title"    text="Schichtverlauf"/>
+        <text name="wt_history_empty"    text="Noch keine Schichten absolviert."/>
+        <text name="wt_history_entry"    text="%s | %.1f Std | $%d"/>
+
+        <!-- Store item -->
         <text name="storePack_wt_title"       text="Workplace Triggers"/>
         <text name="wt_store_name"           text="Arbeitsbereich-Trigger"/>
-        <text name="wt_store_desc"           text="Ueberall platzierbar. Betreten Sie den Bereich und druecken Sie [E] um Ihre Schicht zu beginnen."/>
+        <text name="wt_store_desc"           text="Überall platzierbar. Betreten Sie den Bereich und drücken Sie [E] um Ihre Schicht zu beginnen und Einkommen zu verdienen."/>
         <text name="wt_store_function"       text="Bezeichnet einen platzierbaren Arbeitsort mit konfigurierbarem Namen und Stundenlohn"/>
+
+        <!-- Notifications -->
         <text name="wt_notify_shift_started" text="Schicht begonnen bei '%s'"/>
         <text name="wt_notify_shift_ended"   text="Schicht beendet - $%d verdient"/>
         <text name="wt_notify_left_trigger"  text="Sie haben die Arbeitszone verlassen - Schicht beendet"/>
-        <!-- Help Line category titles -->
-        <text name="helpLine_wt_cat_overview"  text="Uebersicht"/>
+
+        <!-- Leave-zone warning overlay -->
+        <text name="wt_warn_title"      text="ZURÜCK ZUM ARBEITSBEREICH"/>
+        <text name="wt_warn_countdown"  text="Schicht wird in %d Sekunden abgebrochen"/>
+        <text name="wt_warn_cancelling" text="Schicht wird abgebrochen..."/>
+
+        <!-- Settings menu (ESC > Settings > General Settings) -->
+        <text name="wt_settings_section"              text="Arbeitsbereich-Trigger"/>
+        <text name="wt_settings_show_hud_short"       text="Schicht-HUD anzeigen"/>
+        <text name="wt_settings_show_hud_long"        text="Zeigt das Schicht-Informationspanel während der Schicht an"/>
+        <text name="wt_settings_hud_scale_short"      text="HUD-Skalierung"/>
+        <text name="wt_settings_hud_scale_long"       text="Größe des Schicht-HUD-Panels auf dem Bildschirm"/>
+        <text name="wt_settings_show_notif_short"     text="Benachrichtigungen anzeigen"/>
+        <text name="wt_settings_show_notif_long"      text="Flash-Meldungen bei Schichtbeginn und -ende anzeigen"/>
+        <text name="wt_settings_wage_mult_short"      text="Lohnmultiplikator"/>
+        <text name="wt_settings_wage_mult_long"       text="Globaler Multiplikator, der auf den Stundenlohn jedes Triggers angewendet wird"/>
+        <text name="wt_settings_end_on_leave_short"   text="Schicht bei Verlassen beenden"/>
+        <text name="wt_settings_end_on_leave_long"    text="Schicht automatisch beenden, wenn Sie die Triggerzone verlassen"/>
+        <text name="wt_settings_show_earnings_short"  text="Verdienst im HUD anzeigen"/>
+        <text name="wt_settings_show_earnings_long"   text="Zeigt die aktuelle Verdienstzeile im Schicht-HUD-Panel an"/>
+        <text name="wt_settings_debug_short"          text="Debug-Modus"/>
+        <text name="wt_settings_debug_long"           text="Zusätzliche Debug-Informationen in der Konsole ausgeben"/>
+
+        <!-- ── Help Line strings ─────────────────────────────── -->
+
+        <!-- Category titles -->
+        <text name="helpLine_wt_cat_overview"  text="Übersicht"/>
         <text name="helpLine_wt_cat_setup"     text="Erste Schritte"/>
         <text name="helpLine_wt_cat_shift"     text="Schicht arbeiten"/>
-        <text name="helpLine_wt_cat_manage"    text="Arbeitsplaetze verwalten"/>
+        <text name="helpLine_wt_cat_manage"    text="Arbeitsplätze verwalten"/>
         <text name="helpLine_wt_cat_hud"       text="HUD und Einstellungen"/>
         <text name="helpLine_wt_cat_tips"      text="Tipps und Mehrspieler"/>
-        <text name="helpLine_wt_cat_about"     text="Ueber und Credits"/>
+        <text name="helpLine_wt_cat_about"     text="Über und Credits"/>
+
+        <!-- ── Overview, Page 1: What is this mod ── -->
+        <text name="helpLine_wt_ov_p1_title"        text="Was sind Workplace Triggers?"/>
+        <text name="helpLine_wt_ov_p1_what_title"   text="Konzept"/>
+        <text name="helpLine_wt_ov_p1_what_text"    text="Workplace Triggers ermöglicht es Ihnen, jeden Ort auf jeder Karte in einen legitimen Job außerhalb des Hofes zu verwandeln. Sie platzieren eine unsichtbare Triggerzone irgendwo in der Welt, geben ihr einen Namen und einen Stundenlohn, gehen hinein und stempeln ein. Während Ihrer Schicht verfolgt der Mod die Spielzeit und zahlt den verdienten Lohn direkt auf Ihr Farmkonto, wenn Sie ausstempeln. Es gibt keine Missionen, keine Lieferungen und keine Fahrzeuge - einfach erscheinen, E drücken und bezahlt werden."/>
+        <text name="helpLine_wt_ov_p1_who_title"    text="Für wen ist es gedacht?"/>
+        <text name="helpLine_wt_ov_p1_who_text"     text="Der Mod ist entwickelt für Rollenspieler, die ihren Bauerncharakter einen Nebenjob ausüben lassen wollen, für Spieler, die ein stetiges Einkommen zu Beginn eines neuen Spielstands wünschen, und für alle, die mehr Leben und Abwechslung in ihre Farming-Welt bringen möchten. Da Trigger überall platziert und frei umbenannt werden können, sind die Möglichkeiten so vielfältig wie Ihre Vorstellungskraft."/>
+
+        <!-- ── Overview, Page 2: How earnings work ── -->
+        <text name="helpLine_wt_ov_p2_title"           text="Wie Verdienst funktioniert"/>
+        <text name="helpLine_wt_ov_p2_concept_title"   text="Spielzeit vs. Echtzeit"/>
+        <text name="helpLine_wt_ov_p2_concept_text"    text="Löhne werden anhand der Spielzeit berechnet, nicht der Echtzeit. Standardmäßig entspricht eine Echtzeit-Sekunde einer Spielzeit-Minute in Farming Simulator, daher dauert eine einstündige Spielschicht 60 Echtzeit-Sekunden. Wenn Sie die Spielzeitgeschwindigkeit in den Einstellungen erhöhen, werden Ihre Schichten schneller ausbezahlt. Der Mod liest die Spielzeitskala automatisch aus, sodass die Zahlen immer das widerspiegeln, was Sie tatsächlich in der Spielwelt erleben."/>
+        <text name="helpLine_wt_ov_p2_money_title"     text="Wohin das Geld geht"/>
+        <text name="helpLine_wt_ov_p2_money_text"      text="Wenn Sie eine Schicht beenden, wird der Gesamtverdienst über das standardmäßige FS25-Finanzsystem Ihrem Farmkonto gutgeschrieben. Es erscheint als positive Transaktion in Ihrer Finanzhistorie unter der Kategorie Einnahmen, ähnlich wie beim Verkauf von Ernten oder dem Abschluss von Verträgen. Im Mehrspielermodus verfolgt jeder Spieler seine eigenen Schichten unabhängig und erhält seine eigene Auszahlung."/>
+
+        <!-- ── Getting Started, Page 1: Buy and place ── -->
+        <text name="helpLine_wt_su_p1_title"         text="Schritt 1 - Kaufen und Platzieren"/>
+        <text name="helpLine_wt_su_p1_buy_title"     text="Den Trigger im Shop finden"/>
+        <text name="helpLine_wt_su_p1_buy_text"      text="Öffnen Sie den Shop (Standardtaste B) und navigieren Sie zur Kategorie Objekte. Suchen Sie nach Arbeitsbereich-Trigger. Das Objekt hat keine laufenden Kosten und kann beliebig oft gekauft werden - eines für jeden Arbeitsplatz, den Sie erstellen möchten. Platzieren Sie es aus Ihrem Baumenu wie jedes andere platzierbare Objekt. Die Triggerzone selbst ist während des normalen Spiels unsichtbar, sodass sie Ihre Karte nicht visuell überladen."/>
+        <text name="helpLine_wt_su_p1_place_title"   text="Einen guten Standort wählen"/>
+        <text name="helpLine_wt_su_p1_place_text"    text="Stellen Sie sich an den Ort, den Sie als Arbeitsplatz bestimmen möchten, bevor Sie platzieren. Der Trigger erscheint an der Position, die Sie in der Platzierungsvorschau wählen. Gute Standorte sind in der Nähe von Gebäuden, die Sie bereits haben, an Straßenkreuzungen, die Sie häufig passieren, neben Lieferpunkten oder überall dort, wo es zur Rollenspiel-Geschichte des Jobs passt. Der Standard-Triggerradius beträgt 4 Meter, also müssen Sie sich innerhalb dieses Kreises befinden, um mit ihm zu interagieren."/>
+
+        <!-- ── Getting Started, Page 2: Configure ── -->
+        <text name="helpLine_wt_su_p2_title"           text="Schritt 2 - Arbeitsplatz konfigurieren"/>
+        <text name="helpLine_wt_su_p2_name_title"      text="Arbeitsplatz benennen"/>
+        <text name="helpLine_wt_su_p2_name_text"       text="Öffnen Sie nach dem Platzieren des Triggers den Arbeitsplatz-Manager mit F4 und wählen Sie Ihren neuen Trigger aus der Liste. Drücken Sie Bearbeiten. Geben Sie einen beliebigen Namen in das Namensfeld ein - Postamt, Futtermühle, Sägewerk, Rathaus, was immer zu Ihrer Geschichte passt. Dieser Name erscheint auf dem Kartensymbol, im Schicht-HUD-Panel während der Arbeit, in den Ein- und Ausstempelaufforderungen und in Ihren Benachrichtigungen."/>
+        <text name="helpLine_wt_su_p2_wage_title"      text="Stundenlohn festlegen"/>
+        <text name="helpLine_wt_su_p2_wage_text"       text="Verwenden Sie die Plus- und Minus-Buttons im Bearbeitungsdialog, um einen Stundenlohn zwischen 0 und 99.999 pro Spielstunde festzulegen. Der Standardwert ist 500. Verwenden Sie den Schrittauswahl, um zu ändern, ob jeder Tastendruck um 10, 100 oder 1.000 auf einmal anpasst. Ein globaler Lohnmultiplikator (0,5x bis 2,0x) ist im Spiel-Einstellungsmenü verfügbar und wird auf jeden Trigger-Lohn angewendet, sodass Sie das Gesamteinkommen anpassen können, ohne jeden Trigger einzeln zu bearbeiten."/>
+        <text name="helpLine_wt_su_p2_radius_title"    text="Triggerradius anpassen"/>
+        <text name="helpLine_wt_su_p2_radius_text"     text="Der Radius bestimmt, wie groß die Arbeitszone ist. Das Minimum beträgt 1 Meter und das Maximum 50 Meter. Ein kleiner Radius (3-5 m) ist gut für einen bestimmten Punkt wie einen Ladentisch. Ein größerer Radius (10-20 m) passt für ein ganzes Gebäude oder Hofgelände. Wenn Sie feststellen, dass Sie die E-Tasten-Aufforderung nicht auslösen können, versuchen Sie, den Radius leicht zu erhöhen. Radiusänderungen werden sofort wirksam, ohne Neustart."/>
+
+        <!-- ── Getting Started, Page 3: Map icon and multi-trigger ── -->
+        <text name="helpLine_wt_su_p3_title"           text="Schritt 3 - Auf der Karte"/>
+        <text name="helpLine_wt_su_p3_map_title"       text="Ihr Arbeitsplatz auf der Karte"/>
+        <text name="helpLine_wt_su_p3_map_text"        text="Jeder platzierte Trigger erhält automatisch ein Kartensymbol - ein farbiges Quadrat mit dem Namen des Arbeitsplatzes darüber. Das Symbol ist grün, wenn der Arbeitsplatz inaktiv ist, und wird gold, während dort eine Schicht aktiv läuft. Sie können alle Ihre Arbeitsplätze auf einen Blick sehen, indem Sie die Vollbildkarte öffnen. Die Symbole erscheinen sowohl auf der Minimap als auch auf der Vollbildkarte und skalieren mit der Kartenzoomstufe."/>
+        <text name="helpLine_wt_su_p3_multi_title"     text="Mehrere Arbeitsplätze"/>
+        <text name="helpLine_wt_su_p3_multi_text"      text="Es gibt keine harte Grenze, wie viele Arbeitsplätze Sie erstellen können. Kaufen und platzieren Sie so viele Arbeitsbereich-Trigger, wie Sie benötigen. Jeder ist völlig unabhängig mit eigenem Namen, Lohn und Radius. Sie können immer nur an einem Arbeitsplatz gleichzeitig im Dienst sein - das Starten einer neuen Schicht beendet automatisch eine aktuell laufende Schicht und zahlt aus, was Sie bisher verdient haben. Alle Arbeitsplätze werden mit Ihrem Spielstand gespeichert und beim Neuladen wiederhergestellt."/>
+
+        <!-- ── Working a Shift, Page 1: Clocking in ── -->
+        <text name="helpLine_wt_sh_p1_title"          text="Einstempeln"/>
+        <text name="helpLine_wt_sh_p1_enter_title"    text="Arbeitszone betreten"/>
+        <text name="helpLine_wt_sh_p1_enter_text"     text="Gehen oder fahren Sie zum Standort Ihres Arbeitsplatzes. Wenn Ihr Charakter den Triggerradius betritt, sehen Sie unten auf dem Bildschirm eine Aktionsaufforderung mit dem Namen des Arbeitsplatzes. Dies bestätigt, dass Sie sich in der Zone befinden und bereit sind zu beginnen. Wenn die Aufforderung nicht erscheint, überprüfen Sie, ob Sie nah genug am Zentrum der Zone stehen, oder erhöhen Sie den Triggerradius im Bearbeitungsdialog."/>
+        <text name="helpLine_wt_sh_p1_start_title"    text="Schicht beginnen"/>
+        <text name="helpLine_wt_sh_p1_start_text"     text="Drücken Sie E (oder Ihre neu belegte Interaktionstaste), während Sie sich in der Zone befinden. Sie hören einen Bestätigungston, eine kurze Benachrichtigung erscheint auf dem Bildschirm, und das Schicht-HUD-Panel öffnet sich in der Ecke des Bildschirms. Das Panel zeigt Ihren Arbeitsplatznamen, die aktuelle Spielzeit und einen Live-Verdienstzähler, der sich mit der Zeit aktualisiert. Ab diesem Moment wird die Spielzeit verfolgt und Löhne werden angesammelt."/>
+
+        <!-- ── Working a Shift, Page 2: During and leaving ── -->
+        <text name="helpLine_wt_sh_p2_title"          text="Während Ihrer Schicht"/>
+        <text name="helpLine_wt_sh_p2_hud_title"      text="Das Schicht-HUD-Panel"/>
+        <text name="helpLine_wt_sh_p2_hud_text"       text="Das HUD-Panel bleibt für die gesamte Dauer Ihrer Schicht in der Ecke des Bildschirms sichtbar. Es zeigt den Namen des Arbeitsplatzes, an dem Sie gerade arbeiten, einen Schicht-Timer, der in Spielstunden und -minuten hochzählt, und den Gesamtbetrag, den Sie bisher in dieser Schicht verdient haben. Sie können das Panel jederzeit verschieben und in der Größe anpassen, indem Sie Umschalt drücken, um in den HUD-Bearbeitungsmodus zu gelangen. Ihre Panel-Position und -Größe werden zwischen Spielsitzungen gespeichert."/>
+        <text name="helpLine_wt_sh_p2_leave_title"    text="Verlassen der Zone während einer Schicht"/>
+        <text name="helpLine_wt_sh_p2_leave_text"     text="Wenn Sie während der Schicht den Triggerradius verlassen, erscheint eine Warnung auf dem Bildschirm mit einem Countdown-Timer. Sie haben eine kurze Gnadenfrist, um zurückzukehren, bevor die Schicht automatisch abgebrochen wird. Wenn Sie rechtzeitig zurückkehren, läuft die Schicht ohne Strafe normal weiter. Wenn der Countdown Null erreicht, endet die Schicht und Sie werden für die bis dahin gearbeitete Zeit bezahlt. Dieses Verhalten kann in den Einstellungen geändert werden - Sie können das automatische Beenden deaktivieren und auch außerhalb der Zone im Dienst bleiben."/>
+
+        <!-- ── Working a Shift, Page 3: Clocking out ── -->
+        <text name="helpLine_wt_sh_p3_title"          text="Ausstempeln"/>
+        <text name="helpLine_wt_sh_p3_end_title"      text="Schicht manuell beenden"/>
+        <text name="helpLine_wt_sh_p3_end_text"       text="Um Ihre Schicht freiwillig zu beenden, stellen Sie sich in die Triggerzone und drücken Sie erneut E. Die Aufforderung lautet jetzt Schicht beenden. Durch Drücken wird der Timer sofort gestoppt, der endgültige Lohn berechnet und auf Ihr Farmkonto eingezahlt. Eine zusammenfassende Benachrichtigung erscheint kurz und zeigt, wie viel Sie verdient haben. Das HUD-Panel schließt sich und das Kartensymbol wird wieder grün. Sie können sofort eine neue Schicht am selben oder einem anderen Arbeitsplatz beginnen."/>
+        <text name="helpLine_wt_sh_p3_pay_title"      text="Wie die Auszahlung berechnet wird"/>
+        <text name="helpLine_wt_sh_p3_pay_text"       text="Die Formel ist einfach: Auszahlung = Stundenlohn des Arbeitsplatzes × Anzahl der gearbeiteten Spielstunden × globaler Lohnmultiplikator aus den Einstellungen. Zum Beispiel: Ein Arbeitsplatz mit 500 pro Stunde, 2 Spielstunden gearbeitet, mit 1,0x Multiplikator zahlt 1.000. Mit 1,5x Multiplikator zahlt dieselbe Schicht 1.500. Bruchteile einer Stunde werden berücksichtigt - eine 30-minütige Schicht bei 500 pro Stunde zahlt 250."/>
+
+        <!-- ── Managing Workplaces, Page 1: The manager ── -->
+        <text name="helpLine_wt_mg_p1_title"         text="Der Arbeitsplatz-Manager"/>
+        <text name="helpLine_wt_mg_p1_open_title"    text="Manager öffnen"/>
+        <text name="helpLine_wt_mg_p1_open_text"     text="Drücken Sie jederzeit F4 (auch während einer Schicht), um den Arbeitsplatz-Manager-Dialog zu öffnen. Dies ist das zentrale Hub für die Ansicht und Verwaltung aller Ihrer platzierten Arbeitsplätze. Es listet jeden erstellten Trigger mit Namen, Stundenlohn und aktuellem Status auf einen Blick auf. Der Manager kann auch über die Spielkonsole durch Eingabe von wtGui geöffnet werden, wenn Sie das bevorzugen."/>
+        <text name="helpLine_wt_mg_p1_list_title"    text="Liste lesen"/>
+        <text name="helpLine_wt_mg_p1_list_text"     text="Jede Zeile in der Liste zeigt links den Arbeitsplatznamen und rechts den konfigurierten Stundenlohn. Wenn an einem Arbeitsplatz gerade eine Schicht aktiv ist, wird diese Zeile hervorgehoben. Sie können durch die Liste scrollen, wenn Sie viele Arbeitsplätze haben. Ein Klick auf eine Zeile wählt sie aus, und die Schaltflächen Bearbeiten und Löschen am unteren Rand des Dialogs werden für den ausgewählten Arbeitsplatz verfügbar."/>
+
+        <!-- ── Managing Workplaces, Page 2: Edit and delete ── -->
+        <text name="helpLine_wt_mg_p2_title"           text="Bearbeiten und Löschen"/>
+        <text name="helpLine_wt_mg_p2_edit_title"      text="Arbeitsplatz bearbeiten"/>
+        <text name="helpLine_wt_mg_p2_edit_text"       text="Wählen Sie einen Arbeitsplatz im Manager aus und drücken Sie Bearbeiten, um den Bearbeitungsdialog für diesen Trigger zu öffnen. Sie können den Namen ändern, den Stundenlohn anpassen und den Triggerradius ändern. Änderungen werden sofort wirksam, wenn Sie sie bestätigen. Die Kartensymbolbeschriftung wird sofort aktualisiert, um einen neuen Namen widerzuspiegeln. Sie können einen Arbeitsplatz sogar bearbeiten, während dort eine Schicht läuft - der neue Lohn gilt für zukünftige Schichten, aber die aktuelle Schicht verwendet den Lohn, der zu Beginn festgelegt war."/>
+        <text name="helpLine_wt_mg_p2_delete_title"    text="Arbeitsplatz löschen"/>
+        <text name="helpLine_wt_mg_p2_delete_text"     text="Wählen Sie einen Arbeitsplatz aus und drücken Sie Löschen, um ihn dauerhaft zu entfernen. Wenn an diesem Arbeitsplatz gerade eine Schicht aktiv ist, wird die Schicht zuerst beendet und Sie werden für die gearbeitete Zeit bezahlt, bevor der Trigger entfernt wird. Das Kartensymbol verschwindet sofort. Die schwebende 3D-Markierung über dem Arbeitsplatzstandort wird ebenfalls entfernt. Das Löschen kann nicht rückgängig gemacht werden, stellen Sie also sicher, dass Sie den richtigen Trigger ausgewählt haben, bevor Sie bestätigen. Das platzierbare Objekt selbst bleibt in der Welt und kann separat verkauft werden."/>
+
+        <!-- ── Managing Workplaces, Page 3: Saving ── -->
+        <text name="helpLine_wt_mg_p3_title"          text="Speichern und Beständigkeit"/>
+        <text name="helpLine_wt_mg_p3_save_title"     text="Automatisches Speichern"/>
+        <text name="helpLine_wt_mg_p3_save_text"      text="Alle Arbeitsplatzdaten werden automatisch gespeichert, wann immer das Spiel speichert. Dies umfasst Namen, Stundenlohn, Position und Radius jedes Triggers. Ihre HUD-Panel-Position und -Skalierung werden ebenfalls gespeichert. Wenn Sie einen Spielstand laden, stellt der Mod alle Arbeitsplätze genau so wieder her, wie Sie sie verlassen haben, einschließlich ihrer Kartensymbole. Sie müssen nichts Besonderes tun, um zu speichern - verwenden Sie einfach die normale Spielstand speichern-Option und alles wird bewahrt."/>
+        <text name="helpLine_wt_mg_p3_limit_title"    text="Hinweis zum platzierbaren Objekt"/>
+        <text name="helpLine_wt_mg_p3_limit_text"     text="Der Arbeitsbereich-Trigger, den Sie im Shop kaufen, ist ein standardmäßiges FS25-platzierbares Objekt. Der Workplace Triggers-Mod verwaltet die Schichtlogik, Löhne und Benutzeroberfläche getrennt vom platzierbaren Objekt selbst. Wenn Sie das platzierbare Objekt aus dem Baumenu verkaufen, verschwindet die visuelle Markierung, aber der Arbeitsplatz-Dateneintrag bleibt im Manager, bis Sie ihn auch dort löschen. Für eine saubere Entfernung löschen Sie immer zuerst den Trigger aus dem Manager, dann verkaufen Sie das platzierbare Objekt aus dem Baumenu."/>
+
+        <!-- ── HUD and Settings, Page 1: Panel overview ── -->
+        <text name="helpLine_wt_hd_p1_title"         text="Das Schicht-HUD-Panel"/>
+        <text name="helpLine_wt_hd_p1_panel_title"   text="Was das Panel anzeigt"/>
+        <text name="helpLine_wt_hd_p1_panel_text"    text="Das Schicht-HUD-Panel erscheint automatisch, wenn Sie eine Schicht beginnen, und schließt sich, wenn die Schicht endet. Es zeigt drei Informationszeilen: den Namen des Arbeitsplatzes, an dem Sie gerade arbeiten, die vergangene Schichtzeit in Spielstunden und -minuten und den Gesamtbetrag, der bisher in dieser Schicht in Ihrer Farmwährung verdient wurde. Alle drei Werte aktualisieren sich in Echtzeit alle paar Sekunden. Wenn Sie die Verdienstzeile nicht sehen möchten, können Sie sie im Einstellungsmenü ausblenden."/>
+        <text name="helpLine_wt_hd_p1_edit_title"    text="HUD-Bearbeitungsmodus aktivieren"/>
+        <text name="helpLine_wt_hd_p1_edit_text"     text="Drücken Sie jederzeit die linke Umschalttaste (auch wenn Sie nicht im Dienst sind), um in den HUD-Bearbeitungsmodus zu gelangen. Der Panel-Rahmen wird gelb hervorgehoben und der Text BEARBEITUNGSMODUS erscheint darüber, um zu bestätigen, dass Sie sich im Bearbeitungsmodus befinden. In diesem Modus stoppt die Spielkamera die Drehung, wenn Sie die Maus bewegen, sodass Sie frei mit dem Panel interagieren können. Drücken Sie erneut Umschalt, um den Bearbeitungsmodus zu verlassen und zum Normalzustand zurückzukehren. Ihre Layoutänderungen werden automatisch gespeichert, wenn Sie den Bearbeitungsmodus verlassen."/>
+
+        <!-- ── HUD and Settings, Page 2: Repositioning ── -->
+        <text name="helpLine_wt_hd_p2_title"           text="HUD verschieben und skalieren"/>
+        <text name="helpLine_wt_hd_p2_drag_title"      text="Panel verschieben"/>
+        <text name="helpLine_wt_hd_p2_drag_text"       text="Im HUD-Bearbeitungsmodus klicken und ziehen Sie irgendwo auf den Körper des Panels, um es an eine neue Position auf dem Bildschirm zu verschieben. Das Panel rastet an der Stelle ein, an der Sie die Maustaste loslassen. Sie können es in jeder Ecke oder entlang jeder Bildschirmkante platzieren. Die Position wird als normalisierte Bildschirmkoordinate gespeichert, sodass es unabhängig von Ihrer Bildschirmauflösung oder Ihrem Seitenverhältnis proportional platziert bleibt."/>
+        <text name="helpLine_wt_hd_p2_resize_title"    text="Panel skalieren"/>
+        <text name="helpLine_wt_hd_p2_resize_text"     text="Das Panel hat im Bearbeitungsmodus zwei Skalierungsgriffe. Ziehen Sie einen Eckgriff, um das gesamte Panel gleichmäßig zu skalieren - sowohl die Größe als auch der Text skalieren zusammen. Ziehen Sie den linken oder rechten Kantengriff, um nur die Breite des Panels zu ändern, ohne die Höhe oder Textgröße zu beeinflussen. Dies ermöglicht es Ihnen, das Panel zu verbreitern, um längere Arbeitsplatznamen anzuzeigen, ohne den Text enorm zu machen. Es gelten Mindest- und Höchstgrenzen, um zu verhindern, dass das Panel unbrauchbar klein oder überdimensioniert wird."/>
+
+        <!-- ── HUD and Settings, Page 3: Settings options ── -->
+        <text name="helpLine_wt_hd_p3_title"           text="Einstellungsmenü-Optionen"/>
+        <text name="helpLine_wt_hd_p3_settings_title"  text="Einstellungen finden"/>
+        <text name="helpLine_wt_hd_p3_settings_text"   text="Alle Workplace Triggers-Einstellungen finden Sie im Haupt-Einstellungsbildschirm des Spiels unter der Registerkarte Allgemeine Einstellungen. Scrollen Sie nach unten zum Abschnitt Arbeitsbereich-Trigger. Verfügbare Optionen umfassen: Ein- oder Ausschalten des Schicht-HUD-Panels, Anpassen der HUD-Skalierungsvoreinstellung, Aktivieren oder Deaktivieren von Benachrichtigungen bei Schichtbeginn und -ende, Ein- oder Ausblenden der Verdienstzeile im HUD und Steuern, ob das Verlassen der Triggerzone Ihre Schicht automatisch beendet. Änderungen werden sofort wirksam, ohne Neustart."/>
+        <text name="helpLine_wt_hd_p3_mult_title"      text="Der Lohnmultiplikator"/>
+        <text name="helpLine_wt_hd_p3_mult_text"       text="Die Lohnmultiplikator-Einstellung ist ein globaler Faktor, der auf den konfigurierten Lohn jedes Arbeitsplatzes angewendet wird. Die verfügbaren Werte sind 0,5x, 0,75x, 1,0x, 1,25x, 1,5x und 2,0x. Bei 1,0x (Standard) sind die Löhne genau wie konfiguriert. Bei 0,5x zahlt jeder Arbeitsplatz die Hälfte. Bei 2,0x zahlt jeder Arbeitsplatz das Doppelte. Dies ist nützlich, um das Gesamteinkommensniveau des Mods schnell an Ihre Spielökonomie anzupassen, ohne jeden Trigger einzeln zu bearbeiten."/>
+
+        <!-- ── Tips and Multiplayer, Page 1: Multiplayer ── -->
+        <text name="helpLine_wt_tp_p1_title"         text="Mehrspieler"/>
+        <text name="helpLine_wt_tp_p1_mp_title"      text="Mehrspieler-Unterstützung"/>
+        <text name="helpLine_wt_tp_p1_mp_text"       text="Workplace Triggers unterstützt Mehrspieler-Sitzungen. Alle platzierten Arbeitsplätze sind auf der Karte für alle Spieler in der Sitzung sichtbar. Jeder Spieler verwaltet seine eigenen Schichten unabhängig - ein Spieler, der einstempelt, beeinflusst nicht den Schichtstatus eines anderen Spielers. Löhne werden auf das individuelle Farmkonto des Spielers ausgezahlt. Die Platzierung und Konfiguration von Arbeitsplätzen wird vom Host verwaltet und Änderungen werden für alle verbundenen Spieler übernommen."/>
+        <text name="helpLine_wt_tp_p1_host_title"    text="Host-Autorität"/>
+        <text name="helpLine_wt_tp_p1_host_text"     text="Der Mod verwendet ein host-autoritatives Design. Dies bedeutet, dass der Host den Spielstatus für Arbeitsplatzdaten steuert. Wenn Sie ein Client in der Sitzung eines anderen sind, können Sie Schichten an jedem konfigurierten Arbeitsplatz beginnen und beenden, aber das Erstellen, Bearbeiten oder Löschen von Arbeitsplätzen kann je nach Sitzungseinstellungen die Berechtigung des Hosts erfordern. Die Speicherdatei des Hosts speichert alle Arbeitsplatzkonfigurationen, und diese werden für alle Spieler geladen, wenn die Sitzung beginnt."/>
+
+        <!-- ── Tips and Multiplayer, Page 2: Console commands ── -->
+        <text name="helpLine_wt_tp_p2_title"           text="Konsolenbefehle"/>
+        <text name="helpLine_wt_tp_p2_console_title"   text="Konsole öffnen"/>
+        <text name="helpLine_wt_tp_p2_console_text"    text="Die Entwicklerkonsole kann mit der Tilde-Taste (~) oder dem Gravis-Akzent (`) auf den meisten Tastaturen geöffnet werden. Sie ist nur verfügbar, wenn der Entwicklermodus im Spiel-Launcher aktiv ist. Konsolenbefehle sind nützlich zum Debuggen von Problemen, zum Inspizieren des aktuellen Zustands des Mods oder zum schnellen Testen von Einstellungen. Alle Workplace Triggers-Befehle beginnen mit dem Präfix wt, sodass sie leicht zu finden sind, indem Sie wt in die Konsole eingeben."/>
+        <text name="helpLine_wt_tp_p2_cmds_title"      text="Verfügbare Befehle"/>
+        <text name="helpLine_wt_tp_p2_cmds_text"       text="wtHelp - listet alle verfügbaren Befehle mit Beschreibungen auf. wtStatus - zeigt an, ob eine Schicht gerade aktiv ist, welcher Arbeitsplatz, wie lange und der aktuelle Verdienst. wtList - gibt alle platzierten Arbeitsplätze mit ihren IDs, Namen, Löhnen und Positionen auf der Konsole aus. wtDebug - schaltet die ausführliche Protokollierung ein oder aus, nützlich für Fehlerberichte. wtGui - öffnet oder schließt den Arbeitsplatz-Manager-Dialog über die Konsole."/>
+
+        <!-- ── Tips and Multiplayer, Page 3: Roleplay ideas ── -->
+        <text name="helpLine_wt_tp_p3_title"           text="Rollenspiel-Ideen"/>
+        <text name="helpLine_wt_tp_p3_roleplay_title"  text="Das Beste aus dem Mod herausholen"/>
+        <text name="helpLine_wt_tp_p3_roleplay_text"   text="Der Mod wird am immersivsten, wenn Sie sich auf die Rollenspiel-Seite einlassen. Setzen Sie einen realistischen Lohn für jeden Job - ein Mindestlohnarbeiter könnte 150 pro Stunde verdienen, ein gelernter Handwerker 600 und ein spezialisierter Auftragnehmer 1500 oder mehr. Stempeln Sie nur ein, wenn Ihr Charakter realistischerweise an diesem Ort wäre. Kombinieren Sie mit anderen Rollenspiel-Mods, um eine vollständige tägliche Routine für Ihren Bauerncharakter aufzubauen, die über die bloße Feldarbeit hinausgeht."/>
+        <text name="helpLine_wt_tp_p3_ideas_title"     text="Arbeitsplatz-Ideen"/>
+        <text name="helpLine_wt_tp_p3_ideas_text"      text="Hier sind einige Ideen für den Einstieg: Platzieren Sie einen Trigger an der Tankstelle und nennen Sie ihn Tankwart, setzen Sie einen an einer großen Scheune und nennen Sie ihn Tierpfleger, stellen Sie einen am Getreidesilo auf für Getreidearbeiter, legen Sie einen an eine Straßenkreuzung für Straßenbauarbeiter oder platzieren Sie einen an Ihrem Werkstattgebäude für Landmaschinenmechaniker. Auf Mehrspieler-Servern kann jeder Spieler seinen eigenen Satz von Jobs haben, wodurch eine ganze Wirtschaft verschiedener Berufe entsteht, die sich dieselbe Karte teilen."/>
+
+        <!-- ── About and Credits, Page 1: Version info ── -->
+        <text name="helpLine_wt_ab_p1_title"           text="Version und Autor"/>
+        <text name="helpLine_wt_ab_p1_version_title"   text="Aktuelle Version"/>
+        <text name="helpLine_wt_ab_p1_version_text"    text="Workplace Triggers Version 0.1.0.0 - Frühe Veröffentlichung. Dies ist ein aktives Entwicklungsprojekt. Funktionen, Einstellungen und Speicherformate können sich zwischen Versionen ändern. Bei der Aktualisierung auf eine neue Version ist es immer eine gute Idee, zuerst eine Sicherungskopie Ihres Spielstandsordners zu erstellen. Wenn Sie nach einem Update Probleme haben, beschreiben die Versionshinweise auf GitHub alle grundlegenden Änderungen und Migrationsschritte."/>
+        <text name="helpLine_wt_ab_p1_author_title"    text="Autor"/>
+        <text name="helpLine_wt_ab_p1_author_text"     text="Erstellt von TisonK. Dieser Mod begann als persönliches Werkzeug für rollenspielorientiertes Gameplay und wuchs nach positivem Feedback aus der Community zu einer vollständigen Veröffentlichung heran. Das Ziel war es immer, ihn leichtgewichtig, spielstandsicher und mit so vielen anderen Mods wie möglich kompatibel zu halten. Wenn Sie ihn gerne nutzen, hinterlassen Sie eine Bewertung oder einen Kommentar auf der Mod-Seite - das hilft wirklich, die weitere Entwicklung zu motivieren."/>
+
+        <!-- ── About and Credits, Page 2: GitHub ── -->
+        <text name="helpLine_wt_ab_p2_title"           text="GitHub und Beiträge"/>
+        <text name="helpLine_wt_ab_p2_github_title"    text="Quellcode und Repository"/>
+        <text name="helpLine_wt_ab_p2_github_text"     text="Der vollständige Quellcode für Workplace Triggers ist öffentlich auf GitHub verfügbar unter: github.com/TisonK/FS25_WorkplaceTriggers. Das Repository enthält alle Lua-Quelldateien, die modDesc, Übersetzungsdateien und die vollständige Versionshistorie. Wenn Sie überprüfen möchten, wie etwas funktioniert, welche Daten gespeichert werden, oder auf dem Mod für Ihren eigenen Server oder Ihr Projekt aufbauen möchten, steht der Code dort unter den Lizenzbedingungen zum Lesen und Verwenden bereit."/>
+        <text name="helpLine_wt_ab_p2_contrib_title"   text="Vorschläge und Beiträge"/>
+        <text name="helpLine_wt_ab_p2_contrib_text"    text="Fehlerberichte, Funktionsanfragen und Pull-Requests sind auf der GitHub Issues-Seite willkommen. Wenn Sie einen Fehler melden, fügen Sie bitte Ihre Spieldatei log.txt aus Ihrem FarmingSimulator2025-Ordner bei, die genauen Schritte zur Reproduktion des Problems und welche anderen Mods aktiv waren. Für Funktionsvorschläge öffnen Sie ein GitHub-Issue mit dem Label enhancement und beschreiben Sie den Anwendungsfall, den Sie im Sinn haben. Übersetzungsverbesserungen für jede unterstützte Sprache sind besonders willkommen."/>
+
+        <!-- ── About and Credits, Page 3: Licence and thanks ── -->
+        <text name="helpLine_wt_ab_p3_title"           text="Lizenz und Danksagungen"/>
+        <text name="helpLine_wt_ab_p3_license_title"   text="Lizenz"/>
+        <text name="helpLine_wt_ab_p3_license_text"    text="Workplace Triggers wird unter der Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Lizenz (CC BY-NC-ND 4.0) veröffentlicht. Sie dürfen es in Modpacks aufnehmen und mit anderen teilen, vorausgesetzt, der ursprüngliche Autor wird genannt. Sie dürfen es nicht verkaufen, monetarisieren oder modifizierte Versionen ohne Erlaubnis veröffentlichen. Der vollständige Lizenztext ist verfügbar unter creativecommons.org/licenses/by-nc-nd/4.0."/>
+        <text name="helpLine_wt_ab_p3_thanks_title"    text="Besonderer Dank"/>
+        <text name="helpLine_wt_ab_p3_thanks_text"     text="Dank an die FS25-Modding-Community für Dokumentation, Referenzimplementierungen und Feedback, die diesen Mod ermöglicht haben. Besonderer Dank gilt den Autoren von NPCFavor für ihren offenen und gut kommentierten Code, der als Referenz für mehrere in diesem Mod verwendete FS25-API-Muster diente. Dank an alle, die frühe Versionen getestet und Fehler gemeldet haben - Ihre Geduld mit den groben Kanten während der Entwicklung wird sehr geschätzt."/>
     </texts>
 </l10n>

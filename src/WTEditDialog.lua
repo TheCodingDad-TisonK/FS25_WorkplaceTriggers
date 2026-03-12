@@ -23,6 +23,7 @@ function WTEditDialog.new(target, custom_mt)
     self.wage        = 500
     self.radius      = 4
     self.wageStep    = 10     -- current wage adjustment step
+    self.paySchedule = WorkplaceShiftTracker.PAY_HOURLY
     self.posX        = 0
     self.posY        = 0
     self.posZ        = 0
@@ -48,6 +49,7 @@ function WTEditDialog:setData(system, trigger, isNew)
         self.wage     = 500
         self.radius   = 4
         self.wageStep = 10
+        self.paySchedule = WorkplaceShiftTracker.PAY_HOURLY
         -- Snap position to player immediately
         self:snapToPlayer()
     else
@@ -58,6 +60,7 @@ function WTEditDialog:setData(system, trigger, isNew)
         self.posY     = trigger.posY or 0
         self.posZ     = trigger.posZ or 0
         self.wageStep = 10
+        self.paySchedule = trigger.paySchedule or WorkplaceShiftTracker.PAY_HOURLY
     end
 end
 
@@ -89,12 +92,14 @@ function WTEditDialog:onOpen()
     if self.titleText then
         local titleKey = self.isNew and "wt_dialog_edit_title_new" or "wt_dialog_edit_title_edit"
         local titleFallback = self.isNew and "New Workplace Trigger" or "Edit Trigger"
-        self.titleText:setText(g_i18n:getText(titleKey) or titleFallback)
+        local titleStr = g_i18n:getText(titleKey)
+        self.titleText:setText((titleStr and titleStr ~= "") and titleStr or titleFallback)
     end
 
     -- Populate name input
     if self.nameInput then
-        local defaultName = g_i18n:getText("wt_dialog_edit_name_default") or "New Workplace"
+        local defaultName = g_i18n:getText("wt_dialog_edit_name_default")
+        defaultName = (defaultName and defaultName ~= "") and defaultName or "New Workplace"
         local name = (self.trigger and self.trigger.workplaceName) or defaultName
         self.nameInput:setText(name)
     end
@@ -104,10 +109,16 @@ function WTEditDialog:onOpen()
         self.statusText:setText("")
     end
 
+    -- Normalise wageStep in case it was left dirty from a previous open
+    if self.wageStep ~= 1 and self.wageStep ~= 10 and self.wageStep ~= 100 then
+        self.wageStep = 10
+    end
+
     self:updateWageDisplay()
     self:updateRadiusDisplay()
     self:updatePosDisplay()
     self:updateStepDisplay()
+    self:updateSchedDisplay()
 end
 
 -- =========================================================
@@ -152,6 +163,93 @@ function WTEditDialog:updateStepDisplay()
             end
         end
     end
+end
+
+-- =========================================================
+-- Pay schedule display + click handlers
+-- =========================================================
+local SCHED_HINT = {
+    [WorkplaceShiftTracker.PAY_HOURLY] = "Earns wage x hours worked",
+    [WorkplaceShiftTracker.PAY_FLAT]   = "Fixed payout at end of shift",
+    [WorkplaceShiftTracker.PAY_DAILY]  = "Earns wage x in-game days worked",
+}
+
+local SCHED_IDS = {
+    WorkplaceShiftTracker.PAY_HOURLY,
+    WorkplaceShiftTracker.PAY_FLAT,
+    WorkplaceShiftTracker.PAY_DAILY,
+}
+
+local SCHED_KEYS = {
+    [WorkplaceShiftTracker.PAY_HOURLY] = "sched",
+    [WorkplaceShiftTracker.PAY_FLAT]   = "schedFlat",
+    [WorkplaceShiftTracker.PAY_DAILY]  = "schedDaily",
+}
+
+function WTEditDialog:updateSchedDisplay()
+    local active = self.paySchedule or WorkplaceShiftTracker.PAY_HOURLY
+
+    local schedBgIds = {
+        [WorkplaceShiftTracker.PAY_HOURLY] = "schedHourlyBg",
+        [WorkplaceShiftTracker.PAY_FLAT]   = "schedFlatBg",
+        [WorkplaceShiftTracker.PAY_DAILY]  = "schedDailyBg",
+    }
+    local schedTxtIds = {
+        [WorkplaceShiftTracker.PAY_HOURLY] = "schedHourlyTxt",
+        [WorkplaceShiftTracker.PAY_FLAT]   = "schedFlatTxt",
+        [WorkplaceShiftTracker.PAY_DAILY]  = "schedDailyTxt",
+    }
+
+    for _, s in ipairs(SCHED_IDS) do
+        local bg  = self[schedBgIds[s]]
+        local txt = self[schedTxtIds[s]]
+        if bg then
+            if s == active then
+                bg:setImageColor(0.18, 0.30, 0.55, 1)
+            else
+                bg:setImageColor(0.10, 0.14, 0.28, 0.9)
+            end
+        end
+        if txt then
+            if s == active then
+                txt:setTextColor(1, 1, 1, 1)
+            else
+                txt:setTextColor(0.65, 0.75, 0.9, 1)
+            end
+        end
+    end
+
+    -- Update wage label to reflect schedule
+    if self.wageLabel then
+        local labels = {
+            [WorkplaceShiftTracker.PAY_HOURLY] = "Hourly Wage",
+            [WorkplaceShiftTracker.PAY_FLAT]   = "Flat Rate (per shift)",
+            [WorkplaceShiftTracker.PAY_DAILY]  = "Daily Rate",
+        }
+        self.wageLabel:setText(labels[active] or "Hourly Wage")
+    end
+
+    if self.schedHintText then
+        self.schedHintText:setText(SCHED_HINT[active] or "")
+    end
+end
+
+function WTEditDialog:onClickSchedHourly()
+    self.paySchedule = WorkplaceShiftTracker.PAY_HOURLY
+    self:updateSchedDisplay()
+    self:updateWageDisplay()
+end
+
+function WTEditDialog:onClickSchedFlat()
+    self.paySchedule = WorkplaceShiftTracker.PAY_FLAT
+    self:updateSchedDisplay()
+    self:updateWageDisplay()
+end
+
+function WTEditDialog:onClickSchedDaily()
+    self.paySchedule = WorkplaceShiftTracker.PAY_DAILY
+    self:updateSchedDisplay()
+    self:updateWageDisplay()
 end
 
 -- =========================================================
@@ -202,7 +300,8 @@ function WTEditDialog:onClickSnap()
     self:snapToPlayer()
     self:updatePosDisplay()
     if self.statusText then
-        self.statusText:setText(g_i18n:getText("wt_dialog_snap_done") or "Position snapped to player location.")
+        local snapMsg = g_i18n:getText("wt_dialog_snap_done")
+        self.statusText:setText((snapMsg and snapMsg ~= "") and snapMsg or "Position snapped to player location.")
     end
 end
 
@@ -234,6 +333,7 @@ function WTEditDialog:onClickSave()
                 workplaceName = name,
                 hourlyWage    = self.wage,
                 triggerRadius = self.radius,
+                paySchedule   = self.paySchedule,
                 posX          = posX,
                 posY          = posY,
                 posZ          = posZ,
@@ -289,6 +389,7 @@ function WTEditDialog:onClickSave()
             t.workplaceName = name
             t.hourlyWage    = self.wage
             t.triggerRadius = self.radius
+            t.paySchedule   = self.paySchedule
             if t.placeableRef then
                 local ref = t.placeableRef
                 if ref.setWorkplaceName then ref:setWorkplaceName(name) end

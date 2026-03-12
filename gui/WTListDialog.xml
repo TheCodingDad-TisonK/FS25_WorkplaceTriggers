@@ -146,8 +146,6 @@
 
         <!-- Bottom button bar: New Trigger | Close -->
         <BoxLayout profile="fs25_dialogButtonBox">
-            <Bitmap profile="wtBtnOkBg"   id="btnNewBg"  />
-            <Text   profile="wtBtnOkText" id="btnNewTxt" text="+ New Trigger"/>
             <Button profile="buttonOK"    id="btnNew"    text="+ New Trigger" onClick="onClickNew"/>
             <Button profile="buttonBack"  id="btnClose"  text="Close"         onClick="onClickClose"/>
         </BoxLayout>
@@ -230,13 +228,13 @@
         <!-- 3-layer Edit button -->
         <Profile name="wtBtnBg" extends="baseReference" with="anchorTopCenter">
             <size value="48px 17px"/>
-            <imageColor value="0.12 0.22 0.42 0.95"/>
+            <imageColor value="0.14 0.30 0.62 1"/>
         </Profile>
         <Profile name="wtBtnText" extends="fs25_textDefault" with="anchorTopCenter">
             <size value="48px 15px"/>
             <textSize value="10px"/>
             <textBold value="true"/>
-            <textColor value="0.7 0.85 1 1"/>
+            <textColor value="1 1 1 1"/>
             <textAlignment value="center"/>
         </Profile>
         <Profile name="wtBtnHit" extends="emptyPanel" with="anchorTopCenter">
@@ -247,7 +245,7 @@
         <!-- 3-layer Delete button -->
         <Profile name="wtBtnDelBg" extends="baseReference" with="anchorTopCenter">
             <size value="48px 17px"/>
-            <imageColor value="0.38 0.08 0.08 0.95"/>
+            <imageColor value="0.58 0.10 0.10 1"/>
         </Profile>
 
         <!-- Scroll buttons -->
@@ -268,13 +266,6 @@
             <textSize value="11px"/>
             <textColor value="0.45 0.55 0.65 1"/>
             <textAlignment value="center"/>
-        </Profile>
-
-        <Profile name="wtBtnOkBg" extends="baseReference" with="anchorTopCenter">
-            <size value="0px 0px"/>
-        </Profile>
-        <Profile name="wtBtnOkText" extends="baseReference" with="anchorTopCenter">
-            <size value="0px 0px"/>
         </Profile>
 
     </GUIProfiles>

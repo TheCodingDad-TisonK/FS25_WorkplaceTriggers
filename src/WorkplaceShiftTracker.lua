@@ -10,6 +10,11 @@
 WorkplaceShiftTracker = {}
 WorkplaceShiftTracker_mt = Class(WorkplaceShiftTracker)
 
+-- Pay schedule types
+WorkplaceShiftTracker.PAY_HOURLY = "hourly"   -- wage * in-game hours elapsed
+WorkplaceShiftTracker.PAY_FLAT   = "flat"     -- fixed amount paid at end of shift
+WorkplaceShiftTracker.PAY_DAILY  = "daily"    -- wage paid once per in-game day worked
+
 -- In-game time multiplier: FS25 default is 1 real second = 1 in-game minute
 -- g_currentMission.missionDuration stores the speed factor.
 -- We calculate real elapsed ms and convert to in-game hours:
@@ -27,9 +32,14 @@ function WorkplaceShiftTracker.new(system)
     self.activeTriggerId   = nil
     self.activeWorkplaceName = nil
     self.activeHourlyWage  = 0
+    self.activePaySchedule = WorkplaceShiftTracker.PAY_HOURLY
     self.shiftStartTime    = nil   -- g_currentMission.time at shift start (ms)
     self.shiftElapsedMs    = 0     -- accumulated ms (updated each frame)
     self.totalEarned       = 0     -- lifetime earnings this session
+
+    -- Shift history log (capped at 50 entries)
+    self.shiftHistory      = {}
+    self.MAX_HISTORY       = 50
 
     self.isInitialized = false
     return self
@@ -57,6 +67,7 @@ function WorkplaceShiftTracker:startShift(trigger)
     self.activeTriggerId     = trigger.id
     self.activeWorkplaceName = trigger.workplaceName or "Workplace"
     self.activeHourlyWage    = trigger.hourlyWage or 500
+    self.activePaySchedule   = trigger.paySchedule or WorkplaceShiftTracker.PAY_HOURLY
     self.shiftStartTime      = self:getCurrentMissionTime()
     self.shiftElapsedMs      = 0
 
@@ -80,6 +91,9 @@ function WorkplaceShiftTracker:endShift()
     wtLog(string.format("Shift ended at '%s' | %.2f hrs | $%d earned",
         self.activeWorkplaceName, elapsedHours, earnings))
 
+    -- Record in history
+    self:recordHistory(self.activeWorkplaceName, elapsedHours, earnings, self.activePaySchedule)
+
     -- Pay the farm
     if earnings > 0 then
         self.system.financeIntegration:addMoney(earnings, self.activeWorkplaceName)
@@ -92,10 +106,75 @@ function WorkplaceShiftTracker:endShift()
         self.system.hud:onShiftEnded(self.activeWorkplaceName, earnings)
     end
 
+    -- Notify integrations
+    local activeTrigger = self.system.triggerManager
+        and self.system.triggerManager:getTriggerById(self.activeTriggerId)
+    if self.system.npcFavorIntegration then
+        self.system.npcFavorIntegration:onShiftCompleted(activeTrigger, elapsedHours)
+    end
+    if self.system.workerCostsInteg then
+        self.system.workerCostsInteg:onShiftCompleted(activeTrigger, earnings)
+    end
+
     -- Reset state
     self.activeTriggerId     = nil
     self.activeWorkplaceName = nil
     self.activeHourlyWage    = 0
+    self.activePaySchedule   = WorkplaceShiftTracker.PAY_HOURLY
+    self.shiftStartTime      = nil
+    self.shiftElapsedMs      = 0
+end
+
+-- =========================================================
+-- Penalty End (player abandoned zone during countdown)
+-- Pays 20% of what would have been earned and notifies player
+-- =========================================================
+WorkplaceShiftTracker.ABANDON_PAY_FRACTION = 0.20  -- 20% payout on abandon
+
+function WorkplaceShiftTracker:endShiftPenalty()
+    if not self:isShiftActive() then
+        wtLog("endShiftPenalty: no active shift")
+        return
+    end
+
+    local fullEarnings = self:getCurrentEarnings()
+    local penaltyPay   = math.floor(fullEarnings * self.ABANDON_PAY_FRACTION)
+    local elapsedHours = self:getElapsedHours()
+
+    wtLog(string.format(
+        "Shift ABANDONED at '%s' | %.2f hrs | full=$%d | penalty pay=$%d (20%%)",
+        self.activeWorkplaceName, elapsedHours, fullEarnings, penaltyPay))
+
+    -- Record in history with the reduced amount
+    self:recordHistory(self.activeWorkplaceName, elapsedHours, penaltyPay, self.activePaySchedule)
+
+    -- Pay only the penalty fraction
+    if penaltyPay > 0 then
+        self.system.financeIntegration:addMoney(penaltyPay, self.activeWorkplaceName)
+    end
+
+    self.totalEarned = self.totalEarned + penaltyPay
+
+    -- Notify HUD with the penalty message
+    if self.system.hud then
+        self.system.hud:onShiftAbandonedPenalty(self.activeWorkplaceName, penaltyPay, fullEarnings)
+    end
+
+    -- Notify integrations (pass reduced earnings)
+    local activeTrigger = self.system.triggerManager
+        and self.system.triggerManager:getTriggerById(self.activeTriggerId)
+    if self.system.npcFavorIntegration then
+        self.system.npcFavorIntegration:onShiftCompleted(activeTrigger, elapsedHours)
+    end
+    if self.system.workerCostsInteg then
+        self.system.workerCostsInteg:onShiftCompleted(activeTrigger, penaltyPay)
+    end
+
+    -- Reset state
+    self.activeTriggerId     = nil
+    self.activeWorkplaceName = nil
+    self.activeHourlyWage    = 0
+    self.activePaySchedule   = WorkplaceShiftTracker.PAY_HOURLY
     self.shiftStartTime      = nil
     self.shiftElapsedMs      = 0
 end
@@ -174,11 +253,11 @@ function WorkplaceShiftTracker:updateZoneCheck(dtSec)
             self.system.hud:showLeaveWarning(self.WARN_GRACE_SECONDS - self.leaveWarnTimer)
         end
         if self.leaveWarnTimer >= self.WARN_GRACE_SECONDS then
-            wtLog("Player left zone too long - auto-ending shift")
+            wtLog("Player left zone too long - auto-ending shift with penalty")
             self.leaveWarnActive = false
             self.leaveWarnTimer  = 0
             if self.system.hud then self.system.hud:hideLeaveWarning() end
-            self:endShift()
+            self:endShiftPenalty()
         end
     end
 end
@@ -205,12 +284,53 @@ function WorkplaceShiftTracker:getElapsedMinutes()
     return self:getElapsedHours() * 60.0
 end
 
--- Returns current shift earnings (wage * in-game hours elapsed * global multiplier)
+-- Returns current shift earnings based on pay schedule
 function WorkplaceShiftTracker:getCurrentEarnings()
     if not self:isShiftActive() then return 0 end
-    local hours = self:getElapsedHours()
     local mult  = (self.system and self.system.settings and self.system.settings.wageMultiplier) or 1.0
-    return math.floor(self.activeHourlyWage * hours * mult)
+    local sched = self.activePaySchedule or WorkplaceShiftTracker.PAY_HOURLY
+
+    if sched == WorkplaceShiftTracker.PAY_FLAT then
+        -- Flat rate: the wage IS the payout, paid in full at end of shift
+        return math.floor(self.activeHourlyWage * mult)
+
+    elseif sched == WorkplaceShiftTracker.PAY_DAILY then
+        -- Daily rate: wage per in-game day (24 in-game hours)
+        local hours = self:getElapsedHours()
+        local days  = hours / 24.0
+        return math.floor(self.activeHourlyWage * days * mult)
+
+    else
+        -- Hourly (default)
+        local hours = self:getElapsedHours()
+        return math.floor(self.activeHourlyWage * hours * mult)
+    end
+end
+
+-- =========================================================
+-- Shift History
+-- =========================================================
+function WorkplaceShiftTracker:recordHistory(name, hours, earned, schedule)
+    local entry = {
+        workplaceName = name or "Workplace",
+        elapsedHours  = hours or 0,
+        earned        = earned or 0,
+        paySchedule   = schedule or WorkplaceShiftTracker.PAY_HOURLY,
+        gameDay       = (g_currentMission and g_currentMission.environment
+                         and g_currentMission.environment.currentDay) or 0,
+    }
+    table.insert(self.shiftHistory, 1, entry)   -- newest first
+    if #self.shiftHistory > self.MAX_HISTORY then
+        table.remove(self.shiftHistory)
+    end
+end
+
+function WorkplaceShiftTracker:getHistory()
+    return self.shiftHistory
+end
+
+function WorkplaceShiftTracker:clearHistory()
+    self.shiftHistory = {}
 end
 
 function WorkplaceShiftTracker:getActiveHourlyWage()

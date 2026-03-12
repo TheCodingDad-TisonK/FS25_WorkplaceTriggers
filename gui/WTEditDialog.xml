@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <!--
     FS25_WorkplaceTriggers - Edit / Create Trigger Dialog
-    Used for both creating new triggers and editing existing ones.
-    Name: TextInput element
-    Wage: +/- buttons (3-layer pattern) with display text
-    Radius: +/- buttons with display text
+    Dialog width: 560px. Content anchor = top-center, X=0 is dialog center.
+    Safe horizontal range: approx -240px to +240px.
+
+    Layout (Y from top, increases downward):
+      -12   Title text
+      -32   Divider line
+      -44   "Workplace Name" section label
+      -62   Name TextInput (460px, centered)
+      -90   "Hourly Wage" section label
+      -110  Wage row: -60 [-]  0 [value]  +60 [+]
+      -130  "Step:" label
+      -144  Step buttons: -50 / 0 / +50
+      -164  "Trigger Radius" section label
+      -182  Radius row: -60 [-]  0 [value]  +60 [+]
+      -202  Divider
+      -216  Position text (centered)
+      -238  Snap button (centered)
+      -258  Status text
 -->
 <GUI onOpen="onOpen" onClose="wtOnClose" onCreate="onCreate">
     <GuiElement profile="newLayer" />
     <Bitmap profile="dialogFullscreenBg" id="dialogBg" />
 
-    <GuiElement profile="dialogBg" id="dialogElement" size="600px 420px">
+    <GuiElement profile="dialogBg" id="dialogElement" size="560px 500px">
         <ThreePartBitmap profile="fs25_dialogBgMiddle" />
         <ThreePartBitmap profile="fs25_dialogBgTop" />
         <ThreePartBitmap profile="fs25_dialogBgBottom" />
@@ -18,55 +32,83 @@
         <GuiElement profile="fs25_dialogContentContainer">
 
             <!-- Title -->
-            <Text profile="wtEditTitle" id="titleText" position="0px -12px" text="Edit Trigger"/>
-            <Bitmap profile="wtEditDivider" position="0px -34px"/>
+            <Text   profile="wtEditTitle"   id="titleText" position="0px -12px" text=""/>
+            <Bitmap profile="wtEditDivider"                position="0px -32px"/>
 
-            <!-- NAME FIELD -->
-            <Text profile="wtEditLabel" position="-220px -42px" text="Workplace Name:"/>
-            <TextInput profile="wtNameInput" id="nameInput" position="0px -58px"
-                onEnterPress="onClickSave"/>
+            <!-- NAME -->
+            <Text      profile="wtSectionLabel"                position="0px -44px"  text="Workplace Name"/>
+            <TextInput profile="wtNameInput"    id="nameInput" position="0px -62px"
+                       onEnterPress="onClickSave"/>
 
-            <!-- WAGE ROW -->
-            <Text profile="wtEditLabel" position="-220px -88px" text="Hourly Wage:"/>
-            <Bitmap profile="wtAdjBtnBg"   id="wageDecBg"  position="-80px -104px"/>
-            <Text   profile="wtAdjBtnText" id="wageDecTxt" position="-80px -105px" text="-"/>
-            <Button profile="wtAdjBtnHit"  id="wageDec"    position="-80px -104px" onClick="onClickWageDec"/>
-            <Text profile="wtValueText" id="wageText" position="0px -104px" text="$500/hr"/>
-            <Bitmap profile="wtAdjBtnBg"   id="wageIncBg"  position="80px -104px"/>
-            <Text   profile="wtAdjBtnText" id="wageIncTxt" position="80px -105px" text="+"/>
-            <Button profile="wtAdjBtnHit"  id="wageInc"    position="80px -104px" onClick="onClickWageInc"/>
+            <!-- WAGE -->
+            <Text profile="wtSectionLabel" position="0px -90px" text="Hourly Wage"/>
 
-            <!-- Wage step selector: x1, x10, x100 -->
-            <Text profile="wtHintText" position="0px -124px" text="Step:"/>
-            <Bitmap profile="wtStepBg"   id="step1bg"  position="-55px -136px"/>
-            <Text   profile="wtStepText" id="step1txt" position="-55px -137px" text="1"/>
-            <Button profile="wtStepHit"  id="step1"    position="-55px -136px" onClick="onClickStep1"/>
-            <Bitmap profile="wtStepBg"   id="step10bg"  position="0px -136px"/>
-            <Text   profile="wtStepText" id="step10txt" position="0px -137px" text="10"/>
-            <Button profile="wtStepHit"  id="step10"    position="0px -136px" onClick="onClickStep10"/>
-            <Bitmap profile="wtStepBg"   id="step100bg"  position="55px -136px"/>
-            <Text   profile="wtStepText" id="step100txt" position="55px -137px" text="100"/>
-            <Button profile="wtStepHit"  id="step100"    position="55px -136px" onClick="onClickStep100"/>
+            <Bitmap profile="wtAdjBtnBg"   id="wageDecBg"  position="-60px -110px"/>
+            <Text   profile="wtAdjBtnText" id="wageDecTxt" position="-60px -111px" text="-"/>
+            <Button profile="wtAdjBtnHit"  id="wageDec"    position="-60px -110px" onClick="onClickWageDec"/>
 
-            <!-- RADIUS ROW -->
-            <Text profile="wtEditLabel" position="-220px -158px" text="Trigger Radius (m):"/>
-            <Bitmap profile="wtAdjBtnBg"   id="radDecBg"  position="-80px -174px"/>
-            <Text   profile="wtAdjBtnText" id="radDecTxt" position="-80px -175px" text="-"/>
-            <Button profile="wtAdjBtnHit"  id="radDec"    position="-80px -174px" onClick="onClickRadDec"/>
-            <Text profile="wtValueText" id="radText" position="0px -174px" text="4 m"/>
-            <Bitmap profile="wtAdjBtnBg"   id="radIncBg"  position="80px -174px"/>
-            <Text   profile="wtAdjBtnText" id="radIncTxt" position="80px -175px" text="+"/>
-            <Button profile="wtAdjBtnHit"  id="radInc"    position="80px -174px" onClick="onClickRadInc"/>
+            <Text profile="wtValueText" id="wageText" position="0px -110px" text="$500/hr"/>
 
-            <!-- POSITION display -->
-            <Bitmap profile="wtEditDivider" position="0px -196px"/>
-            <Text profile="wtHintText" id="posText"    position="0px -206px" text="Position: X=0 Z=0"/>
-            <Bitmap profile="wtSnapBg"   id="snapBg"  position="220px -204px"/>
-            <Text   profile="wtSnapText" id="snapTxt" position="220px -205px" text="Snap to Player"/>
-            <Button profile="wtSnapHit"  id="snapBtn" position="220px -204px" onClick="onClickSnap"/>
+            <Bitmap profile="wtAdjBtnBg"   id="wageIncBg"  position="60px -110px"/>
+            <Text   profile="wtAdjBtnText" id="wageIncTxt" position="60px -111px" text="+"/>
+            <Button profile="wtAdjBtnHit"  id="wageInc"    position="60px -110px" onClick="onClickWageInc"/>
 
-            <!-- Status line -->
-            <Text profile="wtStatusText" id="statusText" position="0px -226px" text=""/>
+            <!-- Step selector -->
+            <Text profile="wtStepCaption" position="0px -130px" text="Step:"/>
+
+            <Bitmap profile="wtStepBg"   id="step1bg"   position="-50px -144px"/>
+            <Text   profile="wtStepText" id="step1txt"  position="-50px -145px" text="x1"/>
+            <Button profile="wtStepHit"  id="step1"     position="-50px -144px" onClick="onClickStep1"/>
+
+            <Bitmap profile="wtStepBg"   id="step10bg"  position="0px -144px"/>
+            <Text   profile="wtStepText" id="step10txt" position="0px -145px"   text="x10"/>
+            <Button profile="wtStepHit"  id="step10"    position="0px -144px"   onClick="onClickStep10"/>
+
+            <Bitmap profile="wtStepBg"   id="step100bg"  position="50px -144px"/>
+            <Text   profile="wtStepText" id="step100txt" position="50px -145px"  text="x100"/>
+            <Button profile="wtStepHit"  id="step100"    position="50px -144px"  onClick="onClickStep100"/>
+
+            <!-- RADIUS -->
+            <Text profile="wtSectionLabel" position="0px -164px" text="Trigger Radius"/>
+
+            <Bitmap profile="wtAdjBtnBg"   id="radDecBg"  position="-60px -182px"/>
+            <Text   profile="wtAdjBtnText" id="radDecTxt" position="-60px -183px" text="-"/>
+            <Button profile="wtAdjBtnHit"  id="radDec"    position="-60px -182px" onClick="onClickRadDec"/>
+
+            <Text profile="wtValueText" id="radText" position="0px -182px" text="4 m"/>
+
+            <Bitmap profile="wtAdjBtnBg"   id="radIncBg"  position="60px -182px"/>
+            <Text   profile="wtAdjBtnText" id="radIncTxt" position="60px -183px" text="+"/>
+            <Button profile="wtAdjBtnHit"  id="radInc"    position="60px -182px" onClick="onClickRadInc"/>
+
+            <!-- PAY SCHEDULE -->
+            <Text profile="wtSectionLabel" position="0px -205px" text="Pay Schedule"/>
+
+            <Bitmap profile="wtSchedBg"   id="schedHourlyBg"  position="-90px -220px"/>
+            <Text   profile="wtSchedText" id="schedHourlyTxt" position="-90px -221px" text="Hourly"/>
+            <Button profile="wtSchedHit"  id="schedHourly"    position="-90px -220px" onClick="onClickSchedHourly"/>
+
+            <Bitmap profile="wtSchedBg"   id="schedFlatBg"  position="0px -220px"/>
+            <Text   profile="wtSchedText" id="schedFlatTxt" position="0px -221px"   text="Flat Rate"/>
+            <Button profile="wtSchedHit"  id="schedFlat"    position="0px -220px"   onClick="onClickSchedFlat"/>
+
+            <Bitmap profile="wtSchedBg"   id="schedDailyBg"  position="90px -220px"/>
+            <Text   profile="wtSchedText" id="schedDailyTxt" position="90px -221px"  text="Daily"/>
+            <Button profile="wtSchedHit"  id="schedDaily"    position="90px -220px"  onClick="onClickSchedDaily"/>
+
+            <Text profile="wtSchedHint" id="schedHintText" position="0px -238px" text=""/>
+
+            <!-- POSITION + SNAP -->
+            <Bitmap profile="wtEditDivider" position="0px -252px"/>
+
+            <Text profile="wtPosText" id="posText" position="0px -266px" text="Position: X=0  Z=0"/>
+
+            <Bitmap profile="wtSnapBg"   id="snapBg"  position="0px -284px"/>
+            <Text   profile="wtSnapText" id="snapTxt" position="0px -285px" text="Snap to Player Position"/>
+            <Button profile="wtSnapHit"  id="snapBtn" position="0px -284px" onClick="onClickSnap"/>
+
+            <!-- Status -->
+            <Text profile="wtStatusText" id="statusText" position="0px -306px" text=""/>
 
         </GuiElement>
 
@@ -81,7 +123,7 @@
         <Profile name="fs25_guiElement" extends="baseReference"/>
 
         <Profile name="wtEditTitle" extends="fs25_textDefault" with="anchorTopCenter">
-            <size value="560px 22px"/>
+            <size value="500px 24px"/>
             <textSize value="18px"/>
             <textBold value="true"/>
             <textColor value="1 1 1 1"/>
@@ -89,63 +131,69 @@
         </Profile>
 
         <Profile name="wtEditDivider" extends="baseReference" with="anchorTopCenter">
-            <size value="560px 1px"/>
-            <imageColor value="0.28 0.38 0.55 0.8"/>
+            <size value="500px 1px"/>
+            <imageColor value="0.28 0.38 0.55 0.7"/>
         </Profile>
 
-        <Profile name="wtEditLabel" extends="fs25_textDefault" with="anchorTopCenter">
-            <size value="200px 16px"/>
-            <textSize value="13px"/>
-            <textColor value="0.82 0.82 0.82 1"/>
-            <textAlignment value="left"/>
+        <!-- Section caption: centred, subdued blue-grey -->
+        <Profile name="wtSectionLabel" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="500px 14px"/>
+            <textSize value="11px"/>
+            <textBold value="false"/>
+            <textColor value="0.55 0.65 0.82 1"/>
+            <textAlignment value="center"/>
         </Profile>
 
         <Profile name="wtNameInput" extends="fs25_textInput" with="anchorTopCenter">
-            <size value="480px 22px"/>
+            <size value="460px 24px"/>
         </Profile>
 
-        <!-- Adjust +/- button (3-layer) -->
+        <!-- +/- button bg: rich blue -->
         <Profile name="wtAdjBtnBg" extends="baseReference" with="anchorTopCenter">
-            <size value="36px 18px"/>
-            <imageColor value="0.12 0.22 0.42 0.95"/>
+            <size value="40px 22px"/>
+            <imageColor value="0.14 0.26 0.50 1"/>
         </Profile>
+        <!-- +/- label: pure white for maximum legibility -->
         <Profile name="wtAdjBtnText" extends="fs25_textDefault" with="anchorTopCenter">
-            <size value="36px 16px"/>
-            <textSize value="14px"/>
+            <size value="40px 20px"/>
+            <textSize value="16px"/>
             <textBold value="true"/>
-            <textColor value="0.7 0.85 1 1"/>
+            <textColor value="1 1 1 1"/>
             <textAlignment value="center"/>
         </Profile>
         <Profile name="wtAdjBtnHit" extends="emptyPanel" with="anchorTopCenter">
-            <size value="36px 18px"/>
+            <size value="40px 22px"/>
             <isFocusable value="true"/>
         </Profile>
 
+        <!-- Value display: bright green -->
         <Profile name="wtValueText" extends="fs25_textDefault" with="anchorTopCenter">
-            <size value="120px 18px"/>
-            <textSize value="14px"/>
+            <size value="100px 22px"/>
+            <textSize value="15px"/>
             <textBold value="true"/>
-            <textColor value="0.35 0.88 0.42 1"/>
+            <textColor value="0.35 0.90 0.45 1"/>
             <textAlignment value="center"/>
         </Profile>
 
-        <Profile name="wtHintText" extends="fs25_textDefault" with="anchorTopCenter">
-            <size value="400px 14px"/>
-            <textSize value="11px"/>
-            <textColor value="0.5 0.55 0.65 1"/>
+        <!-- "Step:" caption: very muted -->
+        <Profile name="wtStepCaption" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="400px 12px"/>
+            <textSize value="10px"/>
+            <textColor value="0.40 0.46 0.58 1"/>
             <textAlignment value="center"/>
         </Profile>
 
-        <!-- Step selector (3-layer) -->
+        <!-- Step button bg: dark slate (inactive) -->
         <Profile name="wtStepBg" extends="baseReference" with="anchorTopCenter">
             <size value="44px 16px"/>
-            <imageColor value="0.10 0.15 0.28 0.9"/>
+            <imageColor value="0.10 0.14 0.28 1"/>
         </Profile>
+        <!-- Step label: pale blue -->
         <Profile name="wtStepText" extends="fs25_textDefault" with="anchorTopCenter">
             <size value="44px 14px"/>
-            <textSize value="11px"/>
+            <textSize value="10px"/>
             <textBold value="true"/>
-            <textColor value="0.65 0.75 0.9 1"/>
+            <textColor value="0.70 0.80 0.95 1"/>
             <textAlignment value="center"/>
         </Profile>
         <Profile name="wtStepHit" extends="emptyPanel" with="anchorTopCenter">
@@ -153,27 +201,59 @@
             <isFocusable value="true"/>
         </Profile>
 
-        <!-- Snap button (3-layer) -->
+        <!-- Position display: muted grey -->
+        <Profile name="wtPosText" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="500px 14px"/>
+            <textSize value="11px"/>
+            <textColor value="0.52 0.60 0.72 1"/>
+            <textAlignment value="center"/>
+        </Profile>
+
+        <!-- Snap button: amber/gold, centered, wider -->
         <Profile name="wtSnapBg" extends="baseReference" with="anchorTopCenter">
-            <size value="130px 18px"/>
-            <imageColor value="0.30 0.22 0.05 0.95"/>
+            <size value="210px 18px"/>
+            <imageColor value="0.30 0.20 0.03 1"/>
         </Profile>
         <Profile name="wtSnapText" extends="fs25_textDefault" with="anchorTopCenter">
-            <size value="130px 16px"/>
+            <size value="210px 16px"/>
             <textSize value="10px"/>
             <textBold value="true"/>
-            <textColor value="1 0.85 0.4 1"/>
+            <textColor value="1.0 0.84 0.28 1"/>
             <textAlignment value="center"/>
         </Profile>
         <Profile name="wtSnapHit" extends="emptyPanel" with="anchorTopCenter">
-            <size value="130px 18px"/>
+            <size value="210px 18px"/>
             <isFocusable value="true"/>
         </Profile>
 
+        <!-- Status / feedback: bright green -->
         <Profile name="wtStatusText" extends="fs25_textDefault" with="anchorTopCenter">
-            <size value="560px 16px"/>
-            <textSize value="11px"/>
-            <textColor value="0.5 0.88 0.5 1"/>
+            <size value="500px 14px"/>
+            <textSize value="10px"/>
+            <textColor value="0.38 0.92 0.50 1"/>
+            <textAlignment value="center"/>
+        </Profile>
+
+        <!-- Pay schedule toggle buttons -->
+        <Profile name="wtSchedBg" extends="baseReference" with="anchorTopCenter">
+            <size value="80px 16px"/>
+            <imageColor value="0.10 0.14 0.28 1"/>
+        </Profile>
+        <Profile name="wtSchedText" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="80px 14px"/>
+            <textSize value="10px"/>
+            <textBold value="true"/>
+            <textColor value="0.70 0.80 0.95 1"/>
+            <textAlignment value="center"/>
+        </Profile>
+        <Profile name="wtSchedHit" extends="emptyPanel" with="anchorTopCenter">
+            <size value="80px 16px"/>
+            <isFocusable value="true"/>
+        </Profile>
+        <Profile name="wtSchedHint" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="480px 13px"/>
+            <textSize value="10px"/>
+            <textColor value="0.48 0.56 0.70 1"/>
             <textAlignment value="center"/>
         </Profile>
 

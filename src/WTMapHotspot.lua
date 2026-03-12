@@ -13,10 +13,10 @@
 -- directly, bypassing the filter entirely.
 --
 -- Each WTMapHotspot owns:
---   • A coloured icon Overlay (mod's icon_wt.png, or fallback
+--   - A coloured icon Overlay (mod's icon_wt.png, or fallback
 --     to a plain-colour tile with "W")
---   • A name-label drawn via renderText above the icon
---   • Green tint = idle, Gold tint = shift active
+--   - A name-label drawn via renderText above the icon
+--   - Green tint = idle, Gold tint = shift active
 --
 -- The hook is installed once from WorkplaceTriggerManager
 -- after loadMission00Finished fires.  Each frame it iterates
@@ -27,7 +27,7 @@
 WTMapHotspot = {}
 WTMapHotspot_mt = Class(WTMapHotspot)   -- gives instances isa()
 
--- ── Size constants (normalised screen units) ─────────────
+-- Size constants (normalised screen units)
 WTMapHotspot.ICON_W    = 0.018   -- icon width
 WTMapHotspot.ICON_H    = 0.018   -- icon height (square)
 WTMapHotspot.TEXT_SIZE = 0.009   -- label height
@@ -41,7 +41,7 @@ WTMapHotspot.C_IDLE_TXT  = {0.85, 1.00, 0.88, 0.95}   -- label
 WTMapHotspot.C_ACT       = {1.00, 0.75, 0.10, 1.00}
 WTMapHotspot.C_ACT_TXT   = {1.00, 0.96, 0.70, 0.98}
 
--- ── Constructor ─────────────────────────────────────────
+-- Constructor
 function WTMapHotspot.new(modDirectory)
     local self = setmetatable({}, WTMapHotspot_mt)
     self.modDirectory   = modDirectory or ""
@@ -68,7 +68,7 @@ function WTMapHotspot:setIsActive(active)
     self.isActive = active == true
 end
 
--- ── Overlay lazy init ────────────────────────────────────
+-- Overlay lazy init
 function WTMapHotspot:ensureOverlays()
     if self._overlaysReady then return end
     self._overlaysReady = true
@@ -94,7 +94,7 @@ function WTMapHotspot:ensureOverlays()
     end
 end
 
--- ── Delete ───────────────────────────────────────────────
+-- Delete
 function WTMapHotspot:delete()
     if self._iconOverlay then
         self._iconOverlay:delete()
@@ -106,7 +106,7 @@ function WTMapHotspot:delete()
     end
 end
 
--- ── Draw on map (called every frame from the hook) ───────
+-- Draw on map (called every frame from the hook)
 -- map = the IngameMap instance passed to drawFields
 function WTMapHotspot:drawOnMap(map)
     if not map or not map.layout then return end
