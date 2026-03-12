@@ -11,11 +11,20 @@
         <text name="wt_hud_earned"           text="Verdiend:"/>
         <text name="wt_hud_shift_started"    text="Dienst begonnen bij %s\n$%d/uur"/>
         <text name="wt_hud_shift_ended"      text="Dienst beeindigd\n+$%d verdiend"/>
+        <text name="storePack_wt_title"       text="Workplace Triggers"/>
         <text name="wt_store_name"           text="Werkplek trigger zone"/>
         <text name="wt_store_desc"           text="Plaatsbaar overal. Loop de zone in en druk [E] om je dienst te beginnen en inkomen te verdienen."/>
         <text name="wt_store_function"       text="Wijst een plaatsbare werklocatie aan met instelbare naam en uurloon"/>
         <text name="wt_notify_shift_started" text="Dienst begonnen bij '%s'"/>
         <text name="wt_notify_shift_ended"   text="Dienst beeindigd - $%d verdiend"/>
         <text name="wt_notify_left_trigger"  text="Je hebt de werkzone verlaten - dienst beeindigd"/>
+        <!-- Help Line category titles -->
+        <text name="helpLine_wt_cat_overview"  text="Overzicht"/>
+        <text name="helpLine_wt_cat_setup"     text="Aan de slag"/>
+        <text name="helpLine_wt_cat_shift"     text="Een dienst werken"/>
+        <text name="helpLine_wt_cat_manage"    text="Werkplekken beheren"/>
+        <text name="helpLine_wt_cat_hud"       text="HUD en instellingen"/>
+        <text name="helpLine_wt_cat_tips"      text="Tips en multiplayer"/>
+        <text name="helpLine_wt_cat_about"     text="Over en credits"/>
     </texts>
 </l10n>

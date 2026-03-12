@@ -117,7 +117,7 @@ function WorkTriggerPlaceable.onLoad(self, savegame)
     -- Register with system
     if g_WorkplaceSystem and g_WorkplaceSystem.triggerManager then
         if g_WorkplaceSystem.saveLoad then
-            -- For saved placeables: restore name/wage by id
+            -- For saved placeables: restore name/wage/radius by id
             g_WorkplaceSystem.saveLoad:applyPendingRestore(triggerData)
             -- For GUI-spawned placeables (new, no saved id match): pop the create queue
             -- savegame == nil means this is a fresh placement, not a load
@@ -132,6 +132,11 @@ function WorkTriggerPlaceable.onLoad(self, savegame)
                     self.triggerRadius        = pending.triggerRadius
                     wtLog(string.format("Applied pending create config: '%s' $%d/hr", pending.workplaceName, pending.hourlyWage))
                 end
+            end
+            -- Re-scale ground ring to match restored radius (was scaled to default before restore)
+            if self._groundRingNode and self._groundRingNode ~= 0 then
+                local s = triggerData.triggerRadius or self.triggerRadius
+                setScale(self._groundRingNode, s, 1.0, s)
             end
         end
         g_WorkplaceSystem.triggerManager:registerTrigger(triggerData)
@@ -172,15 +177,8 @@ function WorkTriggerPlaceable:onTriggerCallback(triggerId, otherId, onEnter, onL
             self._triggerData.playerInside = false
         end
         wtLog(string.format("Player left trigger '%s'", self.workplaceName))
-
-        -- If player leaves during an active shift at this trigger, end it
-        if g_WorkplaceSystem and g_WorkplaceSystem.shiftTracker then
-            local tracker = g_WorkplaceSystem.shiftTracker
-            if tracker:isShiftActive() and tracker.activeTriggerId == tostring(self.id) then
-                wtLog("Player left during active shift - ending shift")
-                tracker:endShift()
-            end
-        end
+        -- Grace period and endShiftOnLeave are handled by WorkplaceShiftTracker:updateZoneCheck().
+        -- Do NOT call endShift() here - that would bypass the 10-second grace period entirely.
     end
 end
 

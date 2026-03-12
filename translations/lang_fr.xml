@@ -11,11 +11,20 @@
         <text name="wt_hud_earned"           text="Gagne:"/>
         <text name="wt_hud_shift_started"    text="Travail commence a %s\n%d$/h"/>
         <text name="wt_hud_shift_ended"      text="Travail termine\n+%d$ gagne"/>
+        <text name="storePack_wt_title"       text="Workplace Triggers"/>
         <text name="wt_store_name"           text="Zone de travail"/>
         <text name="wt_store_desc"           text="Placez n'importe ou pour designer un lieu de travail. Entrez dans la zone et appuyez sur [E] pour commencer votre quart."/>
         <text name="wt_store_function"       text="Designe un lieu de travail placable avec un nom et un salaire horaire configurables"/>
         <text name="wt_notify_shift_started" text="Quart commence a '%s'"/>
         <text name="wt_notify_shift_ended"   text="Quart termine - %d$ gagne"/>
         <text name="wt_notify_left_trigger"  text="Vous avez quitte la zone de travail - quart termine"/>
+        <!-- Help Line category titles -->
+        <text name="helpLine_wt_cat_overview"  text="Vue d'ensemble"/>
+        <text name="helpLine_wt_cat_setup"     text="Demarrage"/>
+        <text name="helpLine_wt_cat_shift"     text="Travailler un quart"/>
+        <text name="helpLine_wt_cat_manage"    text="Gerer les lieux de travail"/>
+        <text name="helpLine_wt_cat_hud"       text="HUD et parametres"/>
+        <text name="helpLine_wt_cat_tips"      text="Conseils et multijoueur"/>
+        <text name="helpLine_wt_cat_about"     text="A propos et credits"/>
     </texts>
 </l10n>

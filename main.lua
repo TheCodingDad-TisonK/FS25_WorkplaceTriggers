@@ -27,8 +27,8 @@ print("[WorkplaceTriggers] Starting mod initialization...")
 if modDirectory then
     print("[WorkplaceTriggers] Loading source files...")
 
+    source(modDirectory .. "src/WTMapHotspot.lua")
     source(modDirectory .. "src/WorkplaceTriggerManager.lua")
-    source(modDirectory .. "src/WorkplaceTrigger.lua")
     source(modDirectory .. "src/WorkplaceShiftTracker.lua")
     source(modDirectory .. "src/WorkplaceFinanceIntegration.lua")
     source(modDirectory .. "src/WorkplaceHUD.lua")
@@ -45,6 +45,22 @@ if modDirectory then
     print("[WorkplaceTriggers] All source files loaded")
     -- Init dialog loader with mod path
     WTDialogLoader.init(modDirectory)
+
+    -- Register mod store pack so we appear in Shop > Mods & DLCs
+    -- Must be called from Lua - modDesc.xml <storePacks> is not parsed by the engine
+    if g_storeManager ~= nil then
+        local packTitle = g_i18n:getText("storePack_wt_title") or "Workplace Triggers"
+        g_storeManager:addModStorePack(
+            "WT_WORKPLACE_TRIGGERS",
+            packTitle,
+            modDirectory .. "icon_wt.dds",
+            modDirectory,
+            { modDirectory .. "placeables/workTrigger/workTrigger.xml" }
+        )
+        print("[WorkplaceTriggers] Store pack registered")
+    else
+        print("[WorkplaceTriggers] WARNING - g_storeManager nil, store pack not registered")
+    end
 else
     print("[WorkplaceTriggers] ERROR - Could not find mod directory!")
     return

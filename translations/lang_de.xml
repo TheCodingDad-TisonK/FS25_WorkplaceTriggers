@@ -11,11 +11,20 @@
         <text name="wt_hud_earned"           text="Verdient:"/>
         <text name="wt_hud_shift_started"    text="Schicht begonnen bei %s\n$%d/Std"/>
         <text name="wt_hud_shift_ended"      text="Schicht beendet\n+$%d verdient"/>
+        <text name="storePack_wt_title"       text="Workplace Triggers"/>
         <text name="wt_store_name"           text="Arbeitsbereich-Trigger"/>
         <text name="wt_store_desc"           text="Ueberall platzierbar. Betreten Sie den Bereich und druecken Sie [E] um Ihre Schicht zu beginnen."/>
         <text name="wt_store_function"       text="Bezeichnet einen platzierbaren Arbeitsort mit konfigurierbarem Namen und Stundenlohn"/>
         <text name="wt_notify_shift_started" text="Schicht begonnen bei '%s'"/>
         <text name="wt_notify_shift_ended"   text="Schicht beendet - $%d verdient"/>
         <text name="wt_notify_left_trigger"  text="Sie haben die Arbeitszone verlassen - Schicht beendet"/>
+        <!-- Help Line category titles -->
+        <text name="helpLine_wt_cat_overview"  text="Uebersicht"/>
+        <text name="helpLine_wt_cat_setup"     text="Erste Schritte"/>
+        <text name="helpLine_wt_cat_shift"     text="Schicht arbeiten"/>
+        <text name="helpLine_wt_cat_manage"    text="Arbeitsplaetze verwalten"/>
+        <text name="helpLine_wt_cat_hud"       text="HUD und Einstellungen"/>
+        <text name="helpLine_wt_cat_tips"      text="Tipps und Mehrspieler"/>
+        <text name="helpLine_wt_cat_about"     text="Ueber und Credits"/>
     </texts>
 </l10n>

@@ -8,26 +8,24 @@
 <placeable type="workTrigger" descVersion="105">
 
     <storeData>
-        <n>Work Trigger Zone</n>
-        <desc>Place anywhere to designate a workplace. Walk inside and press [E] to start your shift and earn income.</desc>
+        <name>$l10n_wt_store_name</name>
+        <description>$l10n_wt_store_desc</description>
         <image>$data/placeables/brandless/waterTanks/level01/store_waterTankLevel01.dds</image>
         <functions>
-            <function>Configurable workplace with custom name and hourly wage</function>
+            <function>$l10n_wt_store_function</function>
         </functions>
         <price>0</price>
         <dailyUpkeep>0</dailyUpkeep>
         <canBeSold>true</canBeSold>
         <showInStore>true</showInStore>
-        <lifetime>0</lifetime>
+        <lifetime>600</lifetime>
         <rotation>0</rotation>
         <brand>NONE</brand>
         <species>PLACEABLE</species>
-        <category>construction</category>
-        <brush>
-            <type>placeable</type>
-            <category>construction</category>
-            <tab>tools</tab>
-        </brush>
+        <category>misc</category>
+        <storePacks>
+            <storePack>WT_WORKPLACE_TRIGGERS</storePack>
+        </storePacks>
     </storeData>
 
     <base>

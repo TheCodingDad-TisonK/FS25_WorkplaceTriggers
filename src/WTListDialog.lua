@@ -57,10 +57,16 @@ function WTListDialog:refresh()
 
     -- Title
     if self.titleText then
-        self.titleText:setText("Workplace Triggers")
+        self.titleText:setText(g_i18n:getText("wt_dialog_list_title") or "Workplace Triggers")
     end
     if self.subtitleText then
-        self.subtitleText:setText(total .. " trigger" .. (total == 1 and "" or "s") .. " placed")
+        local sub
+        if total == 1 then
+            sub = g_i18n:getText("wt_dialog_list_subtitle_one") or "1 trigger placed"
+        else
+            sub = string.format(g_i18n:getText("wt_dialog_list_subtitle_many") or "%d triggers placed", total)
+        end
+        self.subtitleText:setText(sub)
     end
 
     -- Clear all rows
@@ -83,11 +89,11 @@ function WTListDialog:refresh()
     -- Empty state message
     if self.statusText then
         if total == 0 then
-            self.statusText:setText("No triggers placed. Click '+ New Trigger' to add one.")
+            self.statusText:setText(g_i18n:getText("wt_dialog_list_empty") or "No triggers placed. Click '+ New Trigger' to add one.")
         else
             local showing = (startIdx == endIdx) and tostring(startIdx)
                 or (tostring(startIdx) .. "-" .. tostring(endIdx))
-            self.statusText:setText("Showing " .. showing .. " of " .. total)
+            self.statusText:setText(string.format(g_i18n:getText("wt_dialog_list_showing") or "Showing %s of %d", showing, total))
         end
     end
 
