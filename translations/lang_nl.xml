@@ -1,24 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <l10n>
     <texts>
-        <text name="input_WT_INTERACT"       text="Dienst beginnen/beeindigen"/>
+        <!-- Input action descriptions -->
+        <text name="input_WT_INTERACT"       text="Dienst beginnen/beëindigen"/>
+        <text name="input_WT_MENU"           text="Open Werkplekbeheerder"/>
+        <text name="input_WT_HUD_EDIT"       text="HUD-bewerkingsmodus in-/uitschakelen"/>
+
+        <!-- E-key prompt strings (dynamic, set via setActionEventText) -->
         <text name="wt_input_interact"       text="[E] Interactie met werkplek"/>
         <text name="wt_input_start_shift"    text="[E] Dienst beginnen bij %s"/>
-        <text name="wt_input_end_shift"      text="[E] Dienst beeindigen bij %s"/>
+        <text name="wt_input_end_shift"      text="[E] Dienst beëindigen bij %s"/>
+        <text name="wt_input_open_menu"      text="Werkplekbeheerder"/>
+        <text name="wt_input_hud_edit"       text="HUD-bewerkingsmodus"/>
+
+        <!-- HUD panel -->
         <text name="wt_hud_on_shift"         text="AAN HET WERK"/>
+        <text name="wt_hud_edit_mode"        text="Verplaats/Schaal werkplek-HUD"/>
+        <text name="wt_hud_edit_hint"        text="Slepen | Hoeken=Schaal | Randen=Breedte | Shift=Afsluiten"/>
         <text name="wt_hud_location"         text="Locatie:"/>
         <text name="wt_hud_time"             text="Tijd:"/>
         <text name="wt_hud_earned"           text="Verdiend:"/>
         <text name="wt_hud_shift_started"    text="Dienst begonnen bij %s\n$%d/uur"/>
-        <text name="wt_hud_shift_ended"      text="Dienst beeindigd\n+$%d verdiend"/>
+        <text name="wt_hud_shift_ended"      text="Dienst beëindigd\n+$%d verdiend"/>
+        <text name="wt_hud_shift_abandoned"  text="Dienst beëindigd - je hebt het werkgebied verlaten! Slechts 20%% betaald | Beëindig je dienst altijd handmatig voor volledige betaling."/>
+
+        <!-- Dialog strings (WTListDialog / WTEditDialog) -->
+        <text name="wt_dialog_list_title"        text="Workplace Triggers"/>
+        <text name="wt_dialog_list_subtitle_one" text="1 trigger geplaatst"/>
+        <text name="wt_dialog_list_subtitle_many" text="%d triggers geplaatst"/>
+        <text name="wt_dialog_list_empty"        text="Geen triggers geplaatst. Klik '+ Nieuwe trigger' om er een toe te voegen."/>
+        <text name="wt_dialog_list_showing"      text="Toon %s van %d"/>
+        <text name="wt_dialog_edit_title_new"    text="Nieuwe werkplek-trigger"/>
+        <text name="wt_dialog_edit_title_edit"   text="Trigger bewerken"/>
+        <text name="wt_dialog_edit_name_default" text="Nieuwe werkplek"/>
+        <text name="wt_dialog_snap_done"         text="Positie uitgelijnd op spelerspositie."/>
+
+        <!-- Pay schedule labels -->
+        <text name="wt_sched_hourly"   text="Per uur"/>
+        <text name="wt_sched_flat"     text="Vast tarief"/>
+        <text name="wt_sched_daily"    text="Dagelijks"/>
+        <text name="wt_sched_hint_hourly" text="Verdient loon × gewerkte uren"/>
+        <text name="wt_sched_hint_flat"   text="Vaste uitbetaling aan het einde van de dienst"/>
+        <text name="wt_sched_hint_daily"  text="Verdient loon × gewerkte spel dagen"/>
+        <text name="wt_wage_label_hourly" text="Uurloon"/>
+        <text name="wt_wage_label_flat"   text="Vast tarief (per dienst)"/>
+        <text name="wt_wage_label_daily"  text="Dagtarief"/>
+
+        <!-- Shift history -->
+        <text name="wt_history_title"    text="Dienstgeschiedenis"/>
+        <text name="wt_history_empty"    text="Nog geen diensten voltooid."/>
+        <text name="wt_history_entry"    text="%s | %.1f uur | $%d"/>
+
+        <!-- Store item -->
         <text name="storePack_wt_title"       text="Workplace Triggers"/>
         <text name="wt_store_name"           text="Werkplek trigger zone"/>
         <text name="wt_store_desc"           text="Plaatsbaar overal. Loop de zone in en druk [E] om je dienst te beginnen en inkomen te verdienen."/>
         <text name="wt_store_function"       text="Wijst een plaatsbare werklocatie aan met instelbare naam en uurloon"/>
+
+        <!-- Notifications -->
         <text name="wt_notify_shift_started" text="Dienst begonnen bij '%s'"/>
-        <text name="wt_notify_shift_ended"   text="Dienst beeindigd - $%d verdiend"/>
-        <text name="wt_notify_left_trigger"  text="Je hebt de werkzone verlaten - dienst beeindigd"/>
-        <!-- Help Line category titles -->
+        <text name="wt_notify_shift_ended"   text="Dienst beëindigd - $%d verdiend"/>
+        <text name="wt_notify_left_trigger"  text="Je hebt de werkzone verlaten - dienst beëindigd"/>
+
+        <!-- Leave-zone warning overlay -->
+        <text name="wt_warn_title"      text="KEER TERUG NAAR WERKGEBIED"/>
+        <text name="wt_warn_countdown"  text="Dienst wordt geannuleerd over %d seconden"/>
+        <text name="wt_warn_cancelling" text="Dienst annuleren..."/>
+
+        <!-- Settings menu (ESC > Settings > General Settings) -->
+        <text name="wt_settings_section"              text="Workplace Triggers"/>
+        <text name="wt_settings_show_hud_short"       text="Toon dienst-HUD"/>
+        <text name="wt_settings_show_hud_long"        text="Toon het dienstinformatiepaneel tijdens de dienst"/>
+        <text name="wt_settings_hud_scale_short"      text="HUD-schaal"/>
+        <text name="wt_settings_hud_scale_long"       text="Grootte van het dienst-HUD-paneel op het scherm"/>
+        <text name="wt_settings_show_notif_short"     text="Toon meldingen"/>
+        <text name="wt_settings_show_notif_long"      text="Toon flitsberichten wanneer een dienst begint of eindigt"/>
+        <text name="wt_settings_wage_mult_short"      text="Loonvermenigvuldiger"/>
+        <text name="wt_settings_wage_mult_long"       text="Globale vermenigvuldiger toegepast bovenop het uurloon van elke trigger"/>
+        <text name="wt_settings_end_on_leave_short"   text="Beëindig dienst bij verlaten"/>
+        <text name="wt_settings_end_on_leave_long"    text="Beëindig automatisch je dienst wanneer je de triggerzone verlaat"/>
+        <text name="wt_settings_show_earnings_short"  text="Toon verdiensten in HUD"/>
+        <text name="wt_settings_show_earnings_long"   text="Toon de huidige verdienstenregel in het dienst-HUD-paneel"/>
+        <text name="wt_settings_debug_short"          text="Debugmodus"/>
+        <text name="wt_settings_debug_long"           text="Extra debug-informatie uitvoeren naar de console"/>
+
+        <!-- ── Help Line strings ─────────────────────────────── -->
+
+        <!-- Category titles -->
         <text name="helpLine_wt_cat_overview"  text="Overzicht"/>
         <text name="helpLine_wt_cat_setup"     text="Aan de slag"/>
         <text name="helpLine_wt_cat_shift"     text="Een dienst werken"/>
@@ -26,5 +94,147 @@
         <text name="helpLine_wt_cat_hud"       text="HUD en instellingen"/>
         <text name="helpLine_wt_cat_tips"      text="Tips en multiplayer"/>
         <text name="helpLine_wt_cat_about"     text="Over en credits"/>
+
+        <!-- ── Overview, Page 1: What is this mod ── -->
+        <text name="helpLine_wt_ov_p1_title"        text="Wat is Workplace Triggers?"/>
+        <text name="helpLine_wt_ov_p1_what_title"   text="Concept"/>
+        <text name="helpLine_wt_ov_p1_what_text"    text="Workplace Triggers laat je elke locatie op elke kaart veranderen in een legitieme baan buiten de boerderij. Je plaatst een onzichtbare triggerzone ergens in de wereld, geeft het een naam en een uurloon, loopt naar binnen en klokt in. Terwijl je dienst loopt, houdt de mod de speltijd bij en stort het verdiende loon direct op je boerderijrekening wanneer je uitklokt. Geen missies, geen leveringen en geen voertuigen vereist - gewoon verschijnen, E drukken en betaald worden."/>
+        <text name="helpLine_wt_ov_p1_who_title"    text="Voor wie is het bedoeld?"/>
+        <text name="helpLine_wt_ov_p1_who_text"     text="De mod is ontworpen voor roleplayers die hun boerenpersonage een bijbaan willen laten hebben naast het runnen van de boerderij, voor spelers die een stabiele inkomstenstroom willen vroeg in een nieuwe save terwijl de boerderij nog groeit, en voor iedereen die graag meer leven en variatie aan hun boerenwereld toevoegt. Omdat triggers overal geplaatst en vrij hernoemd kunnen worden, zijn de mogelijkheden zo breed als je verbeelding."/>
+
+        <!-- ── Overview, Page 2: How earnings work ── -->
+        <text name="helpLine_wt_ov_p2_title"           text="Hoe verdiensten werken"/>
+        <text name="helpLine_wt_ov_p2_concept_title"   text="Speltijd vs. Echte tijd"/>
+        <text name="helpLine_wt_ov_p2_concept_text"    text="Lonen worden berekend met speltijd, niet met echte kloktijd. Standaard is één echte seconde gelijk aan één spelminuut in Farming Simulator, dus een dienst van één speluur duurt 60 echte seconden. Als je de speltijdssnelheid in de instellingen verhoogt, worden je diensten sneller uitbetaald. De mod leest automatisch de speltijdschaal, zodat de cijfers altijd weerspiegelen wat je daadwerkelijk in de spelwereld ervaart."/>
+        <text name="helpLine_wt_ov_p2_money_title"     text="Waar het geld naartoe gaat"/>
+        <text name="helpLine_wt_ov_p2_money_text"      text="Wanneer je een dienst beëindigt, wordt het totale verdiende bedrag via het standaard FS25-financiële systeem aan je boerderijrekening toegevoegd. Het verschijnt als een positieve transactie in je financiële geschiedenis onder de categorie inkomsten, op dezelfde manier als het verkopen van gewassen of het voltooien van contracten. In multiplayer houdt elke speler zijn eigen diensten onafhankelijk bij en ontvangt zijn eigen uitbetaling."/>
+
+        <!-- ── Getting Started, Page 1: Buy and place ── -->
+        <text name="helpLine_wt_su_p1_title"         text="Stap 1 - Kopen en plaatsen"/>
+        <text name="helpLine_wt_su_p1_buy_title"     text="De trigger vinden in de winkel"/>
+        <text name="helpLine_wt_su_p1_buy_text"      text="Open de winkel (standaardtoets B) en ga naar de categorie Objecten. Zoek naar Werkplek trigger zone. Het object heeft geen doorlopende kosten en kan zo vaak worden gekocht als je nodig hebt - één voor elke werkplek die je wilt maken. Plaats het vanuit je constructiemenu zoals elk ander plaatsbaar object. De triggerzone zelf is onzichtbaar tijdens normaal spel, dus het zal je kaart niet visueel vervuilen."/>
+        <text name="helpLine_wt_su_p1_place_title"   text="Een goede locatie kiezen"/>
+        <text name="helpLine_wt_su_p1_place_text"    text="Ga op de locatie staan die je als werkplek wilt aanwijzen voordat je plaatst. De trigger verschijnt op de positie die je kiest in de plaatsingsvoorbeeld. Goede locaties zijn onder meer in de buurt van gebouwen die je al hebt, op kruispunten die je vaak passeert, naast leveringspunten, of overal waar het past bij het rollenspelverhaal van de baan. De standaard triggerradius is 4 meter, dus je moet binnen die cirkel zijn om ermee te kunnen interageren."/>
+
+        <!-- ── Getting Started, Page 2: Configure ── -->
+        <text name="helpLine_wt_su_p2_title"           text="Stap 2 - Je werkplek configureren"/>
+        <text name="helpLine_wt_su_p2_name_title"      text="Je werkplek een naam geven"/>
+        <text name="helpLine_wt_su_p2_name_text"       text="Open na het plaatsen van de trigger de Werkplekbeheerder met F4 en selecteer je nieuwe trigger uit de lijst. Druk op Bewerken. Typ elke gewenste naam in het naamveld - Postkantoor, Voermolen, Houtzagerij, Gemeentehuis, wat dan ook bij je verhaal past. Deze naam verschijnt op het kaartpictogram, in het dienst-HUD-paneel terwijl je werkt, in de in- en uitklokmeldingen en in je meldingsberichten."/>
+        <text name="helpLine_wt_su_p2_wage_title"      text="Het uurloon instellen"/>
+        <text name="helpLine_wt_su_p2_wage_text"       text="Gebruik de plus- en minknoppen in het bewerkingsdialoogvenster om een uurloon in te stellen tussen 0 en 99.999 per speluur. De standaard is 500. Gebruik de stapselector om te wijzigen of elke druk op de knop met 10, 100 of 1.000 tegelijk aanpast. Een globale loonvermenigvuldiger (0,5x tot 2,0x) is beschikbaar in het spelinstellingenmenu en wordt bovenop het loon van elke trigger toegepast, zodat je het totale inkomensniveau kunt aanpassen zonder elke trigger afzonderlijk te bewerken."/>
+        <text name="helpLine_wt_su_p2_radius_title"    text="De triggerradius aanpassen"/>
+        <text name="helpLine_wt_su_p2_radius_text"     text="De radius bepaalt hoe groot de werkzone is. Het minimum is 1 meter en het maximum is 50 meter. Een kleine radius (3-5 m) is goed voor een specifieke plek zoals een winkelbalie. Een grotere radius (10-20 m) past bij een heel gebouw of terrein. Als je merkt dat je de E-toets prompt niet kunt activeren wanneer je staat waar je verwacht, probeer dan de radius iets te vergroten. Radiuswijzigingen worden onmiddellijk van kracht zonder dat je opnieuw hoeft op te starten."/>
+
+        <!-- ── Getting Started, Page 3: Map icon and multi-trigger ── -->
+        <text name="helpLine_wt_su_p3_title"           text="Stap 3 - Op de kaart"/>
+        <text name="helpLine_wt_su_p3_map_title"       text="Je werkplek op de kaart"/>
+        <text name="helpLine_wt_su_p3_map_text"        text="Elke geplaatste trigger krijgt automatisch een kaartpictogram - een gekleurd vierkant met het label van de werkpleknaam erboven. Het pictogram is groen wanneer de werkplek inactief is en wordt goudkleurig terwijl er een dienst actief is. Je kunt al je werkplekken in één oogopslag zien door de volledige kaart te openen. De pictogrammen verschijnen zowel op de minikaart als op het volledige kaartscherm en schalen met het zoomniveau van de kaart."/>
+        <text name="helpLine_wt_su_p3_multi_title"     text="Meerdere werkplekken"/>
+        <text name="helpLine_wt_su_p3_multi_text"      text="Er is geen harde limiet voor hoeveel werkplekken je kunt maken. Koop en plaats zoveel werkplek trigger zones als je nodig hebt. Elke is volledig onafhankelijk met zijn eigen naam, loon en radius. Je kunt maar op één werkplek tegelijk aan het werk zijn - het starten van een nieuwe dienst beëindigt automatisch een lopende dienst en betaalt uit wat je tot nu toe hebt verdiend. Alle werkplekken worden opgeslagen met je savegame en hersteld wanneer je opnieuw laadt."/>
+
+        <!-- ── Working a Shift, Page 1: Clocking in ── -->
+        <text name="helpLine_wt_sh_p1_title"          text="Inklokken"/>
+        <text name="helpLine_wt_sh_p1_enter_title"    text="De werkzone betreden"/>
+        <text name="helpLine_wt_sh_p1_enter_text"     text="Loop of rijd naar de locatie van je werkplek. Wanneer je personage de triggerradius binnenkomt, zie je onderaan het scherm een actieprompt verschijnen met de naam van de werkplek. Dit bevestigt dat je in de zone bent en klaar om te beginnen. Als de prompt niet verschijnt, controleer dan of je dicht genoeg bij het centrum van de zone staat of vergroot de triggerradius in het bewerkingsdialoogvenster."/>
+        <text name="helpLine_wt_sh_p1_start_title"    text="De dienst starten"/>
+        <text name="helpLine_wt_sh_p1_start_text"     text="Druk op E (of je opnieuw toegewezen interactietoets) terwijl je in de zone bent. Je hoort een bevestigingsgeluid, er verschijnt een kort meldingsbericht op het scherm en het dienst-HUD-paneel opent in de hoek van het scherm. Het paneel toont je werkpleknaam, de huidige speltijd en een live verdiensten teller die bijwerkt naarmate de tijd vordert. Vanaf dit moment wordt speltijd bijgehouden en worden lonen geaccumuleerd."/>
+
+        <!-- ── Working a Shift, Page 2: During and leaving ── -->
+        <text name="helpLine_wt_sh_p2_title"          text="Tijdens je dienst"/>
+        <text name="helpLine_wt_sh_p2_hud_title"      text="Het dienst-HUD-paneel"/>
+        <text name="helpLine_wt_sh_p2_hud_text"       text="Het HUD-paneel blijft zichtbaar in de hoek van het scherm gedurende de hele duur van je dienst. Het toont de naam van de werkplek waar je momenteel werkt, een diensttimer die oploopt in speluren en -minuten, en het totale bedrag dat tot nu toe tijdens deze dienst is verdiend. Je kunt het paneel op elk moment verplaatsen en vergroten/verkleinen door op Shift te drukken om de HUD-bewerkingsmodus te openen. De positie en grootte van je paneel worden onthouden tussen spelsessies."/>
+        <text name="helpLine_wt_sh_p2_leave_title"    text="De zone verlaten tijdens een dienst"/>
+        <text name="helpLine_wt_sh_p2_leave_text"     text="Als je tijdens je dienst buiten de triggerradius loopt, verschijnt er een waarschuwing op het scherm met een afteltimer. Je hebt een korte respijtperiode om terug te keren voordat de dienst automatisch wordt geannuleerd. Als je op tijd terugkeert, gaat de dienst normaal verder zonder boete. Als de teller nul bereikt, eindigt de dienst en wordt je betaald voor de tot dan toe gewerkte tijd. Dit gedrag kan worden gewijzigd in de instellingen - je kunt het automatisch beëindigen uitschakelen en in dienst blijven, zelfs als je weg bent van de zone."/>
+
+        <!-- ── Working a Shift, Page 3: Clocking out ── -->
+        <text name="helpLine_wt_sh_p3_title"          text="Uitklokken"/>
+        <text name="helpLine_wt_sh_p3_end_title"      text="De dienst handmatig beëindigen"/>
+        <text name="helpLine_wt_sh_p3_end_text"       text="Om je dienst vrijwillig te beëindigen, ga je in de triggerzone staan en druk je opnieuw op E. De prompt luidt nu Dienst beëindigen. Door erop te drukken stopt de timer onmiddellijk, wordt het uiteindelijke loon berekend en op je boerderijrekening gestort. Er verschijnt kort een samenvattingsmelding die laat zien hoeveel je hebt verdiend. Het HUD-paneel sluit en het kaartpictogram wordt weer groen. Je kunt meteen een nieuwe dienst beginnen op dezelfde of een andere werkplek."/>
+        <text name="helpLine_wt_sh_p3_pay_title"      text="Hoe de uitbetaling wordt berekend"/>
+        <text name="helpLine_wt_sh_p3_pay_text"       text="De formule is eenvoudig: uitbetaling is gelijk aan het uurloon van de werkplek vermenigvuldigd met het aantal gewerkte speluren, vermenigvuldigd met de globale loonvermenigvuldiger uit de instellingen. Bijvoorbeeld, een werkplek van 500 per uur, 2 speluren gewerkt met een 1,0x vermenigvuldiger betaalt 1.000. Met een 1,5x vermenigvuldiger betaalt dezelfde dienst 1.500. Breuken van een uur zijn inbegrepen - een dienst van 30 minuten bij 500 per uur betaalt 250."/>
+
+        <!-- ── Managing Workplaces, Page 1: The manager ── -->
+        <text name="helpLine_wt_mg_p1_title"         text="De Werkplekbeheerder"/>
+        <text name="helpLine_wt_mg_p1_open_title"    text="De beheerder openen"/>
+        <text name="helpLine_wt_mg_p1_open_text"     text="Druk op elk moment op F4 (zelfs tijdens een dienst) om het dialoogvenster van de Werkplekbeheerder te openen. Dit is het centrale punt voor het bekijken en beheren van al je geplaatste werkplekken. Het geeft elke trigger die je hebt gemaakt weer met zijn naam, uurloon en huidige status in één oogopslag. De beheerder kan ook worden geopend vanuit de spelconsole door wtGui te typen als je dat liever hebt."/>
+        <text name="helpLine_wt_mg_p1_list_title"    text="De lijst lezen"/>
+        <text name="helpLine_wt_mg_p1_list_text"     text="Elke rij in de lijst toont links de werkpleknaam en rechts het geconfigureerde uurloon. Als er momenteel een dienst actief is op een werkplek, wordt die rij gemarkeerd. Je kunt door de lijst scrollen als je veel werkplekken hebt. Door op een rij te klikken wordt deze geselecteerd en worden de knoppen Bewerken en Verwijderen onderaan het dialoogvenster beschikbaar voor de geselecteerde werkplek."/>
+
+        <!-- ── Managing Workplaces, Page 2: Edit and delete ── -->
+        <text name="helpLine_wt_mg_p2_title"           text="Bewerken en verwijderen"/>
+        <text name="helpLine_wt_mg_p2_edit_title"      text="Een werkplek bewerken"/>
+        <text name="helpLine_wt_mg_p2_edit_text"       text="Selecteer een werkplek in de Beheerder en druk op Bewerken om het bewerkingsdialoogvenster voor die trigger te openen. Je kunt de naam wijzigen, het uurloon aanpassen en de triggerradius wijzigen. Wijzigingen worden onmiddellijk van kracht wanneer je bevestigt. Het label van het kaartpictogram wordt onmiddellijk bijgewerkt om een nieuwe naam weer te geven. Je kunt een werkplek zelfs bewerken terwijl er een dienst op draait - het nieuwe loon is van toepassing op toekomstige diensten, maar de huidige dienst gebruikt het loon dat was ingesteld toen deze begon."/>
+        <text name="helpLine_wt_mg_p2_delete_title"    text="Een werkplek verwijderen"/>
+        <text name="helpLine_wt_mg_p2_delete_text"     text="Selecteer een werkplek en druk op Verwijderen om deze permanent te verwijderen. Als er momenteel een dienst actief is op die werkplek, wordt de dienst eerst beëindigd en word je betaald voor de gewerkte tijd voordat de trigger wordt verwijderd. Het kaartpictogram verdwijnt onmiddellijk. De zwevende 3D-markering boven de werkpleklocatie wordt ook verwijderd. Verwijderen kan niet ongedaan worden gemaakt, dus zorg ervoor dat je de juiste trigger hebt geselecteerd voordat je bevestigt. Het plaatsbare object zelf blijft in de wereld en kan afzonderlijk worden verkocht."/>
+
+        <!-- ── Managing Workplaces, Page 3: Saving ── -->
+        <text name="helpLine_wt_mg_p3_title"          text="Opslaan en persistentie"/>
+        <text name="helpLine_wt_mg_p3_save_title"     text="Automatisch opslaan"/>
+        <text name="helpLine_wt_mg_p3_save_text"      text="Alle werkplekgegevens worden automatisch opgeslagen telkens wanneer het spel opslaat. Dit omvat naam, uurloon, positie en radius van elke trigger. De positie en schaal van je HUD-paneel worden ook opgeslagen. Wanneer je een savegame laadt, herstelt de mod alle werkplekken precies zoals je ze hebt achtergelaten, inclusief hun kaartpictogrammen. Je hoeft niets speciaals te doen om op te slaan - gebruik gewoon de normale Spel Opslaan-optie en alles blijft behouden."/>
+        <text name="helpLine_wt_mg_p3_limit_title"    text="Een opmerking over het plaatsbare object"/>
+        <text name="helpLine_wt_mg_p3_limit_text"     text="De Werkplek trigger zone die je in de winkel koopt, is een standaard FS25-plaatsbaar object. De Workplace Triggers-mod beheert de dienstlogica, lonen en interface gescheiden van het plaatsbare object zelf. Als je het plaatsbare object vanuit het constructiemenu verkoopt, verdwijnt de visuele markering, maar blijft de werkplekgegevensinvoer in de Beheerder totdat je deze daar ook verwijdert. Voor een schone verwijdering verwijder je eerst de trigger uit de Beheerder en verkoop je vervolgens het plaatsbare object vanuit het constructiemenu."/>
+
+        <!-- ── HUD and Settings, Page 1: Panel overview ── -->
+        <text name="helpLine_wt_hd_p1_title"         text="Het dienst-HUD-paneel"/>
+        <text name="helpLine_wt_hd_p1_panel_title"   text="Wat het paneel toont"/>
+        <text name="helpLine_wt_hd_p1_panel_text"    text="Het dienst-HUD-paneel verschijnt automatisch wanneer je een dienst begint en sluit wanneer de dienst eindigt. Het toont drie regels informatie: de naam van de werkplek waar je momenteel werkt, de verstreken diensttijd in speluren en -minuten, en het totale bedrag dat tot nu toe tijdens deze dienst is verdiend in je boerderijvaluta. Alle drie de waarden worden elke paar seconden in realtime bijgewerkt. Als je de verdienstenregel niet wilt zien, kun je deze verbergen in het instellingenmenu."/>
+        <text name="helpLine_wt_hd_p1_edit_title"    text="HUD-bewerkingsmodus openen"/>
+        <text name="helpLine_wt_hd_p1_edit_text"     text="Druk op elk moment op Linker Shift (zelfs wanneer je niet in dienst bent) om de HUD-bewerkingsmodus te openen. De rand van het paneel licht geel op en de tekst BEWERKINGSMODUS verschijnt erboven om te bevestigen dat je in de bewerkingsmodus bent. In deze modus stopt de spelcamera met draaien wanneer je de muis beweegt, zodat je vrij met het paneel kunt interageren. Druk nogmaals op Shift om de bewerkingsmodus te verlaten en terug te keren naar normaal. Je lay-outwijzigingen worden automatisch opgeslagen wanneer je de bewerkingsmodus verlaat."/>
+
+        <!-- ── HUD and Settings, Page 2: Repositioning ── -->
+        <text name="helpLine_wt_hd_p2_title"           text="De HUD verplaatsen en vergroten/verkleinen"/>
+        <text name="helpLine_wt_hd_p2_drag_title"      text="Het paneel verplaatsen"/>
+        <text name="helpLine_wt_hd_p2_drag_text"       text="Klik in de HUD-bewerkingsmodus en sleep ergens op het lichaam van het paneel om het naar een nieuwe positie op het scherm te verplaatsen. Het paneel klikt vast op de plaats waar je de muisknop loslaat. Je kunt het in elke hoek of langs elke rand van het scherm plaatsen. De positie wordt opgeslagen als een genormaliseerde schermcoördinaat, zodat het proportioneel geplaatst blijft, ongeacht je schermresolutie of beeldverhouding."/>
+        <text name="helpLine_wt_hd_p2_resize_title"    text="Het paneel vergroten/verkleinen"/>
+        <text name="helpLine_wt_hd_p2_resize_text"     text="Het paneel heeft twee formaatgrepen in de bewerkingsmodus. Sleep een hoekgreep om het hele paneel uniform te schalen - zowel de grootte als de tekst schalen mee. Sleep de linker- of rechterrandgreep om alleen de breedte van het paneel te wijzigen zonder de hoogte of tekstgrootte te beïnvloeden. Hiermee kun je het paneel verbreden om langere werkpleknamen weer te geven zonder de tekst enorm te maken. Minimum- en maximumgrenzen zijn van toepassing om te voorkomen dat het paneel onbruikbaar klein of te groot wordt."/>
+
+        <!-- ── HUD and Settings, Page 3: Settings options ── -->
+        <text name="helpLine_wt_hd_p3_title"           text="Opties in het instellingenmenu"/>
+        <text name="helpLine_wt_hd_p3_settings_title"  text="De instellingen vinden"/>
+        <text name="helpLine_wt_hd_p3_settings_text"   text="Alle Workplace Triggers-instellingen vind je in het hoofdscherm Instellingen van het spel onder het tabblad Algemene instellingen. Scroll omlaag naar het gedeelte Workplace Triggers. Beschikbare opties zijn onder meer: het dienst-HUD-paneel in- of uitschakelen, de HUD-schaalvoorinstelling aanpassen, meldingen voor begin en einde van de dienst in- of uitschakelen, de verdienstenregel in de HUD in- of uitschakelen en bepalen of het verlaten van de triggerzone je dienst automatisch beëindigt. Wijzigingen zijn onmiddellijk van toepassing zonder dat je opnieuw hoeft op te starten."/>
+        <text name="helpLine_wt_hd_p3_mult_title"      text="De loonvermenigvuldiger"/>
+        <text name="helpLine_wt_hd_p3_mult_text"       text="De instelling voor de loonvermenigvuldiger is een globale factor die bovenop het geconfigureerde loon van elke werkplek wordt toegepast. De beschikbare waarden zijn 0,5x, 0,75x, 1,0x, 1,25x, 1,5x en 2,0x. Bij 1,0x (de standaard) zijn de lonen precies zoals geconfigureerd. Bij 0,5x betaalt elke werkplek de helft. Bij 2,0x betaalt elke werkplek het dubbele. Dit is handig om het totale inkomensniveau van de mod snel aan te passen aan je speleconomie zonder elke trigger afzonderlijk te bewerken."/>
+
+        <!-- ── Tips and Multiplayer, Page 1: Multiplayer ── -->
+        <text name="helpLine_wt_tp_p1_title"         text="Multiplayer"/>
+        <text name="helpLine_wt_tp_p1_mp_title"      text="Multiplayer-ondersteuning"/>
+        <text name="helpLine_wt_tp_p1_mp_text"       text="Workplace Triggers ondersteunt multiplayer-sessies. Alle geplaatste werkplekken zijn zichtbaar op de kaart voor alle spelers in de sessie. Elke speler beheert zijn eigen diensten onafhankelijk - de ene speler die inklokt, heeft geen invloed op de dienststatus van een andere speler. Lonen worden uitbetaald op de individuele boerderijrekening van de speler. Het plaatsen en configureren van werkplekken wordt beheerd door de host en wijzigingen worden weergegeven voor alle verbonden spelers."/>
+        <text name="helpLine_wt_tp_p1_host_title"    text="Host-autoriteit"/>
+        <text name="helpLine_wt_tp_p1_host_text"     text="De mod gebruikt een host-autoritair ontwerp. Dit betekent dat de host de spelstatus voor werkplekgegevens controleert. Als je een client bent in de sessie van iemand anders, kun je diensten starten en beëindigen op elke geconfigureerde werkplek, maar het maken, bewerken of verwijderen van werkplekken kan, afhankelijk van de sessie-instellingen, toestemming van de host vereisen. Het opslagbestand van de host slaat alle werkplekconfiguraties op en deze worden voor alle spelers geladen wanneer de sessie begint."/>
+
+        <!-- ── Tips and Multiplayer, Page 2: Console commands ── -->
+        <text name="helpLine_wt_tp_p2_title"           text="Console-opdrachten"/>
+        <text name="helpLine_wt_tp_p2_console_title"   text="De console openen"/>
+        <text name="helpLine_wt_tp_p2_console_text"    text="De ontwikkelaarsconsole kan worden geopend met de tilde-toets (~) of het accent grave (`) op de meeste toetsenborden. Deze is alleen beschikbaar wanneer de ontwikkelaarsmodus actief is in de game-launcher. Console-opdrachten zijn handig voor het debuggen van problemen, het inspecteren van de huidige status van de mod of het snel testen van instellingen. Alle Workplace Triggers-opdrachten beginnen met het voorvoegsel wt, zodat ze gemakkelijk te vinden zijn door wt in de console te typen."/>
+        <text name="helpLine_wt_tp_p2_cmds_title"      text="Beschikbare opdrachten"/>
+        <text name="helpLine_wt_tp_p2_cmds_text"       text="wtHelp - geeft alle beschikbare opdrachten weer met beschrijvingen. wtStatus - toont of er momenteel een dienst actief is, welke werkplek, hoe lang en de huidige verdiensten. wtList - drukt alle geplaatste werkplekken af op de console met hun ID's, namen, lonen en posities. wtDebug - schakelt uitgebreide debug-logboekregistratie in of uit, handig voor bugrapporten. wtGui - opent of sluit het dialoogvenster van de Werkplekbeheerder via de console."/>
+
+        <!-- ── Tips and Multiplayer, Page 3: Roleplay ideas ── -->
+        <text name="helpLine_wt_tp_p3_title"           text="Rollenspelideeën"/>
+        <text name="helpLine_wt_tp_p3_roleplay_title"  text="Het meeste uit de mod halen"/>
+        <text name="helpLine_wt_tp_p3_roleplay_text"   text="De mod wordt het meest meeslepend wanneer je je vastlegt op de rollenspelkant ervan. Stel een realistisch loon in voor elke baan - een minimumloonarbeider zou 150 per uur kunnen verdienen, een geschoolde vakman 600, en een gespecialiseerde aannemer 1500 of meer. Klok alleen in wanneer je personage realistisch gezien op die locatie zou zijn. Combineer met andere rollenspelmods om een volledige dagelijkse routine voor je boerenpersonage op te bouwen die verder gaat dan alleen het werk op het veld."/>
+        <text name="helpLine_wt_tp_p3_ideas_title"     text="Werkplekideeën"/>
+        <text name="helpLine_wt_tp_p3_ideas_text"      text="Hier zijn enkele ideeën om je op weg te helpen: plaats een trigger bij het benzinestation en noem het Tankstationbediende, zet er een bij een grote schuur en noem het Veehouder, plaats er een bij de graanelevator voor Graanbehandelaar, leg er een op een kruispunt voor Wegonderhoudsploeg, of plaats er een bij je werkplaatsgebouw voor Landbouwmonteur. Op multiplayer-servers kan elke speler zijn eigen set banen hebben, waardoor een hele economie van verschillende beroepen ontstaat die dezelfde kaart delen."/>
+
+        <!-- ── About and Credits, Page 1: Version info ── -->
+        <text name="helpLine_wt_ab_p1_title"           text="Versie en auteur"/>
+        <text name="helpLine_wt_ab_p1_version_title"   text="Huidige versie"/>
+        <text name="helpLine_wt_ab_p1_version_text"    text="Workplace Triggers versie 0.1.0.0 - Vroege release. Dit is een actief ontwikkelingsproject. Functies, instellingen en opslagformaten kunnen tussen versies veranderen. Bij het updaten naar een nieuwe versie is het altijd een goed idee om eerst een back-up te maken van je savegame-map. Als je problemen ondervindt na een update, beschrijven de release-opmerkingen op GitHub eventuele brekende wijzigingen en migratiestappen."/>
+        <text name="helpLine_wt_ab_p1_author_title"    text="Auteur"/>
+        <text name="helpLine_wt_ab_p1_author_text"     text="Gemaakt door TisonK. Deze mod begon als een persoonlijk hulpmiddel voor rollenspelgericht spel en groeide uit tot een volledige release na positieve feedback van de community. Het doel is altijd geweest om het lichtgewicht, savegame-veilig en compatibel met zoveel mogelijk andere mods te houden. Als je het leuk vindt om te gebruiken, overweeg dan om een beoordeling of opmerking achter te laten op de mod-pagina - het helpt echt om de verdere ontwikkeling te motiveren."/>
+
+        <!-- ── About and Credits, Page 2: GitHub ── -->
+        <text name="helpLine_wt_ab_p2_title"           text="GitHub en bijdragen"/>
+        <text name="helpLine_wt_ab_p2_github_title"    text="Broncode en repository"/>
+        <text name="helpLine_wt_ab_p2_github_text"     text="De volledige broncode voor Workplace Triggers is openbaar beschikbaar op GitHub op: github.com/TisonK/FS25_WorkplaceTriggers. De repository bevat alle Lua-bronbestanden, de modDesc, vertaalbestanden en de volledige versiegeschiedenis. Als je wilt inspecteren hoe iets werkt, wilt verifiëren welke gegevens worden opgeslagen, of bovenop de mod wilt bouwen voor je eigen server of project, de code is er voor jou om te lezen en te gebruiken onder de licentievoorwaarden."/>
+        <text name="helpLine_wt_ab_p2_contrib_title"   text="Suggesties en bijdragen"/>
+        <text name="helpLine_wt_ab_p2_contrib_text"    text="Bugrapporten, functieverzoeken en pull-requests zijn allemaal welkom op de GitHub Issues-pagina. Voeg bij het melden van een bug je spellogbestand (log.txt uit je FarmingSimulator2025-map), de exacte stappen om het probleem te reproduceren en welke andere mods actief waren. Voor functiesuggesties open je een GitHub Issue met het label enhancement en beschrijf je het gebruik dat je in gedachten hebt. Vertaalverbeteringen voor elke ondersteunde taal worden bijzonder op prijs gesteld."/>
+
+        <!-- ── About and Credits, Page 3: Licence and thanks ── -->
+        <text name="helpLine_wt_ab_p3_title"           text="Licentie en dankbetuigingen"/>
+        <text name="helpLine_wt_ab_p3_license_title"   text="Licentie"/>
+        <text name="helpLine_wt_ab_p3_license_text"    text="Workplace Triggers wordt uitgebracht onder de Creative Commons Naamsvermelding-NietCommercieel-GeenAfgeleideWerken 4.0 Internationale licentie (CC BY-NC-ND 4.0). Je bent vrij om het op te nemen in modpacks en het met anderen te delen, op voorwaarde dat de oorspronkelijke auteur wordt vermeld. Je mag het niet verkopen, commercialiseren of gewijzigde versies publiceren zonder toestemming. De volledige licentietekst is beschikbaar op creativecommons.org/licenses/by-nc-nd/4.0."/>
+        <text name="helpLine_wt_ab_p3_thanks_title"    text="Speciale dank"/>
+        <text name="helpLine_wt_ab_p3_thanks_text"     text="Dank aan de FS25-moddengemeenschap voor documentatie, referentie-implementaties en feedback die deze mod mogelijk hebben gemaakt. Speciale dank aan de auteurs van NPCFavor voor hun open en goed becommentarieerde code die als referentie diende voor verschillende FS25 API-patronen die in deze mod worden gebruikt. Dank aan iedereen die vroege versies heeft getest en bugs heeft gemeld - jullie geduld met de ruwe randjes tijdens de ontwikkeling wordt zeer gewaardeerd."/>
     </texts>
 </l10n>

@@ -1,24 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <l10n>
     <texts>
+        <!-- Input action descriptions -->
         <text name="input_WT_INTERACT"       text="Inizia/Termina turno"/>
+        <text name="input_WT_MENU"           text="Apri Gestore luoghi di lavoro"/>
+        <text name="input_WT_HUD_EDIT"       text="Attiva/Disattiva modalità modifica HUD"/>
+
+        <!-- E-key prompt strings (dynamic, set via setActionEventText) -->
         <text name="wt_input_interact"       text="[E] Interagisci con il posto di lavoro"/>
         <text name="wt_input_start_shift"    text="[E] Inizia turno a %s"/>
         <text name="wt_input_end_shift"      text="[E] Termina turno a %s"/>
+        <text name="wt_input_open_menu"      text="Gestore luoghi di lavoro"/>
+        <text name="wt_input_hud_edit"       text="Modalità modifica HUD"/>
+
+        <!-- HUD panel -->
         <text name="wt_hud_on_shift"         text="IN TURNO"/>
+        <text name="wt_hud_edit_mode"        text="Sposta/Ridimensiona HUD luogo di lavoro"/>
+        <text name="wt_hud_edit_hint"        text="Trascina | Angoli=Scala | Bordi=Larghezza | Maiusc=Esci"/>
         <text name="wt_hud_location"         text="Luogo:"/>
         <text name="wt_hud_time"             text="Tempo:"/>
         <text name="wt_hud_earned"           text="Guadagnato:"/>
         <text name="wt_hud_shift_started"    text="Turno iniziato a %s\n$%d/ora"/>
         <text name="wt_hud_shift_ended"      text="Turno terminato\n+$%d guadagnato"/>
+        <text name="wt_hud_shift_abandoned"  text="Turno terminato - hai lasciato l'area di lavoro! Solo 20%% pagato | Termina sempre il turno manualmente per la paga completa."/>
+
+        <!-- Dialog strings (WTListDialog / WTEditDialog) -->
+        <text name="wt_dialog_list_title"        text="Workplace Triggers"/>
+        <text name="wt_dialog_list_subtitle_one" text="1 trigger posizionato"/>
+        <text name="wt_dialog_list_subtitle_many" text="%d trigger posizionati"/>
+        <text name="wt_dialog_list_empty"        text="Nessun trigger posizionato. Clicca '+ Nuovo trigger' per aggiungerne uno."/>
+        <text name="wt_dialog_list_showing"      text="Mostrando %s di %d"/>
+        <text name="wt_dialog_edit_title_new"    text="Nuovo trigger luogo di lavoro"/>
+        <text name="wt_dialog_edit_title_edit"   text="Modifica trigger"/>
+        <text name="wt_dialog_edit_name_default" text="Nuovo luogo di lavoro"/>
+        <text name="wt_dialog_snap_done"         text="Posizione allineata alla posizione del giocatore."/>
+
+        <!-- Pay schedule labels -->
+        <text name="wt_sched_hourly"   text="Orario"/>
+        <text name="wt_sched_flat"     text="Tariffa fissa"/>
+        <text name="wt_sched_daily"    text="Giornaliero"/>
+        <text name="wt_sched_hint_hourly" text="Guadagna paga × ore lavorate"/>
+        <text name="wt_sched_hint_flat"   text="Pagamento fisso alla fine del turno"/>
+        <text name="wt_sched_hint_daily"  text="Guadagna paga × giorni di gioco lavorati"/>
+        <text name="wt_wage_label_hourly" text="Paga oraria"/>
+        <text name="wt_wage_label_flat"   text="Tariffa fissa (per turno)"/>
+        <text name="wt_wage_label_daily"  text="Tariffa giornaliera"/>
+
+        <!-- Shift history -->
+        <text name="wt_history_title"    text="Cronologia turni"/>
+        <text name="wt_history_empty"    text="Nessun turno ancora completato."/>
+        <text name="wt_history_entry"    text="%s | %.1f ore | $%d"/>
+
+        <!-- Store item -->
         <text name="storePack_wt_title"       text="Workplace Triggers"/>
         <text name="wt_store_name"           text="Zona di lavoro"/>
-        <text name="wt_store_desc"           text="Posiziona ovunque per designare un posto di lavoro. Entra nella zona e premi [E] per iniziare il turno."/>
-        <text name="wt_store_function"       text="Designa un luogo di lavoro con nome e stipendio orario configurabili"/>
+        <text name="wt_store_desc"           text="Posiziona ovunque per designare un posto di lavoro. Entra nella zona e premi [E] per iniziare il turno e guadagnare un reddito."/>
+        <text name="wt_store_function"       text="Designa un luogo di lavoro posizionabile con nome e stipendio orario configurabili"/>
+
+        <!-- Notifications -->
         <text name="wt_notify_shift_started" text="Turno iniziato a '%s'"/>
         <text name="wt_notify_shift_ended"   text="Turno terminato - guadagnato $%d"/>
         <text name="wt_notify_left_trigger"  text="Hai lasciato la zona di lavoro - turno terminato"/>
-        <!-- Help Line category titles -->
+
+        <!-- Leave-zone warning overlay -->
+        <text name="wt_warn_title"      text="RITORNA NELL'AREA DI LAVORO"/>
+        <text name="wt_warn_countdown"  text="Annullamento turno in %d secondi"/>
+        <text name="wt_warn_cancelling" text="Annullamento turno..."/>
+
+        <!-- Settings menu (ESC > Settings > General Settings) -->
+        <text name="wt_settings_section"              text="Workplace Triggers"/>
+        <text name="wt_settings_show_hud_short"       text="Mostra HUD turno"/>
+        <text name="wt_settings_show_hud_long"        text="Mostra il pannello informazioni turno durante il turno"/>
+        <text name="wt_settings_hud_scale_short"      text="Scala HUD"/>
+        <text name="wt_settings_hud_scale_long"       text="Dimensione del pannello HUD turno sullo schermo"/>
+        <text name="wt_settings_show_notif_short"     text="Mostra notifiche"/>
+        <text name="wt_settings_show_notif_long"      text="Mostra messaggi flash all'inizio e alla fine di un turno"/>
+        <text name="wt_settings_wage_mult_short"      text="Moltiplicatore paga"/>
+        <text name="wt_settings_wage_mult_long"       text="Moltiplicatore globale applicato alla paga oraria di ogni trigger"/>
+        <text name="wt_settings_end_on_leave_short"   text="Termina turno all'uscita"/>
+        <text name="wt_settings_end_on_leave_long"    text="Termina automaticamente il turno quando esci dalla zona del trigger"/>
+        <text name="wt_settings_show_earnings_short"  text="Mostra guadagni nell'HUD"/>
+        <text name="wt_settings_show_earnings_long"   text="Mostra la riga dei guadagni correnti nel pannello HUD del turno"/>
+        <text name="wt_settings_debug_short"          text="Modalità debug"/>
+        <text name="wt_settings_debug_long"           text="Output informazioni di debug aggiuntive nella console"/>
+
+        <!-- ── Help Line strings ─────────────────────────────── -->
+
+        <!-- Category titles -->
         <text name="helpLine_wt_cat_overview"  text="Panoramica"/>
         <text name="helpLine_wt_cat_setup"     text="Per iniziare"/>
         <text name="helpLine_wt_cat_shift"     text="Lavorare un turno"/>
@@ -26,5 +94,147 @@
         <text name="helpLine_wt_cat_hud"       text="HUD e impostazioni"/>
         <text name="helpLine_wt_cat_tips"      text="Suggerimenti e multigiocatore"/>
         <text name="helpLine_wt_cat_about"     text="Informazioni e crediti"/>
+
+        <!-- ── Overview, Page 1: What is this mod ── -->
+        <text name="helpLine_wt_ov_p1_title"        text="Cos'è Workplace Triggers?"/>
+        <text name="helpLine_wt_ov_p1_what_title"   text="Concetto"/>
+        <text name="helpLine_wt_ov_p1_what_text"    text="Workplace Triggers ti permette di trasformare qualsiasi luogo su qualsiasi mappa in un legittimo lavoro fuori dalla fattoria. Posizioni una zona trigger invisibile da qualche parte nel mondo, le dai un nome e una paga oraria, poi entri e timbri l'inizio del turno. Mentre il turno è in corso, il mod tiene traccia del tempo di gioco e deposita i guadagni direttamente sul tuo conto della fattoria quando timbri l'uscita. Niente missioni, niente consegne e nessun veicolo richiesto - presentati, premi E e vieni pagato."/>
+        <text name="helpLine_wt_ov_p1_who_title"    text="A chi è rivolto?"/>
+        <text name="helpLine_wt_ov_p1_who_text"     text="Il mod è progettato per i roleplayer che vogliono che il loro personaggio agricoltore abbia un lavoro secondario insieme alla gestione della fattoria, per i giocatori che desiderano un flusso di reddito costante all'inizio di un nuovo salvataggio mentre la fattoria sta ancora crescendo, e per chiunque ami aggiungere più vita e varietà al proprio mondo agricolo. Poiché i trigger possono essere posizionati ovunque e rinominati liberamente, le possibilità sono ampie quanto la tua immaginazione."/>
+
+        <!-- ── Overview, Page 2: How earnings work ── -->
+        <text name="helpLine_wt_ov_p2_title"           text="Come funzionano i guadagni"/>
+        <text name="helpLine_wt_ov_p2_concept_title"   text="Tempo di gioco vs Tempo reale"/>
+        <text name="helpLine_wt_ov_p2_concept_text"    text="Le paghe sono calcolate usando il tempo di gioco, non il tempo reale. Per impostazione predefinita, un secondo reale equivale a un minuto di gioco in Farming Simulator, quindi un turno di un'ora di gioco richiede 60 secondi reali. Se aumenti la velocità del tempo di gioco nelle impostazioni, i tuoi turni verranno pagati più velocemente. Il mod legge automaticamente la scala del tempo di gioco in modo che i numeri riflettano sempre ciò che effettivamente sperimenti nel mondo di gioco."/>
+        <text name="helpLine_wt_ov_p2_money_title"     text="Dove va il denaro"/>
+        <text name="helpLine_wt_ov_p2_money_text"      text="Quando termini un turno, l'importo totale guadagnato viene aggiunto al tuo conto della fattoria tramite il sistema finanziario standard di FS25. Appare come una transazione positiva nella tua cronologia finanziaria sotto la categoria reddito, allo stesso modo della vendita di raccolti o del completamento di contratti. In multiplayer, ogni giocatore tiene traccia dei propri turni indipendentemente e riceve il proprio pagamento."/>
+
+        <!-- ── Getting Started, Page 1: Buy and place ── -->
+        <text name="helpLine_wt_su_p1_title"         text="Passo 1 - Acquista e posiziona"/>
+        <text name="helpLine_wt_su_p1_buy_title"     text="Trovare il trigger nel negozio"/>
+        <text name="helpLine_wt_su_p1_buy_text"      text="Apri il negozio (tasto predefinito B) e naviga alla categoria Oggetti. Cerca Zona di lavoro. L'oggetto non ha costi continui e può essere acquistato tutte le volte che ne hai bisogno - uno per ogni luogo di lavoro che vuoi creare. Posizionalo dal tuo menu di costruzione come qualsiasi altro oggetto posizionabile. La zona trigger stessa è invisibile durante il gioco normale, quindi non ingombrerà visivamente la tua mappa."/>
+        <text name="helpLine_wt_su_p1_place_title"   text="Scegliere una buona posizione"/>
+        <text name="helpLine_wt_su_p1_place_text"    text="Mettiti nella posizione che vuoi designare come luogo di lavoro prima di posizionare. Il trigger appare nella posizione che scegli nell'anteprima di posizionamento. Buone posizioni includono vicino a edifici che già possiedi, a incroci stradali che frequenti, accanto a punti di consegna, o ovunque si adatti alla storia del ruolo del lavoro. Il raggio del trigger predefinito è di 4 metri, quindi devi essere all'interno di quel cerchio per interagire con esso."/>
+
+        <!-- ── Getting Started, Page 2: Configure ── -->
+        <text name="helpLine_wt_su_p2_title"           text="Passo 2 - Configura il tuo luogo di lavoro"/>
+        <text name="helpLine_wt_su_p2_name_title"      text="Dare un nome al tuo luogo di lavoro"/>
+        <text name="helpLine_wt_su_p2_name_text"       text="Dopo aver posizionato il trigger, apri il Gestore luoghi di lavoro con F4 e seleziona il tuo nuovo trigger dalla lista. Premi Modifica. Digita qualsiasi nome desideri nel campo nome - Ufficio Postale, Mulino, Segheria, Municipio, qualunque cosa si adatti alla tua storia. Questo nome appare sull'icona della mappa, nel pannello HUD del turno mentre lavori, nei prompt di inizio e fine turno, e nei tuoi messaggi di notifica."/>
+        <text name="helpLine_wt_su_p2_wage_title"      text="Impostare la paga oraria"/>
+        <text name="helpLine_wt_su_p2_wage_text"       text="Usa i pulsanti più e meno nella finestra di dialogo Modifica per impostare una paga oraria tra 0 e 99.999 per ora di gioco. Il valore predefinito è 500. Usa il selettore di passo per cambiare se ogni pressione del pulsante aggiusta di 10, 100 o 1.000 alla volta. Un moltiplicatore paga globale (0,5x a 2,0x) è disponibile nel menu delle impostazioni di gioco e si applica sopra la paga di ogni trigger, così puoi regolare il livello di reddito complessivo senza modificare ogni trigger individualmente."/>
+        <text name="helpLine_wt_su_p2_radius_title"    text="Regolare il raggio del trigger"/>
+        <text name="helpLine_wt_su_p2_radius_text"     text="Il raggio controlla quanto è grande la zona di lavoro. Il minimo è 1 metro e il massimo è 50 metri. Un raggio piccolo (3-5 m) è buono per un punto specifico come un bancone di un negozio. Un raggio più grande (10-20 m) si adatta a un intero edificio o area del cortile. Se scopri di non poter attivare il prompt del tasto E quando ti trovi dove ti aspetteresti, prova ad aumentare leggermente il raggio. Le modifiche al raggio hanno effetto immediato senza bisogno di riavviare."/>
+
+        <!-- ── Getting Started, Page 3: Map icon and multi-trigger ── -->
+        <text name="helpLine_wt_su_p3_title"           text="Passo 3 - Sulla mappa"/>
+        <text name="helpLine_wt_su_p3_map_title"       text="Il tuo luogo di lavoro sulla mappa"/>
+        <text name="helpLine_wt_su_p3_map_text"        text="Ogni trigger posizionato ottiene automaticamente un'icona sulla mappa - un quadrato colorato con l'etichetta del nome del luogo di lavoro sopra. L'icona è verde quando il luogo di lavoro è inattivo e diventa dorata mentre un turno è attivamente in corso lì. Puoi vedere tutti i tuoi luoghi di lavoro a colpo d'occhio aprendo la mappa a schermo intero. Le icone appaiono sia sulla minimappa che sullo schermo della mappa intera e si adattano al livello di zoom della mappa."/>
+        <text name="helpLine_wt_su_p3_multi_title"     text="Luoghi di lavoro multipli"/>
+        <text name="helpLine_wt_su_p3_multi_text"      text="Non c'è un limite rigido a quanti luoghi di lavoro puoi creare. Acquista e posiziona tutte le zone di lavoro di cui hai bisogno. Ognuno è completamente indipendente con il proprio nome, paga e raggio. Puoi essere in turno solo in un luogo di lavoro alla volta - iniziare un nuovo turno termina automaticamente qualsiasi turno in corso e paga quanto guadagnato finora. Tutti i luoghi di lavoro vengono salvati con il tuo salvataggio e ripristinati quando ricarichi."/>
+
+        <!-- ── Working a Shift, Page 1: Clocking in ── -->
+        <text name="helpLine_wt_sh_p1_title"          text="Timbrare l'inizio"/>
+        <text name="helpLine_wt_sh_p1_enter_title"    text="Entrare nella zona di lavoro"/>
+        <text name="helpLine_wt_sh_p1_enter_text"     text="Cammina o guida fino alla posizione del tuo luogo di lavoro. Quando il tuo personaggio entra nel raggio del trigger, vedrai apparire un prompt di azione in fondo allo schermo che mostra il nome del luogo di lavoro. Questo conferma che sei nella zona e pronto per iniziare. Se il prompt non appare, controlla di essere abbastanza vicino al centro della zona o aumenta il raggio del trigger nella finestra di dialogo Modifica."/>
+        <text name="helpLine_wt_sh_p1_start_title"    text="Iniziare il turno"/>
+        <text name="helpLine_wt_sh_p1_start_text"     text="Premi E (o il tuo tasto di interazione riassegnato) mentre sei nella zona. Sentirai un suono di conferma, apparirà un breve messaggio di notifica sullo schermo, e il pannello HUD del turno si aprirà nell'angolo dello schermo. Il pannello mostra il nome del tuo luogo di lavoro, l'ora di gioco corrente e un contatore di guadagni in tempo reale che si aggiorna col passare del tempo. Da questo momento il tempo di gioco viene tracciato e le paghe si accumulano."/>
+
+        <!-- ── Working a Shift, Page 2: During and leaving ── -->
+        <text name="helpLine_wt_sh_p2_title"          text="Durante il tuo turno"/>
+        <text name="helpLine_wt_sh_p2_hud_title"      text="Il pannello HUD del turno"/>
+        <text name="helpLine_wt_sh_p2_hud_text"       text="Il pannello HUD rimane visibile nell'angolo dello schermo per l'intera durata del tuo turno. Mostra il nome del luogo di lavoro in cui stai attualmente lavorando, un timer del turno che conta in ore e minuti di gioco, e l'importo totale guadagnato finora in questo turno. Puoi spostare e ridimensionare il pannello in qualsiasi momento premendo Maiusc per entrare in Modalità modifica HUD. La posizione e le dimensioni del tuo pannello vengono ricordate tra le sessioni di gioco."/>
+        <text name="helpLine_wt_sh_p2_leave_title"    text="Lasciare la zona durante un turno"/>
+        <text name="helpLine_wt_sh_p2_leave_text"     text="Se esci dal raggio del trigger durante il turno, appare una sovrapposizione di avviso sullo schermo con un conto alla rovescia. Hai un breve periodo di grazia per tornare prima che il turno venga automaticamente annullato. Se torni in tempo, il turno continua normalmente senza penalità. Se il conto alla rovescia raggiunge lo zero, il turno termina e vieni pagato per il tempo lavorato fino a quel momento. Questo comportamento può essere modificato nelle impostazioni - puoi disabilitare la terminazione automatica e rimanere in turno anche fuori dalla zona."/>
+
+        <!-- ── Working a Shift, Page 3: Clocking out ── -->
+        <text name="helpLine_wt_sh_p3_title"          text="Timbrare l'uscita"/>
+        <text name="helpLine_wt_sh_p3_end_title"      text="Terminare il turno manualmente"/>
+        <text name="helpLine_wt_sh_p3_end_text"       text="Per terminare volontariamente il tuo turno, mettiti nella zona del trigger e premi di nuovo E. Il prompt ora leggerà Termina turno. Premendolo si ferma immediatamente il timer, si calcola la paga finale e la si deposita sul tuo conto della fattoria. Appare brevemente una notifica di riepilogo che mostra quanto hai guadagnato. Il pannello HUD si chiude e l'icona della mappa torna verde. Puoi iniziare un nuovo turno nello stesso o in qualsiasi altro luogo di lavoro immediatamente."/>
+        <text name="helpLine_wt_sh_p3_pay_title"      text="Come viene calcolato il pagamento"/>
+        <text name="helpLine_wt_sh_p3_pay_text"       text="La formula è semplice: pagamento = paga oraria del luogo di lavoro × numero di ore di gioco lavorate × moltiplicatore paga globale dalle impostazioni. Ad esempio, un luogo di lavoro con 500 all'ora lavorato per 2 ore di gioco con un moltiplicatore 1,0x paga 1.000. Con un moltiplicatore 1,5x lo stesso turno paga 1.500. Le frazioni di ora sono incluse - un turno di 30 minuti a 500 all'ora paga 250."/>
+
+        <!-- ── Managing Workplaces, Page 1: The manager ── -->
+        <text name="helpLine_wt_mg_p1_title"         text="Il Gestore luoghi di lavoro"/>
+        <text name="helpLine_wt_mg_p1_open_title"    text="Aprire il gestore"/>
+        <text name="helpLine_wt_mg_p1_open_text"     text="Premi F4 in qualsiasi momento (anche durante un turno) per aprire la finestra di dialogo del Gestore luoghi di lavoro. Questo è l'hub centrale per visualizzare e amministrare tutti i tuoi luoghi di lavoro posizionati. Elenca ogni trigger che hai creato con il suo nome, paga oraria e stato attuale a colpo d'occhio. Il gestore può anche essere aperto dalla console di gioco digitando wtGui se preferisci."/>
+        <text name="helpLine_wt_mg_p1_list_title"    text="Leggere la lista"/>
+        <text name="helpLine_wt_mg_p1_list_text"     text="Ogni riga nella lista mostra il nome del luogo di lavoro a sinistra e la paga oraria configurata a destra. Se un turno è attualmente attivo in un luogo di lavoro, quella riga è evidenziata. Puoi scorrere la lista se hai molti luoghi di lavoro. Cliccando su una riga la seleziona, e i pulsanti Modifica ed Elimina in fondo alla finestra di dialogo diventano disponibili per il luogo di lavoro selezionato."/>
+
+        <!-- ── Managing Workplaces, Page 2: Edit and delete ── -->
+        <text name="helpLine_wt_mg_p2_title"           text="Modificare ed eliminare"/>
+        <text name="helpLine_wt_mg_p2_edit_title"      text="Modificare un luogo di lavoro"/>
+        <text name="helpLine_wt_mg_p2_edit_text"       text="Seleziona un luogo di lavoro nel Gestore e premi Modifica per aprire la finestra di dialogo di modifica per quel trigger. Puoi cambiare il nome, regolare la paga oraria e modificare il raggio del trigger. Le modifiche hanno effetto immediato quando confermi. L'etichetta dell'icona della mappa si aggiorna istantaneamente per riflettere un nuovo nome. Puoi modificare un luogo di lavoro anche mentre un turno è in corso lì - la nuova paga si applicherà ai turni futuri, ma il turno corrente utilizza la paga che era impostata quando è iniziato."/>
+        <text name="helpLine_wt_mg_p2_delete_title"    text="Eliminare un luogo di lavoro"/>
+        <text name="helpLine_wt_mg_p2_delete_text"     text="Seleziona un luogo di lavoro e premi Elimina per rimuoverlo definitivamente. Se un turno è attualmente attivo in quel luogo di lavoro, il turno viene prima terminato e vieni pagato per il tempo lavorato prima che il trigger venga rimosso. L'icona della mappa scompare immediatamente. Anche il marcatore 3D fluttuante sopra la posizione del luogo di lavoro viene rimosso. L'eliminazione non può essere annullata, quindi assicurati di aver selezionato il trigger giusto prima di confermare. L'oggetto posizionabile stesso rimane nel mondo e può essere venduto separatamente."/>
+
+        <!-- ── Managing Workplaces, Page 3: Saving ── -->
+        <text name="helpLine_wt_mg_p3_title"          text="Salvataggio e persistenza"/>
+        <text name="helpLine_wt_mg_p3_save_title"     text="Salvataggio automatico"/>
+        <text name="helpLine_wt_mg_p3_save_text"      text="Tutti i dati dei luoghi di lavoro vengono salvati automaticamente ogni volta che il gioco salva. Questo include nome, paga oraria, posizione e raggio di ogni trigger. Anche la posizione e la scala del tuo pannello HUD vengono salvate. Quando carichi un salvataggio, il mod ripristina tutti i luoghi di lavoro esattamente come li hai lasciati, incluse le loro icone sulla mappa. Non devi fare nulla di speciale per salvare - usa semplicemente la normale opzione Salva gioco e tutto viene preservato."/>
+        <text name="helpLine_wt_mg_p3_limit_title"    text="Nota sull'oggetto posizionabile"/>
+        <text name="helpLine_wt_mg_p3_limit_text"     text="La zona di lavoro che acquisti dal negozio è un oggetto posizionabile standard di FS25. Il mod Workplace Triggers gestisce la logica dei turni, le paghe e l'interfaccia utente separatamente dall'oggetto posizionabile stesso. Se vendi l'oggetto posizionabile dal menu di costruzione, il marcatore visivo scompare ma la voce di dati del luogo di lavoro rimarrà nel Gestore finché non la elimini anche lì. Per una rimozione pulita, elimina sempre prima il trigger dal Gestore, poi vendi l'oggetto posizionabile dal menu di costruzione."/>
+
+        <!-- ── HUD and Settings, Page 1: Panel overview ── -->
+        <text name="helpLine_wt_hd_p1_title"         text="Il pannello HUD del turno"/>
+        <text name="helpLine_wt_hd_p1_panel_title"   text="Cosa mostra il pannello"/>
+        <text name="helpLine_wt_hd_p1_panel_text"    text="Il pannello HUD del turno appare automaticamente quando inizi un turno e si chiude quando il turno finisce. Mostra tre righe di informazioni: il nome del luogo di lavoro in cui stai attualmente lavorando, il tempo di turno trascorso in ore e minuti di gioco, e l'importo totale guadagnato finora in questo turno nella tua valuta della fattoria. Tutti e tre i valori si aggiornano in tempo reale ogni pochi secondi. Se non vuoi vedere la riga dei guadagni, puoi nasconderla nel menu delle impostazioni."/>
+        <text name="helpLine_wt_hd_p1_edit_title"    text="Entrare in modalità modifica HUD"/>
+        <text name="helpLine_wt_hd_p1_edit_text"     text="Premi Maiusc sinistro in qualsiasi momento (anche quando non sei in turno) per entrare in Modalità modifica HUD. Il bordo del pannello si illumina in giallo e il testo MODALITÀ MODIFICA appare sopra per confermare che sei in modalità modifica. In questa modalità, la telecamera di gioco smette di ruotare quando muovi il mouse, così puoi interagire liberamente con il pannello. Premi di nuovo Maiusc per uscire dalla modalità modifica e tornare alla normalità. Le modifiche al layout vengono salvate automaticamente quando esci dalla modalità modifica."/>
+
+        <!-- ── HUD and Settings, Page 2: Repositioning ── -->
+        <text name="helpLine_wt_hd_p2_title"           text="Spostare e ridimensionare l'HUD"/>
+        <text name="helpLine_wt_hd_p2_drag_title"      text="Spostare il pannello"/>
+        <text name="helpLine_wt_hd_p2_drag_text"       text="In Modalità modifica HUD, clicca e trascina ovunque sul corpo del pannello per spostarlo in una nuova posizione sullo schermo. Il pannello si aggancia al punto in cui rilasci il pulsante del mouse. Puoi posizionarlo in qualsiasi angolo o lungo qualsiasi bordo dello schermo. La posizione viene memorizzata come coordinata schermo normalizzata, quindi rimane posizionata proporzionalmente indipendentemente dalla risoluzione dello schermo o dal rapporto d'aspetto."/>
+        <text name="helpLine_wt_hd_p2_resize_title"    text="Ridimensionare il pannello"/>
+        <text name="helpLine_wt_hd_p2_resize_text"     text="Il pannello ha due maniglie di ridimensionamento in modalità modifica. Trascina una maniglia d'angolo per scalare l'intero pannello uniformemente - sia la dimensione che il testo scalano insieme. Trascina la maniglia del bordo sinistro o destro per cambiare solo la larghezza del pannello senza influenzare l'altezza o la dimensione del testo. Questo ti permette di allargare il pannello per mostrare nomi di luoghi di lavoro più lunghi senza rendere il testo enorme. Si applicano limiti minimi e massimi per impedire che il pannello diventi inutilizzabilmente piccolo o sovradimensionato."/>
+
+        <!-- ── HUD and Settings, Page 3: Settings options ── -->
+        <text name="helpLine_wt_hd_p3_title"           text="Opzioni del menu Impostazioni"/>
+        <text name="helpLine_wt_hd_p3_settings_title"  text="Trovare le impostazioni"/>
+        <text name="helpLine_wt_hd_p3_settings_text"   text="Tutte le impostazioni di Workplace Triggers si trovano nella schermata principale delle Impostazioni di gioco sotto la scheda Impostazioni generali. Scorri verso il basso fino alla sezione Workplace Triggers. Le opzioni disponibili includono: attivare o disattivare il pannello HUD del turno, regolare la preimpostazione della scala HUD, abilitare o disabilitare le notifiche di inizio e fine turno, attivare o disattivare la riga dei guadagni nell'HUD e controllare se lasciare la zona del trigger termina automaticamente il tuo turno. Le modifiche si applicano immediatamente senza bisogno di riavviare."/>
+        <text name="helpLine_wt_hd_p3_mult_title"      text="Il moltiplicatore paga"/>
+        <text name="helpLine_wt_hd_p3_mult_text"       text="L'impostazione del moltiplicatore paga è un fattore globale applicato sopra la paga configurata di ogni luogo di lavoro. I valori disponibili sono 0,5x, 0,75x, 1,0x, 1,25x, 1,5x e 2,0x. A 1,0x (predefinito) le paghe sono esattamente come configurate. A 0,5x ogni luogo di lavoro paga la metà. A 2,0x ogni luogo di lavoro paga il doppio. Questo è utile per regolare rapidamente il livello di reddito complessivo del mod per adattarlo alla tua economia di gioco senza modificare ogni trigger individualmente."/>
+
+        <!-- ── Tips and Multiplayer, Page 1: Multiplayer ── -->
+        <text name="helpLine_wt_tp_p1_title"         text="Multigiocatore"/>
+        <text name="helpLine_wt_tp_p1_mp_title"      text="Supporto multigiocatore"/>
+        <text name="helpLine_wt_tp_p1_mp_text"       text="Workplace Triggers supporta sessioni multigiocatore. Tutti i luoghi di lavoro posizionati sono visibili sulla mappa per tutti i giocatori nella sessione. Ogni giocatore gestisce i propri turni indipendentemente - un giocatore che timbra l'inizio non influisce sullo stato del turno di un altro giocatore. Le paghe vengono pagate sul conto della fattoria individuale del giocatore. Il posizionamento e la configurazione dei luoghi di lavoro sono gestiti dall'host e le modifiche vengono riflesse per tutti i giocatori connessi."/>
+        <text name="helpLine_wt_tp_p1_host_title"    text="Autorità dell'host"/>
+        <text name="helpLine_wt_tp_p1_host_text"     text="Il mod utilizza un design autoritario dell'host. Questo significa che l'host controlla lo stato di gioco per i dati dei luoghi di lavoro. Se sei un client nella sessione di qualcun altro, puoi iniziare e terminare turni in qualsiasi luogo di lavoro configurato, ma creare, modificare o eliminare luoghi di lavoro potrebbe richiedere il permesso dell'host a seconda delle impostazioni della sessione. Il file di salvataggio dell'host memorizza tutte le configurazioni dei luoghi di lavoro e queste vengono caricate per tutti i giocatori quando la sessione inizia."/>
+
+        <!-- ── Tips and Multiplayer, Page 2: Console commands ── -->
+        <text name="helpLine_wt_tp_p2_title"           text="Comandi console"/>
+        <text name="helpLine_wt_tp_p2_console_title"   text="Aprire la console"/>
+        <text name="helpLine_wt_tp_p2_console_text"    text="La console sviluppatore può essere aperta con il tasto tilde (~) o accento grave (`) sulla maggior parte delle tastiere. È disponibile solo quando la modalità sviluppatore è attiva nel launcher di gioco. I comandi console sono utili per eseguire il debug di problemi, ispezionare lo stato attuale del mod o testare rapidamente le impostazioni. Tutti i comandi di Workplace Triggers iniziano con il prefisso wt, quindi sono facili da trovare digitando wt nella console."/>
+        <text name="helpLine_wt_tp_p2_cmds_title"      text="Comandi disponibili"/>
+        <text name="helpLine_wt_tp_p2_cmds_text"       text="wtHelp - elenca tutti i comandi disponibili con descrizioni. wtStatus - mostra se un turno è attualmente attivo, quale luogo di lavoro, da quanto tempo e i guadagni correnti. wtList - stampa tutti i luoghi di lavoro posizionati nella console con i loro ID, nomi, paghe e posizioni. wtDebug - attiva o disattiva la registrazione verbosa di debug, utile per segnalazioni di bug. wtGui - apre o chiude la finestra di dialogo del Gestore luoghi di lavoro dalla console."/>
+
+        <!-- ── Tips and Multiplayer, Page 3: Roleplay ideas ── -->
+        <text name="helpLine_wt_tp_p3_title"           text="Idee per il roleplay"/>
+        <text name="helpLine_wt_tp_p3_roleplay_title"  text="Sfruttare al meglio il mod"/>
+        <text name="helpLine_wt_tp_p3_roleplay_text"   text="Il mod diventa più immersivo quando ti impegni nell'aspetto del roleplay. Imposta una paga realistica per ogni lavoro - un operaio al salario minimo potrebbe guadagnare 150 all'ora, un artigiano qualificato 600 e un appaltatore specializzato 1500 o più. Timbra solo quando il tuo personaggio sarebbe realisticamente in quel luogo. Combinalo con altri mod di roleplay per costruire una routine quotidiana completa per il tuo personaggio agricoltore oltre alla semplice cura dei campi."/>
+        <text name="helpLine_wt_tp_p3_ideas_title"     text="Idee per luoghi di lavoro"/>
+        <text name="helpLine_wt_tp_p3_ideas_text"      text="Ecco alcune idee per iniziare: posiziona un trigger alla stazione di servizio e chiamalo Addetto alla stazione, mettine uno in un grande fienile e chiamalo Addetto alla cura del bestiame, impostane uno al silo del grano per Addetto al grano, lascialo cadere a un incrocio stradale per Squadra manutenzione stradale, o posizionane uno al tuo edificio officina per Meccanico attrezzature agricole. Su server multigiocatore, ogni giocatore può avere il proprio insieme di lavori creando un'intera economia di diverse professioni che condividono la stessa mappa."/>
+
+        <!-- ── About and Credits, Page 1: Version info ── -->
+        <text name="helpLine_wt_ab_p1_title"           text="Versione e autore"/>
+        <text name="helpLine_wt_ab_p1_version_title"   text="Versione corrente"/>
+        <text name="helpLine_wt_ab_p1_version_text"    text="Workplace Triggers versione 0.1.0.0 - Prima uscita. Questo è un progetto di sviluppo attivo. Funzionalità, impostazioni e formati di salvataggio possono cambiare tra le versioni. Quando si aggiorna a una nuova versione, è sempre una buona idea fare prima una copia di backup della cartella del tuo salvataggio. Se riscontri problemi dopo un aggiornamento, le note di rilascio su GitHub descriveranno eventuali modifiche sostanziali e passaggi di migrazione."/>
+        <text name="helpLine_wt_ab_p1_author_title"    text="Autore"/>
+        <text name="helpLine_wt_ab_p1_author_text"     text="Creato da TisonK. Questo mod è iniziato come uno strumento personale per un gameplay orientato al roleplay ed è cresciuto fino a diventare una versione completa dopo feedback positivi dalla comunità. L'obiettivo è sempre stato mantenerlo leggero, sicuro per i salvataggi e compatibile con quanti più altri mod possibile. Se ti piace usarlo, considera di lasciare una valutazione o un commento sulla pagina del mod - aiuta davvero a motivare lo sviluppo continuo."/>
+
+        <!-- ── About and Credits, Page 2: GitHub ── -->
+        <text name="helpLine_wt_ab_p2_title"           text="GitHub e contributi"/>
+        <text name="helpLine_wt_ab_p2_github_title"    text="Codice sorgente e repository"/>
+        <text name="helpLine_wt_ab_p2_github_text"     text="Il codice sorgente completo di Workplace Triggers è pubblicamente disponibile su GitHub all'indirizzo: github.com/TisonK/FS25_WorkplaceTriggers. Il repository contiene tutti i file sorgente Lua, il modDesc, i file di traduzione e la cronologia completa delle versioni. Se vuoi ispezionare come funziona qualcosa, verificare quali dati vengono salvati, o costruire sopra il mod per il tuo server o progetto, il codice è lì per te da leggere e usare secondo i termini della licenza."/>
+        <text name="helpLine_wt_ab_p2_contrib_title"   text="Suggerimenti e contributi"/>
+        <text name="helpLine_wt_ab_p2_contrib_text"    text="Segnalazioni di bug, richieste di funzionalità e pull request sono tutti benvenuti sulla pagina GitHub Issues. Quando segnali un bug, includi il file di log di gioco (log.txt dalla tua cartella FarmingSimulator2025), i passaggi esatti per riprodurre il problema e quali altri mod erano attivi. Per suggerimenti di funzionalità, apri un GitHub Issue con l'etichetta enhancement e descrivi il caso d'uso che hai in mente. I miglioramenti alle traduzioni per qualsiasi lingua supportata sono particolarmente apprezzati."/>
+
+        <!-- ── About and Credits, Page 3: Licence and thanks ── -->
+        <text name="helpLine_wt_ab_p3_title"           text="Licenza e ringraziamenti"/>
+        <text name="helpLine_wt_ab_p3_license_title"   text="Licenza"/>
+        <text name="helpLine_wt_ab_p3_license_text"    text="Workplace Triggers è rilasciato sotto la licenza internazionale Creative Commons Attribuzione-NonCommerciale-NonOpereDerivate 4.0 (CC BY-NC-ND 4.0). Sei libero di includerlo in modpack e condividerlo con altri a condizione che venga dato credito all'autore originale. Non puoi venderlo, monetizzarlo o pubblicare versioni modificate senza permesso. Il testo completo della licenza è disponibile su creativecommons.org/licenses/by-nc-nd/4.0."/>
+        <text name="helpLine_wt_ab_p3_thanks_title"    text="Ringraziamenti speciali"/>
+        <text name="helpLine_wt_ab_p3_thanks_text"     text="Grazie alla comunità di modding di FS25 per la documentazione, le implementazioni di riferimento e il feedback che hanno reso possibile questo mod. Un ringraziamento speciale agli autori di NPCFavor per il loro codice aperto e ben commentato che è servito come riferimento per diversi pattern API FS25 utilizzati in questo mod. Grazie a tutti coloro che hanno testato le prime versioni e segnalato bug - la vostra pazienza con le imperfezioni durante lo sviluppo è molto apprezzata."/>
     </texts>
 </l10n>

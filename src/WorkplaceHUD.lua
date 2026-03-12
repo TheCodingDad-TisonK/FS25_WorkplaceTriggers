@@ -165,13 +165,24 @@ function WorkplaceHUD:onShiftEnded(workplaceName, earnings)
     )
 end
 
+function WorkplaceHUD:onShiftAbandonedPenalty(workplaceName, penaltyPay, fullEarnings)
+    -- Clear the leave warning
+    self.leaveWarnActive      = false
+    self.leaveWarnSecondsLeft = 0
+    -- Build the penalty message using the translation key, with a longer display time
+    local fmt = g_i18n:getText("wt_hud_shift_abandoned")
+        or "Shift ended - left work area! | Only 20%% paid: $%d (would have been $%d) | Always end your shift manually for full pay."
+    local msg = string.format(fmt, penaltyPay, fullEarnings)
+    self:showFlash(msg, {1, 0.35, 0.35, 1}, 5.0)   -- red tint, longer display
+end
+
 -- =========================================================
 -- Flash Notification
 -- =========================================================
-function WorkplaceHUD:showFlash(message, color)
+function WorkplaceHUD:showFlash(message, color, duration)
     self.flashMessage  = message
     self.flashTimer    = 0
-    self.flashDuration = 4.0
+    self.flashDuration = duration or 4.0
     self.flashColor    = color or {1, 0.85, 0.3, 1}
 end
 
@@ -659,10 +670,27 @@ function WorkplaceHUD:drawFlash()
     end
     if #lines == 0 then lines = {self.flashMessage} end
 
+    -- Measure required width from the longest line.
+    -- FS25 renderText uses normalised screen height for text size.
+    -- Average char width ≈ ts * 0.52 is a safe estimate for the default font.
+    -- We add left/right padding and cap at 0.70 (leaves margin on a 16:9 screen).
+    local CHAR_WIDTH_RATIO = 0.52
+    local MAX_FLASH_WIDTH  = 0.70
+    local minW = w + pad * 2    -- never narrower than the HUD panel
+    local contentW = minW
+    for _, line in ipairs(lines) do
+        local lineW = #line * ts * CHAR_WIDTH_RATIO + pad * 2 + 0.008
+        if lineW > contentW then contentW = lineW end
+    end
+    local flashW = math.min(contentW, MAX_FLASH_WIDTH)
+
     local lineSpacing = ts * 1.35
     local flashH  = pad + #lines * lineSpacing + pad * 0.5
     local flashX  = self.posX - pad
-    local flashW  = w + pad * 2
+    -- If the box would bleed off the right edge, shift it left to fit
+    if flashX + flashW > 0.98 then
+        flashX = 0.98 - flashW
+    end
     local _, panelY, _, panelH = self:getHUDRect()
     local baseY   = panelY + panelH + 0.008 * s
 

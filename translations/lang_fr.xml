@@ -1,30 +1,240 @@
 <?xml version="1.0" encoding="utf-8"?>
 <l10n>
     <texts>
+        <!-- Input action descriptions -->
         <text name="input_WT_INTERACT"       text="Commencer/Terminer le travail"/>
+        <text name="input_WT_MENU"           text="Ouvrir le gestionnaire de lieux de travail"/>
+        <text name="input_WT_HUD_EDIT"       text="Activer/Désactiver le mode édition HUD"/>
+
+        <!-- E-key prompt strings (dynamic, set via setActionEventText) -->
         <text name="wt_input_interact"       text="[E] Interagir avec le lieu de travail"/>
         <text name="wt_input_start_shift"    text="[E] Commencer le travail a %s"/>
         <text name="wt_input_end_shift"      text="[E] Terminer le travail a %s"/>
+        <text name="wt_input_open_menu"      text="Gestionnaire de lieux de travail"/>
+        <text name="wt_input_hud_edit"       text="Mode édition HUD"/>
+
+        <!-- HUD panel -->
         <text name="wt_hud_on_shift"         text="EN SERVICE"/>
+        <text name="wt_hud_edit_mode"        text="Déplacer/Redimensionner le HUD de lieu de travail"/>
+        <text name="wt_hud_edit_hint"        text="Glisser | Coins=Échelle | Bords=Largeur | Maj=Quitter"/>
         <text name="wt_hud_location"         text="Lieu:"/>
         <text name="wt_hud_time"             text="Temps:"/>
         <text name="wt_hud_earned"           text="Gagne:"/>
         <text name="wt_hud_shift_started"    text="Travail commence a %s\n%d$/h"/>
         <text name="wt_hud_shift_ended"      text="Travail termine\n+%d$ gagne"/>
+        <text name="wt_hud_shift_abandoned"  text="Quart terminé - vous avez quitté la zone de travail ! Seulement 20%% payé | Terminez toujours votre quart manuellement pour un paiement complet."/>
+
+        <!-- Dialog strings (WTListDialog / WTEditDialog) -->
+        <text name="wt_dialog_list_title"        text="Workplace Triggers"/>
+        <text name="wt_dialog_list_subtitle_one" text="1 déclencheur placé"/>
+        <text name="wt_dialog_list_subtitle_many" text="%d déclencheurs placés"/>
+        <text name="wt_dialog_list_empty"        text="Aucun déclencheur placé. Cliquez sur '+ Nouveau déclencheur' pour en ajouter un."/>
+        <text name="wt_dialog_list_showing"      text="Affichage %s sur %d"/>
+        <text name="wt_dialog_edit_title_new"    text="Nouveau déclencheur de lieu de travail"/>
+        <text name="wt_dialog_edit_title_edit"   text="Modifier le déclencheur"/>
+        <text name="wt_dialog_edit_name_default" text="Nouveau lieu de travail"/>
+        <text name="wt_dialog_snap_done"         text="Position alignée sur la position du joueur."/>
+
+        <!-- Pay schedule labels -->
+        <text name="wt_sched_hourly"   text="Horaire"/>
+        <text name="wt_sched_flat"     text="Tarif fixe"/>
+        <text name="wt_sched_daily"    text="Quotidien"/>
+        <text name="wt_sched_hint_hourly" text="Gagne le salaire × heures travaillées"/>
+        <text name="wt_sched_hint_flat"   text="Paiement fixe à la fin du quart"/>
+        <text name="wt_sched_hint_daily"  text="Gagne le salaire × jours de jeu travaillés"/>
+        <text name="wt_wage_label_hourly" text="Salaire horaire"/>
+        <text name="wt_wage_label_flat"   text="Tarif fixe (par quart)"/>
+        <text name="wt_wage_label_daily"  text="Tarif journalier"/>
+
+        <!-- Shift history -->
+        <text name="wt_history_title"    text="Historique des quarts"/>
+        <text name="wt_history_empty"    text="Aucun quart effectué pour le moment."/>
+        <text name="wt_history_entry"    text="%s | %.1f h | %d$"/>
+
+        <!-- Store item -->
         <text name="storePack_wt_title"       text="Workplace Triggers"/>
         <text name="wt_store_name"           text="Zone de travail"/>
-        <text name="wt_store_desc"           text="Placez n'importe ou pour designer un lieu de travail. Entrez dans la zone et appuyez sur [E] pour commencer votre quart."/>
-        <text name="wt_store_function"       text="Designe un lieu de travail placable avec un nom et un salaire horaire configurables"/>
+        <text name="wt_store_desc"           text="Placez n'importe où pour désigner un lieu de travail. Entrez dans la zone et appuyez sur [E] pour commencer votre quart et gagner un revenu."/>
+        <text name="wt_store_function"       text="Désigne un lieu de travail plaçable avec un nom et un salaire horaire configurables"/>
+
+        <!-- Notifications -->
         <text name="wt_notify_shift_started" text="Quart commence a '%s'"/>
         <text name="wt_notify_shift_ended"   text="Quart termine - %d$ gagne"/>
         <text name="wt_notify_left_trigger"  text="Vous avez quitte la zone de travail - quart termine"/>
-        <!-- Help Line category titles -->
+
+        <!-- Leave-zone warning overlay -->
+        <text name="wt_warn_title"      text="RETOURNEZ DANS LA ZONE DE TRAVAIL"/>
+        <text name="wt_warn_countdown"  text="Annulation du quart dans %d secondes"/>
+        <text name="wt_warn_cancelling" text="Annulation du quart..."/>
+
+        <!-- Settings menu (ESC > Settings > General Settings) -->
+        <text name="wt_settings_section"              text="Workplace Triggers"/>
+        <text name="wt_settings_show_hud_short"       text="Afficher le HUD de quart"/>
+        <text name="wt_settings_show_hud_long"        text="Afficher le panneau d'info du quart pendant le travail"/>
+        <text name="wt_settings_hud_scale_short"      text="Échelle HUD"/>
+        <text name="wt_settings_hud_scale_long"       text="Taille du panneau HUD de quart à l'écran"/>
+        <text name="wt_settings_show_notif_short"     text="Afficher les notifications"/>
+        <text name="wt_settings_show_notif_long"      text="Afficher des messages flash au début et à la fin d'un quart"/>
+        <text name="wt_settings_wage_mult_short"      text="Multiplicateur de salaire"/>
+        <text name="wt_settings_wage_mult_long"       text="Multiplicateur global appliqué au salaire horaire de chaque déclencheur"/>
+        <text name="wt_settings_end_on_leave_short"   text="Terminer le quart en quittant"/>
+        <text name="wt_settings_end_on_leave_long"    text="Terminer automatiquement le quart quand vous quittez la zone du déclencheur"/>
+        <text name="wt_settings_show_earnings_short"  text="Afficher les gains dans le HUD"/>
+        <text name="wt_settings_show_earnings_long"   text="Afficher la ligne des gains actuels dans le panneau HUD de quart"/>
+        <text name="wt_settings_debug_short"          text="Mode débogage"/>
+        <text name="wt_settings_debug_long"           text="Afficher des informations de débogage supplémentaires dans la console"/>
+
+        <!-- ── Help Line strings ─────────────────────────────── -->
+
+        <!-- Category titles -->
         <text name="helpLine_wt_cat_overview"  text="Vue d'ensemble"/>
-        <text name="helpLine_wt_cat_setup"     text="Demarrage"/>
+        <text name="helpLine_wt_cat_setup"     text="Démarrage"/>
         <text name="helpLine_wt_cat_shift"     text="Travailler un quart"/>
-        <text name="helpLine_wt_cat_manage"    text="Gerer les lieux de travail"/>
-        <text name="helpLine_wt_cat_hud"       text="HUD et parametres"/>
+        <text name="helpLine_wt_cat_manage"    text="Gérer les lieux de travail"/>
+        <text name="helpLine_wt_cat_hud"       text="HUD et paramètres"/>
         <text name="helpLine_wt_cat_tips"      text="Conseils et multijoueur"/>
-        <text name="helpLine_wt_cat_about"     text="A propos et credits"/>
+        <text name="helpLine_wt_cat_about"     text="À propos et crédits"/>
+
+        <!-- ── Overview, Page 1: What is this mod ── -->
+        <text name="helpLine_wt_ov_p1_title"        text="Qu'est-ce que Workplace Triggers ?"/>
+        <text name="helpLine_wt_ov_p1_what_title"   text="Concept"/>
+        <text name="helpLine_wt_ov_p1_what_text"    text="Workplace Triggers vous permet de transformer n'importe quel endroit sur n'importe quelle carte en un emploi légitime hors de la ferme. Vous placez une zone de déclenchement invisible quelque part dans le monde, vous lui donnez un nom et un salaire horaire, puis vous entrez et pointez. Pendant votre quart, le mod suit le temps de jeu et dépose les salaires gagnés directement sur votre compte de ferme lorsque vous pointez. Pas de missions, pas de livraisons et aucun véhicule requis - présentez-vous, appuyez sur E, et soyez payé."/>
+        <text name="helpLine_wt_ov_p1_who_title"    text="À qui s'adresse-t-il ?"/>
+        <text name="helpLine_wt_ov_p1_who_text"     text="Le mod est conçu pour les roleplayers qui veulent que leur personnage agriculteur occupe un emploi secondaire en parallèle de la ferme, pour les joueurs qui veulent un flux de revenus stable au début d'une nouvelle sauvegarde pendant que la ferme grandit encore, et pour tous ceux qui aiment ajouter plus de vie et de variété à leur monde agricole. Comme les déclencheurs peuvent être placés n'importe où et renommés librement, les possibilités sont aussi larges que votre imagination."/>
+
+        <!-- ── Overview, Page 2: How earnings work ── -->
+        <text name="helpLine_wt_ov_p2_title"           text="Comment fonctionnent les gains"/>
+        <text name="helpLine_wt_ov_p2_concept_title"   text="Temps de jeu vs Temps réel"/>
+        <text name="helpLine_wt_ov_p2_concept_text"    text="Les salaires sont calculés en utilisant le temps de jeu, pas le temps réel. Par défaut, une seconde réelle équivaut à une minute de jeu dans Farming Simulator, donc un quart d'une heure de jeu prend 60 secondes réelles. Si vous augmentez la vitesse du temps de jeu dans les paramètres, vos quarts seront payés plus rapidement. Le mod lit automatiquement l'échelle de temps du jeu pour que les chiffres reflètent toujours ce que vous vivez réellement dans le monde du jeu."/>
+        <text name="helpLine_wt_ov_p2_money_title"     text="Où va l'argent"/>
+        <text name="helpLine_wt_ov_p2_money_text"      text="Lorsque vous terminez un quart, le montant total gagné est ajouté à votre compte de ferme via le système financier standard de FS25. Il apparaît comme une transaction positive dans votre historique financier sous la catégorie revenus, de la même manière que la vente de récoltes ou l'achèvement de contrats. En multijoueur, chaque joueur suit ses propres quarts indépendamment et reçoit son propre paiement."/>
+
+        <!-- ── Getting Started, Page 1: Buy and place ── -->
+        <text name="helpLine_wt_su_p1_title"         text="Étape 1 - Acheter et placer"/>
+        <text name="helpLine_wt_su_p1_buy_title"     text="Trouver le déclencheur dans la boutique"/>
+        <text name="helpLine_wt_su_p1_buy_text"      text="Ouvrez la boutique (touche B par défaut) et naviguez vers la catégorie Objets. Recherchez Zone de travail. L'objet n'a aucun coût permanent et peut être acheté autant de fois que nécessaire - un pour chaque lieu de travail que vous souhaitez créer. Placez-le depuis votre menu de construction comme tout autre objet plaçable. La zone de déclenchement elle-même est invisible pendant le jeu normal, donc elle n'encombrera pas visuellement votre carte."/>
+        <text name="helpLine_wt_su_p1_place_title"   text="Choisir un bon emplacement"/>
+        <text name="helpLine_wt_su_p1_place_text"    text="Tenez-vous à l'endroit que vous souhaitez désigner comme lieu de travail avant de placer. Le déclencheur apparaît à la position que vous choisissez dans l'aperçu de placement. Les bons endroits incluent près des bâtiments que vous possédez déjà, aux intersections de routes que vous passez fréquemment, à côté de points de livraison, ou partout où cela correspond à l'histoire du rôle de l'emploi. Le rayon de déclenchement par défaut est de 4 mètres, vous devez donc être à l'intérieur de ce cercle pour interagir avec lui."/>
+
+        <!-- ── Getting Started, Page 2: Configure ── -->
+        <text name="helpLine_wt_su_p2_title"           text="Étape 2 - Configurer votre lieu de travail"/>
+        <text name="helpLine_wt_su_p2_name_title"      text="Nommer votre lieu de travail"/>
+        <text name="helpLine_wt_su_p2_name_text"       text="Après avoir placé le déclencheur, ouvrez le Gestionnaire de lieux de travail avec F4 et sélectionnez votre nouveau déclencheur dans la liste. Appuyez sur Modifier. Tapez le nom de votre choix dans le champ de nom - Bureau de poste, Moulin, Chantier, Mairie, tout ce qui correspond à votre histoire. Ce nom apparaît sur l'icône de la carte, dans le panneau HUD du quart pendant que vous travaillez, dans les invites de pointage et de dépointage, et dans vos messages de notification."/>
+        <text name="helpLine_wt_su_p2_wage_title"      text="Définir le salaire horaire"/>
+        <text name="helpLine_wt_su_p2_wage_text"       text="Utilisez les boutons plus et moins dans la boîte de dialogue Modifier pour définir un salaire horaire entre 0 et 99 999 par heure de jeu. La valeur par défaut est 500. Utilisez le sélecteur de pas pour changer si chaque pression de bouton ajuste par 10, 100 ou 1 000 à la fois. Un multiplicateur de salaire global (0,5x à 2,0x) est disponible dans le menu des paramètres du jeu et s'applique en plus du salaire de chaque déclencheur, vous pouvez donc ajuster le niveau de revenu global sans modifier chaque déclencheur individuellement."/>
+        <text name="helpLine_wt_su_p2_radius_title"    text="Ajuster le rayon du déclencheur"/>
+        <text name="helpLine_wt_su_p2_radius_text"     text="Le rayon détermine la taille de la zone de travail. Le minimum est de 1 mètre et le maximum de 50 mètres. Un petit rayon (3-5 m) est bon pour un endroit spécifique comme un comptoir de magasin. Un rayon plus grand (10-20 m) convient à un bâtiment entier ou une zone de cour. Si vous constatez que vous ne pouvez pas déclencher l'invite de la touche E lorsque vous vous tenez là où vous vous y attendez, essayez d'augmenter légèrement le rayon. Les changements de rayon prennent effet immédiatement sans nécessiter de redémarrage."/>
+
+        <!-- ── Getting Started, Page 3: Map icon and multi-trigger ── -->
+        <text name="helpLine_wt_su_p3_title"           text="Étape 3 - Sur la carte"/>
+        <text name="helpLine_wt_su_p3_map_title"       text="Votre lieu de travail sur la carte"/>
+        <text name="helpLine_wt_su_p3_map_text"        text="Chaque déclencheur placé obtient automatiquement une icône de carte - un carré coloré avec l'étiquette du nom du lieu de travail au-dessus. L'icône est verte lorsque le lieu de travail est inactif et devient dorée pendant qu'un quart y est activement en cours. Vous pouvez voir tous vos lieux de travail en un coup d'œil en ouvrant la carte plein écran. Les icônes apparaissent à la fois sur la mini-carte et sur l'écran de la carte plein écran et s'adaptent au niveau de zoom de la carte."/>
+        <text name="helpLine_wt_su_p3_multi_title"     text="Lieux de travail multiples"/>
+        <text name="helpLine_wt_su_p3_multi_text"      text="Il n'y a pas de limite stricte quant au nombre de lieux de travail que vous pouvez créer. Achetez et placez autant de zones de travail que nécessaire. Chacun est totalement indépendant avec son propre nom, salaire et rayon. Vous ne pouvez être en service qu'à un seul lieu de travail à la fois - commencer un nouveau quart met automatiquement fin à tout quart en cours et paie ce que vous avez gagné jusqu'à présent. Tous les lieux de travail sont sauvegardés avec votre sauvegarde et restaurés lorsque vous rechargez."/>
+
+        <!-- ── Working a Shift, Page 1: Clocking in ── -->
+        <text name="helpLine_wt_sh_p1_title"          text="Pointer"/>
+        <text name="helpLine_wt_sh_p1_enter_title"    text="Entrer dans la zone de travail"/>
+        <text name="helpLine_wt_sh_p1_enter_text"     text="Marchez ou conduisez jusqu'à l'emplacement de votre lieu de travail. Lorsque votre personnage entre dans le rayon du déclencheur, vous verrez une invite d'action apparaître en bas de l'écran indiquant le nom du lieu de travail. Cela confirme que vous êtes dans la zone et prêt à commencer. Si l'invite n'apparaît pas, vérifiez que vous êtes assez près du centre de la zone ou augmentez le rayon du déclencheur dans la boîte de dialogue Modifier."/>
+        <text name="helpLine_wt_sh_p1_start_title"    text="Commencer le quart"/>
+        <text name="helpLine_wt_sh_p1_start_text"     text="Appuyez sur E (ou votre touche d'interaction réaffectée) pendant que vous êtes dans la zone. Vous entendrez un son de confirmation, un bref message de notification apparaîtra à l'écran, et le panneau HUD du quart s'ouvrira dans le coin de l'écran. Le panneau montre le nom de votre lieu de travail, l'heure de jeu actuelle et un compteur de gains en direct qui se met à jour au fil du temps. À partir de ce moment, le temps de jeu est suivi et les salaires s'accumulent."/>
+
+        <!-- ── Working a Shift, Page 2: During and leaving ── -->
+        <text name="helpLine_wt_sh_p2_title"          text="Pendant votre quart"/>
+        <text name="helpLine_wt_sh_p2_hud_title"      text="Le panneau HUD de quart"/>
+        <text name="helpLine_wt_sh_p2_hud_text"       text="Le panneau HUD reste visible dans le coin de l'écran pendant toute la durée de votre quart. Il affiche le nom du lieu de travail où vous travaillez actuellement, un chronomètre de quart qui compte les heures et minutes de jeu, et le montant total gagné jusqu'à présent pendant ce quart. Vous pouvez déplacer et redimensionner le panneau à tout moment en appuyant sur Maj pour entrer en mode Édition HUD. La position et la taille de votre panneau sont mémorisées entre les sessions de jeu."/>
+        <text name="helpLine_wt_sh_p2_leave_title"    text="Quitter la zone pendant un quart"/>
+        <text name="helpLine_wt_sh_p2_leave_text"     text="Si vous sortez du rayon du déclencheur pendant le quart, une superposition d'avertissement apparaît à l'écran avec un compte à rebours. Vous disposez d'un court délai de grâce pour revenir avant que le quart ne soit automatiquement annulé. Si vous revenez à temps, le quart continue normalement sans pénalité. Si le compte à rebours atteint zéro, le quart se termine et vous êtes payé pour le temps travaillé jusqu'à ce moment. Ce comportement peut être modifié dans les paramètres - vous pouvez désactiver la fin automatique et rester en service même en dehors de la zone."/>
+
+        <!-- ── Working a Shift, Page 3: Clocking out ── -->
+        <text name="helpLine_wt_sh_p3_title"          text="Dépointer"/>
+        <text name="helpLine_wt_sh_p3_end_title"      text="Terminer le quart manuellement"/>
+        <text name="helpLine_wt_sh_p3_end_text"       text="Pour terminer votre quart volontairement, tenez-vous dans la zone de déclenchement et appuyez à nouveau sur E. L'invite indiquera maintenant Terminer le travail. Appuyer dessus arrête immédiatement le chronomètre, calcule le salaire final et le dépose sur votre compte de ferme. Une notification récapitulative apparaît brièvement montrant combien vous avez gagné. Le panneau HUD se ferme et l'icône de la carte redevient verte. Vous pouvez commencer un nouveau quart au même endroit ou dans tout autre lieu de travail immédiatement."/>
+        <text name="helpLine_wt_sh_p3_pay_title"      text="Comment le paiement est calculé"/>
+        <text name="helpLine_wt_sh_p3_pay_text"       text="La formule est simple : le paiement est égal au salaire horaire du lieu de travail multiplié par le nombre d'heures de jeu travaillées, multiplié par le multiplicateur de salaire global des paramètres. Par exemple, un lieu de travail à 500 par heure travaillé pendant 2 heures de jeu avec un multiplicateur de 1,0x paie 1 000. Avec un multiplicateur de 1,5x, le même quart paie 1 500. Les fractions d'heure sont incluses - un quart de 30 minutes à 500 par heure paie 250."/>
+
+        <!-- ── Managing Workplaces, Page 1: The manager ── -->
+        <text name="helpLine_wt_mg_p1_title"         text="Le gestionnaire de lieux de travail"/>
+        <text name="helpLine_wt_mg_p1_open_title"    text="Ouvrir le gestionnaire"/>
+        <text name="helpLine_wt_mg_p1_open_text"     text="Appuyez sur F4 à tout moment (même pendant un quart) pour ouvrir la boîte de dialogue du Gestionnaire de lieux de travail. C'est le hub central pour visualiser et administrer tous vos lieux de travail placés. Il répertorie chaque déclencheur que vous avez créé avec son nom, son salaire horaire et son statut actuel en un coup d'œil. Le gestionnaire peut également être ouvert depuis la console du jeu en tapant wtGui si vous préférez."/>
+        <text name="helpLine_wt_mg_p1_list_title"    text="Lire la liste"/>
+        <text name="helpLine_wt_mg_p1_list_text"     text="Chaque ligne de la liste montre le nom du lieu de travail à gauche et le salaire horaire configuré à droite. Si un quart est actuellement actif dans un lieu de travail, cette ligne est mise en surbrillance. Vous pouvez faire défiler la liste si vous avez de nombreux lieux de travail. Cliquer sur une ligne la sélectionne, et les boutons Modifier et Supprimer en bas de la boîte de dialogue deviennent disponibles pour le lieu de travail sélectionné."/>
+
+        <!-- ── Managing Workplaces, Page 2: Edit and delete ── -->
+        <text name="helpLine_wt_mg_p2_title"           text="Modifier et supprimer"/>
+        <text name="helpLine_wt_mg_p2_edit_title"      text="Modifier un lieu de travail"/>
+        <text name="helpLine_wt_mg_p2_edit_text"       text="Sélectionnez un lieu de travail dans le Gestionnaire et appuyez sur Modifier pour ouvrir la boîte de dialogue d'édition pour ce déclencheur. Vous pouvez changer le nom, ajuster le salaire horaire et modifier le rayon du déclencheur. Les modifications prennent effet immédiatement lorsque vous confirmez. L'étiquette de l'icône de la carte se met à jour instantanément pour refléter un nouveau nom. Vous pouvez modifier un lieu de travail même pendant qu'un quart y est en cours - le nouveau salaire s'appliquera aux quarts futurs, mais le quart en cours utilise le salaire qui était défini au moment où il a commencé."/>
+        <text name="helpLine_wt_mg_p2_delete_title"    text="Supprimer un lieu de travail"/>
+        <text name="helpLine_wt_mg_p2_delete_text"     text="Sélectionnez un lieu de travail et appuyez sur Supprimer pour le retirer définitivement. Si un quart est actuellement actif à ce lieu de travail, le quart est d'abord terminé et vous êtes payé pour le temps travaillé avant que le déclencheur ne soit retiré. L'icône de la carte disparaît immédiatement. Le marqueur 3D flottant au-dessus de l'emplacement du lieu de travail est également retiré. La suppression ne peut pas être annulée, alors assurez-vous d'avoir sélectionné le bon déclencheur avant de confirmer. L'objet plaçable lui-même reste dans le monde et peut être vendu séparément."/>
+
+        <!-- ── Managing Workplaces, Page 3: Saving ── -->
+        <text name="helpLine_wt_mg_p3_title"          text="Sauvegarde et persistance"/>
+        <text name="helpLine_wt_mg_p3_save_title"     text="Sauvegarde automatique"/>
+        <text name="helpLine_wt_mg_p3_save_text"      text="Toutes les données des lieux de travail sont sauvegardées automatiquement chaque fois que le jeu sauvegarde. Cela inclut le nom, le salaire horaire, la position et le rayon de chaque déclencheur. La position et l'échelle de votre panneau HUD sont également sauvegardées. Lorsque vous chargez une sauvegarde, le mod restaure tous les lieux de travail exactement comme vous les avez laissés, y compris leurs icônes de carte. Vous n'avez rien de spécial à faire pour sauvegarder - utilisez simplement l'option normale de sauvegarde de jeu et tout est préservé."/>
+        <text name="helpLine_wt_mg_p3_limit_title"    text="Note concernant l'objet plaçable"/>
+        <text name="helpLine_wt_mg_p3_limit_text"     text="La zone de travail que vous achetez dans la boutique est un objet plaçable standard de FS25. Le mod Workplace Triggers gère la logique des quarts, les salaires et l'interface utilisateur séparément de l'objet plaçable lui-même. Si vous vendez l'objet plaçable depuis le menu de construction, le marqueur visuel disparaît mais l'entrée de données du lieu de travail restera dans le Gestionnaire jusqu'à ce que vous la supprimiez également là-bas. Pour une suppression propre, supprimez toujours d'abord le déclencheur du Gestionnaire, puis vendez l'objet plaçable depuis le menu de construction."/>
+
+        <!-- ── HUD and Settings, Page 1: Panel overview ── -->
+        <text name="helpLine_wt_hd_p1_title"         text="Le panneau HUD de quart"/>
+        <text name="helpLine_wt_hd_p1_panel_title"   text="Ce que montre le panneau"/>
+        <text name="helpLine_wt_hd_p1_panel_text"    text="Le panneau HUD de quart apparaît automatiquement lorsque vous commencez un quart et se ferme lorsque le quart se termine. Il montre trois lignes d'information : le nom du lieu de travail où vous travaillez actuellement, le temps de quart écoulé en heures et minutes de jeu, et le montant total gagné jusqu'à présent pendant ce quart dans votre monnaie de ferme. Ces trois valeurs se mettent à jour en temps réel toutes les quelques secondes. Si vous ne voulez pas voir la ligne des gains, vous pouvez la masquer dans le menu des paramètres."/>
+        <text name="helpLine_wt_hd_p1_edit_title"    text="Entrer en mode édition HUD"/>
+        <text name="helpLine_wt_hd_p1_edit_text"     text="Appuyez sur Maj gauche à tout moment (même quand vous n'êtes pas en service) pour entrer en mode Édition HUD. La bordure du panneau est surlignée en jaune et le texte MODE ÉDITION apparaît au-dessus pour confirmer que vous êtes en mode édition. Dans ce mode, la caméra du jeu arrête de tourner lorsque vous déplacez la souris, vous pouvez donc interagir librement avec le panneau. Appuyez à nouveau sur Maj pour quitter le mode édition et revenir à la normale. Vos changements de disposition sont sauvegardés automatiquement lorsque vous quittez le mode édition."/>
+
+        <!-- ── HUD and Settings, Page 2: Repositioning ── -->
+        <text name="helpLine_wt_hd_p2_title"           text="Déplacer et redimensionner le HUD"/>
+        <text name="helpLine_wt_hd_p2_drag_title"      text="Déplacer le panneau"/>
+        <text name="helpLine_wt_hd_p2_drag_text"       text="En mode Édition HUD, cliquez et faites glisser n'importe où sur le corps du panneau pour le déplacer vers une nouvelle position à l'écran. Le panneau s'accroche à l'endroit où vous relâchez le bouton de la souris. Vous pouvez le placer dans n'importe quel coin ou le long de n'importe quel bord de l'écran. La position est stockée sous forme de coordonnée d'écran normalisée, donc elle reste placée proportionnellement quelle que soit votre résolution d'écran ou votre rapport hauteur/largeur."/>
+        <text name="helpLine_wt_hd_p2_resize_title"    text="Redimensionner le panneau"/>
+        <text name="helpLine_wt_hd_p2_resize_text"     text="Le panneau a deux poignées de redimensionnement en mode édition. Faites glisser une poignée de coin pour mettre à l'échelle tout le panneau uniformément - la taille et le texte s'adaptent ensemble. Faites glisser la poignée de bord gauche ou droite pour changer seulement la largeur du panneau sans affecter la hauteur ou la taille du texte. Cela vous permet d'élargir le panneau pour afficher des noms de lieu de travail plus longs sans rendre le texte énorme. Des limites minimales et maximales s'appliquent pour empêcher le panneau de devenir inutilisablement petit ou surdimensionné."/>
+
+        <!-- ── HUD and Settings, Page 3: Settings options ── -->
+        <text name="helpLine_wt_hd_p3_title"           text="Options du menu Paramètres"/>
+        <text name="helpLine_wt_hd_p3_settings_title"  text="Trouver les paramètres"/>
+        <text name="helpLine_wt_hd_p3_settings_text"   text="Tous les paramètres de Workplace Triggers se trouvent dans l'écran principal des Paramètres du jeu sous l'onglet Paramètres généraux. Faites défiler jusqu'à la section Workplace Triggers. Les options disponibles incluent : activer ou désactiver le panneau HUD de quart, ajuster le préréglage d'échelle HUD, activer ou désactiver les notifications de début et de fin de quart, activer ou désactiver la ligne des gains dans le HUD, et contrôler si quitter la zone de déclenchement termine automatiquement votre quart. Les changements s'appliquent immédiatement sans nécessiter de redémarrage."/>
+        <text name="helpLine_wt_hd_p3_mult_title"      text="Le multiplicateur de salaire"/>
+        <text name="helpLine_wt_hd_p3_mult_text"       text="Le paramètre de multiplicateur de salaire est un facteur global appliqué en plus du salaire configuré de chaque lieu de travail. Les valeurs disponibles sont 0,5x, 0,75x, 1,0x, 1,25x, 1,5x et 2,0x. À 1,0x (par défaut), les salaires sont exactement comme configurés. À 0,5x, chaque lieu de travail paie la moitié. À 2,0x, chaque lieu de travail paie le double. C'est utile pour ajuster rapidement le niveau de revenu global du mod à votre économie de jeu sans modifier chaque déclencheur individuellement."/>
+
+        <!-- ── Tips and Multiplayer, Page 1: Multiplayer ── -->
+        <text name="helpLine_wt_tp_p1_title"         text="Multijoueur"/>
+        <text name="helpLine_wt_tp_p1_mp_title"      text="Support multijoueur"/>
+        <text name="helpLine_wt_tp_p1_mp_text"       text="Workplace Triggers prend en charge les sessions multijoueur. Tous les lieux de travail placés sont visibles sur la carte pour tous les joueurs de la session. Chaque joueur gère ses propres quarts indépendamment - un joueur qui pointe n'affecte pas le statut de quart d'un autre joueur. Les salaires sont versés sur le compte de ferme individuel du joueur. Le placement et la configuration des lieux de travail sont gérés par l'hôte et les changements sont reflétés pour tous les joueurs connectés."/>
+        <text name="helpLine_wt_tp_p1_host_title"    text="Autorité de l'hôte"/>
+        <text name="helpLine_wt_tp_p1_host_text"     text="Le mod utilise une conception autoritaire de l'hôte. Cela signifie que l'hôte contrôle l'état du jeu pour les données des lieux de travail. Si vous êtes un client dans la session de quelqu'un d'autre, vous pouvez commencer et terminer des quarts dans n'importe quel lieu de travail configuré, mais créer, modifier ou supprimer des lieux de travail peut nécessiter l'autorisation de l'hôte selon les paramètres de la session. Le fichier de sauvegarde de l'hôte stocke toutes les configurations des lieux de travail et celles-ci sont chargées pour tous les joueurs au début de la session."/>
+
+        <!-- ── Tips and Multiplayer, Page 2: Console commands ── -->
+        <text name="helpLine_wt_tp_p2_title"           text="Commandes console"/>
+        <text name="helpLine_wt_tp_p2_console_title"   text="Ouvrir la console"/>
+        <text name="helpLine_wt_tp_p2_console_text"    text="La console développeur peut être ouverte avec la touche tilde (~) ou l'accent grave (`) sur la plupart des claviers. Elle n'est disponible que lorsque le mode développeur est actif dans le lanceur du jeu. Les commandes console sont utiles pour déboguer des problèmes, inspecter l'état actuel du mod, ou tester rapidement des paramètres. Toutes les commandes de Workplace Triggers commencent par le préfixe wt, elles sont donc faciles à trouver en tapant wt dans la console."/>
+        <text name="helpLine_wt_tp_p2_cmds_title"      text="Commandes disponibles"/>
+        <text name="helpLine_wt_tp_p2_cmds_text"       text="wtHelp - liste toutes les commandes disponibles avec descriptions. wtStatus - montre si un quart est actuellement actif, quel lieu de travail, depuis combien de temps, et les gains actuels. wtList - affiche tous les lieux de travail placés dans la console avec leurs ID, noms, salaires et positions. wtDebug - active ou désactive la journalisation verbeuse de débogage, utile pour les rapports de bugs. wtGui - ouvre ou ferme la boîte de dialogue du Gestionnaire de lieux de travail depuis la console."/>
+
+        <!-- ── Tips and Multiplayer, Page 3: Roleplay ideas ── -->
+        <text name="helpLine_wt_tp_p3_title"           text="Idées de jeu de rôle"/>
+        <text name="helpLine_wt_tp_p3_roleplay_title"  text="Tirer le meilleur parti du mod"/>
+        <text name="helpLine_wt_tp_p3_roleplay_text"   text="Le mod devient plus immersif lorsque vous vous engagez dans l'aspect jeu de rôle. Fixez un salaire réaliste pour chaque emploi - un ouvrier au salaire minimum pourrait gagner 150 par heure, un artisan qualifié 600, et un entrepreneur spécialisé 1500 ou plus. Ne pointez que lorsque votre personnage serait réalistement à cet endroit. Combinez avec d'autres mods de jeu de rôle pour construire une routine quotidienne complète pour votre personnage agriculteur au-delà du simple travail des champs."/>
+        <text name="helpLine_wt_tp_p3_ideas_title"     text="Idées de lieux de travail"/>
+        <text name="helpLine_wt_tp_p3_ideas_text"      text="Voici quelques idées pour commencer : placez un déclencheur à la station-service et appelez-le Préposé à la station, mettez-en un à une grande grange et nommez-le Soigneur de bétail, installez-en un au silo à grains pour Manutentionnaire de grains, déposez-en un à une intersection de route pour Équipe d'entretien routier, ou placez-en un à votre bâtiment d'atelier pour Mécanicien d'équipement agricole. Sur les serveurs multijoueurs, chaque joueur peut avoir son propre ensemble d'emplois créant toute une économie de différentes professions partageant la même carte."/>
+
+        <!-- ── About and Credits, Page 1: Version info ── -->
+        <text name="helpLine_wt_ab_p1_title"           text="Version et auteur"/>
+        <text name="helpLine_wt_ab_p1_version_title"   text="Version actuelle"/>
+        <text name="helpLine_wt_ab_p1_version_text"    text="Workplace Triggers version 0.1.0.0 - Première version. C'est un projet de développement actif. Les fonctionnalités, paramètres et formats de sauvegarde peuvent changer entre les versions. Lors de la mise à jour vers une nouvelle version, il est toujours bon de faire d'abord une copie de sauvegarde de votre dossier de sauvegarde. Si vous rencontrez des problèmes après une mise à jour, les notes de version sur GitHub décriront les changements majeurs et les étapes de migration."/>
+        <text name="helpLine_wt_ab_p1_author_title"    text="Auteur"/>
+        <text name="helpLine_wt_ab_p1_author_text"     text="Créé par TisonK. Ce mod a commencé comme un outil personnel pour un gameplay orienté jeu de rôle et s'est transformé en une version complète après des retours positifs de la communauté. L'objectif a toujours été de le garder léger, sûr pour les sauvegardes et compatible avec autant d'autres mods que possible. Si vous aimez l'utiliser, envisagez de laisser une note ou un commentaire sur la page du mod - cela aide vraiment à motiver le développement continu."/>
+
+        <!-- ── About and Credits, Page 2: GitHub ── -->
+        <text name="helpLine_wt_ab_p2_title"           text="GitHub et contributions"/>
+        <text name="helpLine_wt_ab_p2_github_title"    text="Code source et dépôt"/>
+        <text name="helpLine_wt_ab_p2_github_text"     text="Le code source complet de Workplace Triggers est publiquement disponible sur GitHub à : github.com/TisonK/FS25_WorkplaceTriggers. Le dépôt contient tous les fichiers source Lua, le modDesc, les fichiers de traduction et l'historique complet des versions. Si vous voulez inspecter comment quelque chose fonctionne, vérifier quelles données sont sauvegardées, ou construire sur le mod pour votre propre serveur ou projet, le code est là pour que vous puissiez le lire et l'utiliser selon les termes de la licence."/>
+        <text name="helpLine_wt_ab_p2_contrib_title"   text="Suggestions et contributions"/>
+        <text name="helpLine_wt_ab_p2_contrib_text"    text="Les rapports de bugs, demandes de fonctionnalités et pull requests sont tous les bienvenus sur la page GitHub Issues. Lorsque vous signalez un bug, veuillez inclure votre fichier journal de jeu (log.txt de votre dossier FarmingSimulator2025), les étapes exactes pour reproduire le problème et quels autres mods étaient actifs. Pour les suggestions de fonctionnalités, ouvrez un GitHub Issue avec l'étiquette enhancement et décrivez le cas d'utilisation que vous avez en tête. Les améliorations de traduction pour toute langue prise en charge sont particulièrement appréciées."/>
+
+        <!-- ── About and Credits, Page 3: Licence and thanks ── -->
+        <text name="helpLine_wt_ab_p3_title"           text="Licence et remerciements"/>
+        <text name="helpLine_wt_ab_p3_license_title"   text="Licence"/>
+        <text name="helpLine_wt_ab_p3_license_text"    text="Workplace Triggers est publié sous la licence internationale Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 (CC BY-NC-ND 4.0). Vous êtes libre de l'inclure dans des modpacks et de le partager avec d'autres à condition que le crédit soit donné à l'auteur original. Vous ne pouvez pas le vendre, le monétiser ou publier des versions modifiées sans autorisation. Le texte complet de la licence est disponible sur creativecommons.org/licenses/by-nc-nd/4.0."/>
+        <text name="helpLine_wt_ab_p3_thanks_title"    text="Remerciements particuliers"/>
+        <text name="helpLine_wt_ab_p3_thanks_text"     text="Merci à la communauté de modding FS25 pour la documentation, les implémentations de référence et les retours qui ont rendu ce mod possible. Remerciements particuliers aux auteurs de NPCFavor pour leur code ouvert et bien commenté qui a servi de référence pour plusieurs modèles d'API FS25 utilisés dans ce mod. Merci à tous ceux qui ont testé les premières versions et signalé des bugs - votre patience avec les imperfections pendant le développement est très appréciée."/>
     </texts>
 </l10n>

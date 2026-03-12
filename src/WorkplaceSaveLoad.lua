@@ -112,6 +112,7 @@ function WorkplaceSaveLoad:saveToXMLFile(missionInfo)
         xmlFile:setFloat( key .. "#posY",         trigger.posY or 0)
         xmlFile:setFloat( key .. "#posZ",         trigger.posZ or 0)
         xmlFile:setFloat( key .. "#rotY",         trigger.rotY or 0)
+        xmlFile:setString(key .. "#paySchedule",  trigger.paySchedule or "hourly")
         count = count + 1
     end
 
@@ -168,15 +169,17 @@ function WorkplaceSaveLoad:loadFromXMLFile(missionInfo)
         local savedPosX   = xmlFile:getFloat( key .. "#posX",          0)
         local savedPosY   = xmlFile:getFloat( key .. "#posY",          0)
         local savedPosZ   = xmlFile:getFloat( key .. "#posZ",          0)
+        local savedSched  = xmlFile:getString(key .. "#paySchedule",   "hourly")
 
         local trigger = self.system.triggerManager:getTriggerById(savedId)
         if trigger then
             trigger.workplaceName  = savedName
             trigger.hourlyWage     = savedWage
             trigger.triggerRadius  = savedRadius
+            trigger.paySchedule    = savedSched
             wtLog(string.format("Restored trigger '%s' (id=%s)", savedName, savedId))
         else
-            self:storePendingRestore(savedId, savedName, savedWage, savedRadius, savedPosX, savedPosY, savedPosZ)
+            self:storePendingRestore(savedId, savedName, savedWage, savedRadius, savedPosX, savedPosY, savedPosZ, savedSched)
         end
 
         i = i + 1
@@ -223,7 +226,7 @@ end
 -- =========================================================
 -- Pending Restore (handles load-before-placeable edge case)
 -- =========================================================
-function WorkplaceSaveLoad:storePendingRestore(id, name, wage, radius, posX, posY, posZ)
+function WorkplaceSaveLoad:storePendingRestore(id, name, wage, radius, posX, posY, posZ, sched)
     if self.pendingRestores == nil then
         self.pendingRestores = {}
     end
@@ -234,6 +237,7 @@ function WorkplaceSaveLoad:storePendingRestore(id, name, wage, radius, posX, pos
         posX          = posX,
         posY          = posY,
         posZ          = posZ,
+        paySchedule   = sched or "hourly",
     }
     wtLog(string.format("Stored pending restore for trigger id=%s ('%s')", id, name))
 end
@@ -246,6 +250,7 @@ function WorkplaceSaveLoad:applyPendingRestore(trigger)
         trigger.workplaceName = pending.workplaceName
         trigger.hourlyWage    = pending.hourlyWage
         trigger.triggerRadius = pending.triggerRadius or trigger.triggerRadius
+        trigger.paySchedule   = pending.paySchedule or "hourly"
         self.pendingRestores[tostring(trigger.id)] = nil
         wtLog(string.format("Applied pending restore to trigger '%s'", trigger.workplaceName))
     end

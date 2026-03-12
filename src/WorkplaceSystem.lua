@@ -38,6 +38,8 @@ function WorkplaceSystem.new(mission, modDirectory, modName)
     self.inputHandler        = WorkplaceInputHandler.new(self)
     self.saveLoad            = WorkplaceSaveLoad.new(self)
     self.settingsIntegration = WorkplaceSettingsIntegration.new(self)
+    self.npcFavorIntegration = NPCFavorIntegration.new(self)
+    self.workerCostsInteg    = WorkerCostsIntegration.new(self)
 
     wtLog("WorkplaceSystem created")
     return self
@@ -66,6 +68,8 @@ function WorkplaceSystem:onMissionLoaded()
     self.inputHandler:initialize()
     self.saveLoad:initialize()
     self.settingsIntegration:initialize()
+    self.npcFavorIntegration:initialize()
+    self.workerCostsInteg:initialize()
 
     self.isInitialized = true
 
@@ -117,13 +121,13 @@ function WorkplaceSystem:onInteractPressed()
     if self.gui and self.gui:isOpen() then return end
 
     if self.shiftTracker:isShiftActive() then
-        -- End active shift
-        self.shiftTracker:endShift()
+        -- End active shift (routes through MP event on dedicated server)
+        WorkplaceMultiplayerEvent.sendShiftEnd()
     else
         -- Start shift at nearest trigger
         local trigger = self.triggerManager:getNearestPlayerTrigger()
         if trigger then
-            self.shiftTracker:startShift(trigger)
+            WorkplaceMultiplayerEvent.sendShiftStart(trigger.id)
         end
     end
 end
@@ -222,6 +226,8 @@ function WorkplaceSystem:delete()
     if self.financeIntegration then self.financeIntegration:delete() end
     if self.saveLoad       then self.saveLoad:delete()        end
     if self.settingsIntegration then self.settingsIntegration:delete() end
+    if self.npcFavorIntegration then self.npcFavorIntegration:delete() end
+    if self.workerCostsInteg    then self.workerCostsInteg:delete()    end
 
     removeConsoleCommand("wtHelp")
     removeConsoleCommand("wtStatus")

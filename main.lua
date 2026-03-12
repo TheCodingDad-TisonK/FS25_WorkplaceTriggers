@@ -40,6 +40,9 @@ if modDirectory then
     source(modDirectory .. "src/WorkplaceSaveLoad.lua")
     source(modDirectory .. "src/WorkplaceSettings.lua")
     source(modDirectory .. "src/WorkplaceSettingsIntegration.lua")
+    source(modDirectory .. "src/WorkplaceMultiplayerEvent.lua")
+    source(modDirectory .. "src/NPCFavorIntegration.lua")
+    source(modDirectory .. "src/WorkerCostsIntegration.lua")
     source(modDirectory .. "src/WorkplaceSystem.lua")
 
     print("[WorkplaceTriggers] All source files loaded")
@@ -435,5 +438,6 @@ end
 print("==============================================")
 print("  FS25 Workplace Triggers v" .. modVersion .. " LOADED")
 print("  Turn any location into a workplace!")
+print("  Pay schedules: Hourly / Flat / Daily")
 print("  Type 'wtHelp' for console commands")
 print("==============================================")
