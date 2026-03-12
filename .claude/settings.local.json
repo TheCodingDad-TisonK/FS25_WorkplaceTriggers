@@ -12,7 +12,13 @@
       "Bash(powershell -NoProfile -Command \"\nGet-Content 'C:\\\\Program Files \\(x86\\)\\\\Steam\\\\steamapps\\\\libraryfolders.vdf' | Select-String 'path'\n\")",
       "Skill(fs25-log)",
       "Bash(cd \"/c/Users/tison/Desktop/FS25 MODS/FS25_WorkplaceTriggers\" && powershell.exe -File /tmp/build_wt.ps1 2>&1)",
-      "Bash(grep -Pln '[^\\\\x00-\\\\x7F]' \"/c/Users/tison/Desktop/FS25 MODS/FS25_WorkplaceTriggers/modDesc.xml\" \"/c/Users/tison/Desktop/FS25 MODS/FS25_WorkplaceTriggers/translations/\"*.xml && echo \"FOUND\" || echo \"ALL CLEAN\")"
+      "Bash(grep -Pln '[^\\\\x00-\\\\x7F]' \"/c/Users/tison/Desktop/FS25 MODS/FS25_WorkplaceTriggers/modDesc.xml\" \"/c/Users/tison/Desktop/FS25 MODS/FS25_WorkplaceTriggers/translations/\"*.xml && echo \"FOUND\" || echo \"ALL CLEAN\")",
+      "Skill(fs25-status)",
+      "Bash(gh release:*)",
+      "Bash(cd \"C:\\\\Users\\\\tison\\\\Desktop\\\\FS25 MODS\\\\FS25_WorkplaceTriggers\" && grep -rn \"\\\\$l10n_\" gui/ placeables/ --include=\"*.xml\" | sort)",
+      "Bash(grep -rn $l10n_ gui/ placeables/ modDesc.xml --include=*.xml)",
+      "Bash(grep -o '\\\\$l10n_[a-zA-Z0-9_]*')",
+      "Read(//tmp/**)"
     ]
   }
 }

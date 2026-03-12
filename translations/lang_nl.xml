@@ -20,8 +20,8 @@
         <text name="wt_hud_location"         text="Locatie:"/>
         <text name="wt_hud_time"             text="Tijd:"/>
         <text name="wt_hud_earned"           text="Verdiend:"/>
-        <text name="wt_hud_shift_started"    text="Dienst begonnen bij %s\n$%d/uur"/>
-        <text name="wt_hud_shift_ended"      text="Dienst beëindigd\n+$%d verdiend"/>
+        <text name="wt_hud_shift_started"    text="Dienst begonnen bij %s | $%d/uur"/>
+        <text name="wt_hud_shift_ended"      text="Dienst beëindigd | +$%d verdiend"/>
         <text name="wt_hud_shift_abandoned"  text="Dienst beëindigd - je hebt het werkgebied verlaten! Slechts 20%% betaald | Beëindig je dienst altijd handmatig voor volledige betaling."/>
 
         <!-- Dialog strings (WTListDialog / WTEditDialog) -->

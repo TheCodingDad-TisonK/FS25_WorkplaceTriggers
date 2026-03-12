@@ -20,8 +20,8 @@
         <text name="wt_hud_location"         text="Lieu:"/>
         <text name="wt_hud_time"             text="Temps:"/>
         <text name="wt_hud_earned"           text="Gagne:"/>
-        <text name="wt_hud_shift_started"    text="Travail commence a %s\n%d$/h"/>
-        <text name="wt_hud_shift_ended"      text="Travail termine\n+%d$ gagne"/>
+        <text name="wt_hud_shift_started"    text="Travail commence a %s | %d$/h"/>
+        <text name="wt_hud_shift_ended"      text="Travail termine | +%d$ gagne"/>
         <text name="wt_hud_shift_abandoned"  text="Quart terminé - vous avez quitté la zone de travail ! Seulement 20%% payé | Terminez toujours votre quart manuellement pour un paiement complet."/>
 
         <!-- Dialog strings (WTListDialog / WTEditDialog) -->
