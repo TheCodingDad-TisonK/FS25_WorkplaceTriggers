@@ -48,9 +48,9 @@ Both integrations are silently skipped if those mods are not loaded.
 
 ## How to Use
 
-1. Buy the **Work Trigger Zone** from the store (Objects category)
-2. Place it at any location you want to designate as a workplace
-3. Press **[F4]** to open the Workplace Manager — give it a name, set a wage, and choose a pay schedule
+1. Press **[F4]** to open the Workplace Manager and click **Add** to create a new trigger
+2. Name the workplace, set a wage, and choose a pay schedule — then confirm
+3. Place the trigger at any location on the map
 4. Walk into the trigger zone and press **[E]** to start your shift
 5. Press **[E]** again to end your shift and collect your wages
 
