@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(fs25-deploy)",
+      "Bash(xargs grep:*)",
+      "Bash(find \"/c/Program Files \\(x86\\)/Farming Simulator 2025\" -name \"guiProfiles*\" -o -name \"*Profiles*\" 2>/dev/null | head -10)",
+      "Bash(ls '/c/Program Files \\(x86\\)/')",
+      "Read(//c/Program Files//**)",
+      "Bash(find \"/c/Program Files \\(x86\\)/Steam/steamapps/common\" -maxdepth 1 2>/dev/null | grep -i farm; find \"/c/Program Files/Steam/steamapps/common\" -maxdepth 1 2>/dev/null | grep -i farm)",
+      "Bash(find \"/c/Program Files \\(x86\\)/Steam/steamapps\" -maxdepth 3 -name \"*.xml\" 2>/dev/null | xargs grep -l \"multiTextOptionContainer\" 2>/dev/null | head -5)",
+      "Bash(powershell -NoProfile -Command \"\nGet-ChildItem 'C:\\\\Program Files \\(x86\\)\\\\Steam\\\\steamapps\\\\libraryfolders.vdf' -ErrorAction SilentlyContinue | Select-Object FullName\nGet-ChildItem 'C:\\\\Users\\\\tison\\\\AppData\\\\Local' -ErrorAction SilentlyContinue | Where-Object { \\\\$_.Name -like '*Farm*' } | Select-Object Name\n\" 2>/dev/null)",
+      "Bash(powershell -NoProfile -Command \"\nGet-Content 'C:\\\\Program Files \\(x86\\)\\\\Steam\\\\steamapps\\\\libraryfolders.vdf' | Select-String 'path'\n\")",
+      "Skill(fs25-log)",
+      "Bash(cd \"/c/Users/tison/Desktop/FS25 MODS/FS25_WorkplaceTriggers\" && powershell.exe -File /tmp/build_wt.ps1 2>&1)",
+      "Bash(grep -Pln '[^\\\\x00-\\\\x7F]' \"/c/Users/tison/Desktop/FS25 MODS/FS25_WorkplaceTriggers/modDesc.xml\" \"/c/Users/tison/Desktop/FS25 MODS/FS25_WorkplaceTriggers/translations/\"*.xml && echo \"FOUND\" || echo \"ALL CLEAN\")"
+    ]
+  }
+}
