@@ -114,6 +114,11 @@ function WTEditDialog:onOpen()
         self.wageStep = 10
     end
 
+    -- Set schedule button labels from translations (XML has English defaults)
+    if self.schedHourlyTxt then self.schedHourlyTxt:setText(g_i18n:getText("wt_sched_hourly") or "Hourly")    end
+    if self.schedFlatTxt   then self.schedFlatTxt:setText(g_i18n:getText("wt_sched_flat")     or "Flat Rate") end
+    if self.schedDailyTxt  then self.schedDailyTxt:setText(g_i18n:getText("wt_sched_daily")   or "Daily")     end
+
     self:updateWageDisplay()
     self:updateRadiusDisplay()
     self:updatePosDisplay()
@@ -168,11 +173,14 @@ end
 -- =========================================================
 -- Pay schedule display + click handlers
 -- =========================================================
-local SCHED_HINT = {
-    [WorkplaceShiftTracker.PAY_HOURLY] = "Earns wage x hours worked",
-    [WorkplaceShiftTracker.PAY_FLAT]   = "Fixed payout at end of shift",
-    [WorkplaceShiftTracker.PAY_DAILY]  = "Earns wage x in-game days worked",
-}
+local function getSchedHint(sched)
+    if sched == WorkplaceShiftTracker.PAY_FLAT then
+        return g_i18n:getText("wt_sched_hint_flat")   or "Fixed payout at end of shift"
+    elseif sched == WorkplaceShiftTracker.PAY_DAILY then
+        return g_i18n:getText("wt_sched_hint_daily")  or "Earns wage x in-game days worked"
+    end
+    return g_i18n:getText("wt_sched_hint_hourly") or "Earns wage x hours worked"
+end
 
 local SCHED_IDS = {
     WorkplaceShiftTracker.PAY_HOURLY,
@@ -222,15 +230,15 @@ function WTEditDialog:updateSchedDisplay()
     -- Update wage label to reflect schedule
     if self.wageLabel then
         local labels = {
-            [WorkplaceShiftTracker.PAY_HOURLY] = "Hourly Wage",
-            [WorkplaceShiftTracker.PAY_FLAT]   = "Flat Rate (per shift)",
-            [WorkplaceShiftTracker.PAY_DAILY]  = "Daily Rate",
+            [WorkplaceShiftTracker.PAY_HOURLY] = g_i18n:getText("wt_wage_label_hourly") or "Hourly Wage",
+            [WorkplaceShiftTracker.PAY_FLAT]   = g_i18n:getText("wt_wage_label_flat")   or "Flat Rate (per shift)",
+            [WorkplaceShiftTracker.PAY_DAILY]  = g_i18n:getText("wt_wage_label_daily")  or "Daily Rate",
         }
-        self.wageLabel:setText(labels[active] or "Hourly Wage")
+        self.wageLabel:setText(labels[active] or g_i18n:getText("wt_wage_label_hourly") or "Hourly Wage")
     end
 
     if self.schedHintText then
-        self.schedHintText:setText(SCHED_HINT[active] or "")
+        self.schedHintText:setText(getSchedHint(active))
     end
 end
 

@@ -30,9 +30,9 @@ FEATURES:
 - Optional FS25_WorkerCosts integration - shift income is tracked alongside AI worker wages
 
 HOW TO USE:
-1. Buy the Work Trigger from the store (under Objects)
-2. Place it at any location you want to designate as a workplace
-3. Press [F4] to open the Workplace Manager and name it, set a wage and pay schedule
+1. Press [F4] to open the Workplace Manager and click Add to create a new trigger
+2. Name the workplace, set a wage, and choose a pay schedule - then confirm
+3. Place the trigger at any location on the map
 4. Walk into the trigger zone - press [E] to start your shift
 5. Press [E] again to end your shift and collect your wages
 
