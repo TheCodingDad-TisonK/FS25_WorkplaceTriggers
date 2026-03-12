@@ -101,7 +101,7 @@ Available under **ESC > Settings > General Settings > Workplace Triggers:**
 - FS25_NPCFavor integration: optional, graceful, builds NPC favor on shift completion
 - FS25_WorkerCosts integration: optional, graceful, registers triggers as off-farm jobs
 
-### v0.1.0.0 (WIP)
+### v0.1.0.0
 - Initial release: trigger placement, hourly wages, shift HUD, Workplace Manager GUI, settings, save/load, map icons, console commands
 
 ---
