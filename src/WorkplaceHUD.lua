@@ -756,7 +756,7 @@ function WorkplaceHUD:drawLeaveWarning()
 
     -- Pulse: fast red blink, gets faster as time runs out
     local urgency  = 1.0 - (secondsLeft / 10.0)           -- 0=calm, 1=urgent
-    local pulseHz  = 2.0 + urgency * 4.0                   -- 2 Hz → 6 Hz
+    local pulseHz  = 2.0 + urgency * 4.0                   -- 2 Hz -> 6 Hz
     local pulse    = 0.55 + 0.45 * math.abs(math.sin(t * pulseHz * math.pi))
     local alpha    = 0.82 * pulse
 

@@ -44,7 +44,7 @@ function WorkplaceSettingsIntegration:delete() end
 -- =========================================================
 function WorkplaceSettingsIntegration:onFrameOpen()
     if self.wt_initDone then
-        -- Already added — just refresh values
+        -- Already added - just refresh values
         WorkplaceSettingsIntegration:updateSettingsUI(self)
         return
     end
@@ -67,7 +67,7 @@ function WorkplaceSettingsIntegration:onFrameOpen()
 end
 
 -- =========================================================
--- addSettingsElements — 1 header + 7 controls
+-- addSettingsElements - 1 header + 7 controls
 -- =========================================================
 function WorkplaceSettingsIntegration:addSettingsElements(frame)
     -- Section header so the mod is easy to find
