@@ -23,7 +23,19 @@
         <text name="wt_hud_shift_started"    text="Shift started at %s\n$%d/hr"/>
         <text name="wt_hud_shift_ended"      text="Shift ended\n+$%d earned"/>
 
+        <!-- Dialog strings (WTListDialog / WTEditDialog) -->
+        <text name="wt_dialog_list_title"        text="Workplace Triggers"/>
+        <text name="wt_dialog_list_subtitle_one" text="1 trigger placed"/>
+        <text name="wt_dialog_list_subtitle_many" text="%d triggers placed"/>
+        <text name="wt_dialog_list_empty"        text="No triggers placed. Click '+ New Trigger' to add one."/>
+        <text name="wt_dialog_list_showing"      text="Showing %s of %d"/>
+        <text name="wt_dialog_edit_title_new"    text="New Workplace Trigger"/>
+        <text name="wt_dialog_edit_title_edit"   text="Edit Trigger"/>
+        <text name="wt_dialog_edit_name_default" text="New Workplace"/>
+        <text name="wt_dialog_snap_done"         text="Position snapped to player location."/>
+
         <!-- Store item -->
+        <text name="storePack_wt_title"       text="Workplace Triggers"/>
         <text name="wt_store_name"           text="Work Trigger Zone"/>
         <text name="wt_store_desc"           text="Place anywhere to designate a workplace. Walk inside and press [E] to start your shift and earn income."/>
         <text name="wt_store_function"       text="Designates a placeable work location with configurable name and hourly wage"/>

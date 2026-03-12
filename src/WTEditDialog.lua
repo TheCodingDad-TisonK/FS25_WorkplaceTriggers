@@ -87,12 +87,15 @@ function WTEditDialog:onOpen()
 
     -- Set title
     if self.titleText then
-        self.titleText:setText(self.isNew and "New Workplace Trigger" or "Edit Trigger")
+        local titleKey = self.isNew and "wt_dialog_edit_title_new" or "wt_dialog_edit_title_edit"
+        local titleFallback = self.isNew and "New Workplace Trigger" or "Edit Trigger"
+        self.titleText:setText(g_i18n:getText(titleKey) or titleFallback)
     end
 
     -- Populate name input
     if self.nameInput then
-        local name = (self.trigger and self.trigger.workplaceName) or "New Workplace"
+        local defaultName = g_i18n:getText("wt_dialog_edit_name_default") or "New Workplace"
+        local name = (self.trigger and self.trigger.workplaceName) or defaultName
         self.nameInput:setText(name)
     end
 
@@ -199,7 +202,7 @@ function WTEditDialog:onClickSnap()
     self:snapToPlayer()
     self:updatePosDisplay()
     if self.statusText then
-        self.statusText:setText("Position snapped to player location.")
+        self.statusText:setText(g_i18n:getText("wt_dialog_snap_done") or "Position snapped to player location.")
     end
 end
 

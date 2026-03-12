@@ -11,6 +11,7 @@
         <text name="wt_hud_earned"           text="Guadagnato:"/>
         <text name="wt_hud_shift_started"    text="Turno iniziato a %s\n$%d/ora"/>
         <text name="wt_hud_shift_ended"      text="Turno terminato\n+$%d guadagnato"/>
+        <text name="storePack_wt_title"       text="Workplace Triggers"/>
         <text name="wt_store_name"           text="Zona di lavoro"/>
         <text name="wt_store_desc"           text="Posiziona ovunque per designare un posto di lavoro. Entra nella zona e premi [E] per iniziare il turno."/>
         <text name="wt_store_function"       text="Designa un luogo di lavoro con nome e stipendio orario configurabili"/>

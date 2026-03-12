@@ -104,13 +104,14 @@ function WorkplaceSaveLoad:saveToXMLFile(missionInfo)
     for idx, trigger in ipairs(triggers) do
         local i = idx - 1
         local key = string.format("workplaceTriggers.triggers.trigger(%d)", i)
-        xmlFile:setString(key .. "#id",         tostring(trigger.id or ""))
-        xmlFile:setString(key .. "#name",        trigger.workplaceName or "Workplace")
-        xmlFile:setInt(   key .. "#hourlyWage",  trigger.hourlyWage or 500)
-        xmlFile:setFloat( key .. "#posX",        trigger.posX or 0)
-        xmlFile:setFloat( key .. "#posY",        trigger.posY or 0)
-        xmlFile:setFloat( key .. "#posZ",        trigger.posZ or 0)
-        xmlFile:setFloat( key .. "#rotY",        trigger.rotY or 0)
+        xmlFile:setString(key .. "#id",           tostring(trigger.id or ""))
+        xmlFile:setString(key .. "#name",         trigger.workplaceName or "Workplace")
+        xmlFile:setInt(   key .. "#hourlyWage",   trigger.hourlyWage or 500)
+        xmlFile:setFloat( key .. "#triggerRadius",trigger.triggerRadius or 4)
+        xmlFile:setFloat( key .. "#posX",         trigger.posX or 0)
+        xmlFile:setFloat( key .. "#posY",         trigger.posY or 0)
+        xmlFile:setFloat( key .. "#posZ",         trigger.posZ or 0)
+        xmlFile:setFloat( key .. "#rotY",         trigger.rotY or 0)
         count = count + 1
     end
 
@@ -161,19 +162,21 @@ function WorkplaceSaveLoad:loadFromXMLFile(missionInfo)
         local savedId = xmlFile:getString(key .. "#id", nil)
         if savedId == nil or savedId == "" then break end
 
-        local savedName = xmlFile:getString(key .. "#name",       "Workplace")
-        local savedWage = xmlFile:getInt(   key .. "#hourlyWage", 500)
-        local savedPosX = xmlFile:getFloat( key .. "#posX",       0)
-        local savedPosY = xmlFile:getFloat( key .. "#posY",       0)
-        local savedPosZ = xmlFile:getFloat( key .. "#posZ",       0)
+        local savedName   = xmlFile:getString(key .. "#name",          "Workplace")
+        local savedWage   = xmlFile:getInt(   key .. "#hourlyWage",    500)
+        local savedRadius = xmlFile:getFloat( key .. "#triggerRadius", 4)
+        local savedPosX   = xmlFile:getFloat( key .. "#posX",          0)
+        local savedPosY   = xmlFile:getFloat( key .. "#posY",          0)
+        local savedPosZ   = xmlFile:getFloat( key .. "#posZ",          0)
 
         local trigger = self.system.triggerManager:getTriggerById(savedId)
         if trigger then
-            trigger.workplaceName = savedName
-            trigger.hourlyWage    = savedWage
+            trigger.workplaceName  = savedName
+            trigger.hourlyWage     = savedWage
+            trigger.triggerRadius  = savedRadius
             wtLog(string.format("Restored trigger '%s' (id=%s)", savedName, savedId))
         else
-            self:storePendingRestore(savedId, savedName, savedWage, savedPosX, savedPosY, savedPosZ)
+            self:storePendingRestore(savedId, savedName, savedWage, savedRadius, savedPosX, savedPosY, savedPosZ)
         end
 
         i = i + 1
@@ -220,13 +223,14 @@ end
 -- =========================================================
 -- Pending Restore (handles load-before-placeable edge case)
 -- =========================================================
-function WorkplaceSaveLoad:storePendingRestore(id, name, wage, posX, posY, posZ)
+function WorkplaceSaveLoad:storePendingRestore(id, name, wage, radius, posX, posY, posZ)
     if self.pendingRestores == nil then
         self.pendingRestores = {}
     end
     self.pendingRestores[id] = {
         workplaceName = name,
         hourlyWage    = wage,
+        triggerRadius = radius,
         posX          = posX,
         posY          = posY,
         posZ          = posZ,
@@ -241,6 +245,7 @@ function WorkplaceSaveLoad:applyPendingRestore(trigger)
     if pending then
         trigger.workplaceName = pending.workplaceName
         trigger.hourlyWage    = pending.hourlyWage
+        trigger.triggerRadius = pending.triggerRadius or trigger.triggerRadius
         self.pendingRestores[tostring(trigger.id)] = nil
         wtLog(string.format("Applied pending restore to trigger '%s'", trigger.workplaceName))
     end

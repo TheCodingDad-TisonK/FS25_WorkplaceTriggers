@@ -211,6 +211,10 @@ function WorkplaceTriggerManager:onMarkerI3DLoaded(i3dNode, failedReason, args)
     if i3dNode == nil or i3dNode == 0 then
         wtLog(string.format("3-D marker load failed (reason=%s) for '%s'",
             tostring(failedReason), tostring(td.workplaceName)))
+        if td._markerRootNode and td._markerRootNode ~= 0 then
+            delete(td._markerRootNode)
+            td._markerRootNode = nil
+        end
         return
     end
 

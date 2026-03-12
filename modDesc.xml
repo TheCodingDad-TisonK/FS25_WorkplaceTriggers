@@ -100,6 +100,12 @@ Umiec wyzwalacz, nadaj mu nazwe, ustaw stawke i zarabiaj podczas dyspozycji.
         </type>
     </placeableTypes>
 
+    <storePacks>
+        <storePack name="WT_WORKPLACE_TRIGGERS"
+                   title="$l10n_storePack_wt_title"
+                   image="icon_wt.dds"/>
+    </storePacks>
+
     <storeItems>
         <storeItem xmlFilename="placeables/workTrigger/workTrigger.xml"/>
     </storeItems>

@@ -119,6 +119,17 @@ function WorkplaceShiftTracker:update(dtSec)
 end
 
 function WorkplaceShiftTracker:updateZoneCheck(dtSec)
+    -- Respect the endShiftOnLeave setting
+    local settings = self.system and self.system.settings
+    if settings and settings.endShiftOnLeave == false then
+        if self.leaveWarnActive then
+            self.leaveWarnActive = false
+            self.leaveWarnTimer  = 0
+            if self.system.hud then self.system.hud:hideLeaveWarning() end
+        end
+        return
+    end
+
     local tm = self.system.triggerManager
     if not tm then return end
 
@@ -194,11 +205,12 @@ function WorkplaceShiftTracker:getElapsedMinutes()
     return self:getElapsedHours() * 60.0
 end
 
--- Returns current shift earnings (wage * in-game hours elapsed)
+-- Returns current shift earnings (wage * in-game hours elapsed * global multiplier)
 function WorkplaceShiftTracker:getCurrentEarnings()
     if not self:isShiftActive() then return 0 end
     local hours = self:getElapsedHours()
-    return math.floor(self.activeHourlyWage * hours)
+    local mult  = (self.system and self.system.settings and self.system.settings.wageMultiplier) or 1.0
+    return math.floor(self.activeHourlyWage * hours * mult)
 end
 
 function WorkplaceShiftTracker:getActiveHourlyWage()
