@@ -17,7 +17,7 @@
         <price>0</price>
         <dailyUpkeep>0</dailyUpkeep>
         <canBeSold>true</canBeSold>
-        <showInStore>true</showInStore>
+        <showInStore>false</showInStore>
         <lifetime>600</lifetime>
         <rotation>0</rotation>
         <brand>NONE</brand>

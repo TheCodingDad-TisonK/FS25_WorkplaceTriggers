@@ -149,7 +149,7 @@ Umiec wyzwalacz, nadaj mu nazwe, ustaw stawke i zarabiaj podczas dyspozycji.
         <!-- ── Category 2: Getting Started ───────────────────── -->
         <category title="$l10n_helpLine_wt_cat_setup">
 
-            <page title="$l10n_helpLine_wt_su_p1_title" iconSliceId="icon_shop">
+            <page title="$l10n_helpLine_wt_su_p1_title" iconSliceId="icon_contracts">
                 <paragraph>
                     <title text="$l10n_helpLine_wt_su_p1_buy_title" />
                     <text  text="$l10n_helpLine_wt_su_p1_buy_text"  />

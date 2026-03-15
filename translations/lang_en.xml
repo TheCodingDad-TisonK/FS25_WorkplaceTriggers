@@ -110,11 +110,11 @@
         <text name="helpLine_wt_ov_p2_money_text"      text="When you end a shift the total earned amount is added to your farm account via the standard FS25 finance system. It appears as a positive transaction in your financial history under the income category, the same way selling crops or completing contracts works. In multiplayer each player tracks their own shift independently and receives their own payout."/>
 
         <!-- ── Getting Started, Page 1: Buy and place ── -->
-        <text name="helpLine_wt_su_p1_title"         text="Step 1 - Buy and Place"/>
-        <text name="helpLine_wt_su_p1_buy_title"     text="Finding the Trigger in the Shop"/>
-        <text name="helpLine_wt_su_p1_buy_text"      text="Open the shop (default key B) and navigate to the Objects category. Look for Work Trigger Zone. The item has no ongoing cost and can be purchased as many times as you need - one for each workplace you want to create. Place it from your construction menu just like any other placeable object. The trigger zone itself is invisible during normal gameplay so it will not clutter your map visually."/>
+        <text name="helpLine_wt_su_p1_title"         text="Step 1 - Open the Manager and Add"/>
+        <text name="helpLine_wt_su_p1_buy_title"     text="Opening the Workplace Manager"/>
+        <text name="helpLine_wt_su_p1_buy_text"      text="You do not buy anything from the shop. Instead, press F4 at any time in-game to open the Workplace Manager. In the Manager click the Add New Trigger button at the bottom. A configuration dialog opens where you enter a name, set a wage, choose a pay schedule, and optionally adjust the trigger radius before confirming. The trigger is created at your player's current location the moment you confirm."/>
         <text name="helpLine_wt_su_p1_place_title"   text="Choosing a Good Location"/>
-        <text name="helpLine_wt_su_p1_place_text"    text="Stand at the location you want to designate as a workplace before placing. The trigger spawns at the position you choose in the placement preview. Good locations include near buildings you already have, at road junctions you pass frequently, beside delivery points, or anywhere that fits the roleplay story of the job. The default trigger radius is 4 metres so you need to be inside that circle to interact with it."/>
+        <text name="helpLine_wt_su_p1_place_text"    text="Stand at the spot you want to designate as your workplace BEFORE pressing F4 and adding the trigger, because the trigger spawns at your player position when you confirm. Good spots include near map buildings, at road junctions you pass frequently, beside delivery points, or anywhere that fits the roleplay story of the job. The trigger zone is invisible during normal play so it will not clutter your map visually."/>
 
         <!-- ── Getting Started, Page 2: Configure ── -->
         <text name="helpLine_wt_su_p2_title"           text="Step 2 - Configure Your Workplace"/>
