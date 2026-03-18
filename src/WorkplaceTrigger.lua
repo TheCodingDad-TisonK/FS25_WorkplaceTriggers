@@ -37,11 +37,16 @@ function WorkplaceTrigger.new(node, workplaceName, workplaceId, system)
         self.visibleForFarm = true  -- Default visible for all farms
     end
     
+    -- Assign a stable string ID usable on both server and client.
+    -- Node handles are local to each machine so they cannot be used to look up
+    -- a trigger on the server after the client sends a network event.
+    -- workplaceId (set by the map/editor) is the canonical cross-machine key.
+    self.id = workplaceId and tostring(workplaceId) or tostring(node)
+
     -- Client-side setup (following ShopTrigger pattern)
     if g_currentMission:getIsClient() then
-        self.id = node
-        self.triggerId = node
-        
+        self.triggerId = node   -- engine handle for addTrigger/removeTrigger only
+
         -- Verify collision mask (following ShopTrigger pattern)
         if not CollisionFlag.getHasMaskFlagSet(node, CollisionFlag.PLAYER) then
             Logging.warning(

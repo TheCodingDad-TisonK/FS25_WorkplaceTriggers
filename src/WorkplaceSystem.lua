@@ -127,7 +127,7 @@ function WorkplaceSystem:onInteractPressed()
         -- Start shift at nearest trigger
         local trigger = self.triggerManager:getNearestPlayerTrigger()
         if trigger then
-            WorkplaceMultiplayerEvent.sendShiftStart(trigger.id)
+            WorkplaceMultiplayerEvent.sendShiftStart(trigger.workplaceId and tostring(trigger.workplaceId) or tostring(trigger.node))
         end
     end
 end
