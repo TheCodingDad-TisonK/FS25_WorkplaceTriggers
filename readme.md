@@ -4,6 +4,9 @@
 [![Downloads](https://img.shields.io/github/downloads/TheCodingDad-TisonK/FS25_WorkplaceTriggers/total?style=for-the-badge&logo=github&color=4caf50&logoColor=white)](https://github.com/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases)
 [![Release](https://img.shields.io/github/v/release/TheCodingDad-TisonK/FS25_WorkplaceTriggers?style=for-the-badge&logo=tag&color=76c442&logoColor=white)](https://github.com/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases/latest)
 [![License](https://img.shields.io/badge/license-CC%20BY--NC--ND%204.0-lightgrey?style=for-the-badge&logo=creativecommons&logoColor=white)](https://creativecommons.org/licenses/by-nc-nd/4.0/)
+<a href="https://www.buymeacoffee.com/TheCodingDad">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="50">
+</a>
 
 <br>
 
