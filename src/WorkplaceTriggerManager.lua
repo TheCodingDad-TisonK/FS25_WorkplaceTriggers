@@ -78,8 +78,14 @@ function WorkplaceTriggerManager:registerTrigger(triggerData)
     wtLog(string.format("Registered trigger '%s' (id=%s)",
         triggerData.workplaceName or "?", tostring(triggerData.id)))
 
-    self:spawnMarkerForTrigger(triggerData)
-    self:createMapHotspotForTrigger(triggerData)
+    -- Visual setup is wrapped in pcall so a failure never aborts registration
+    local ok, err = pcall(function()
+        self:spawnMarkerForTrigger(triggerData)
+        self:createMapHotspotForTrigger(triggerData)
+    end)
+    if not ok then
+        wtLog("Warning: visual setup failed for trigger '" .. tostring(triggerData.workplaceName) .. "': " .. tostring(err))
+    end
 end
 
 function WorkplaceTriggerManager:deregisterTrigger(triggerId)
@@ -180,6 +186,12 @@ end
 function WorkplaceTriggerManager:spawnMarkerForTrigger(triggerData)
     if triggerData == nil then return end
     if triggerData._markerRootNode and triggerData._markerRootNode ~= 0 then return end
+
+    -- Skip on headless dedicated server: no rendering context, no i3d manager
+    if g_i3DManager == nil then
+        wtLog("spawnMarkerForTrigger: g_i3DManager not available (dedicated server?) - skipping visual marker")
+        return
+    end
 
     local rootNode = createTransformGroup("wt_marker_" .. tostring(triggerData.id))
     if rootNode == nil or rootNode == 0 then

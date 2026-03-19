@@ -30,6 +30,7 @@ WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM   = 3
 WorkplaceMultiplayerEvent.TYPE_CREATE_TRIGGER  = 4   -- client -> server
 WorkplaceMultiplayerEvent.TYPE_TRIGGER_CREATED = 5   -- server -> all clients
 WorkplaceMultiplayerEvent.TYPE_UPDATE_TRIGGER  = 6   -- client -> server (edit existing)
+WorkplaceMultiplayerEvent.TYPE_DELETE_TRIGGER  = 7   -- server -> all clients
 
 local LOG = "[WorkplaceTriggers] MPEvent: "
 local function wtLog(msg) print(LOG .. tostring(msg)) end
@@ -121,6 +122,7 @@ function WorkplaceMultiplayerEvent:run(connection)
     elseif t == WorkplaceMultiplayerEvent.TYPE_CREATE_TRIGGER  then self:handleCreateTrigger(sys, connection)
     elseif t == WorkplaceMultiplayerEvent.TYPE_TRIGGER_CREATED then self:handleTriggerCreated(sys)
     elseif t == WorkplaceMultiplayerEvent.TYPE_UPDATE_TRIGGER  then self:handleUpdateTrigger(sys)
+    elseif t == WorkplaceMultiplayerEvent.TYPE_DELETE_TRIGGER  then self:handleDeleteTrigger(sys)
     end
 end
 
@@ -181,48 +183,36 @@ end
 -- Trigger creation handlers
 -- =========================================================
 
--- Runs on the SERVER when a client requests trigger creation.
+-- Runs on the SERVER when a dedicated-server client requests trigger creation.
+-- In SP/listen-server this is bypassed by sendCreateTrigger() above.
 function WorkplaceMultiplayerEvent:handleCreateTrigger(sys, connection)
     if not g_currentMission:getIsServer() then return end
 
-    -- Generate a stable ID that will be the same string on every machine
     local stableId = generateStableId()
     wtLog("Server: creating trigger id=" .. stableId
           .. " name='" .. self.workplaceName .. "'")
 
-    -- Queue the pendingCreate on the server with the stable ID, so that
-    -- when the placeable's onLoad fires it picks up the right config.
-    if sys.saveLoad then
-        sys.saveLoad:queuePendingCreate({
-            stableId      = stableId,
-            workplaceName = self.workplaceName,
-            hourlyWage    = self.hourlyWage,
-            triggerRadius = self.triggerRadius,
-            paySchedule   = self.paySchedule,
-            posX          = self.posX,
-            posY          = self.posY,
-            posZ          = self.posZ,
-        })
+    -- Register directly on the server (no placeable)
+    local triggerData = {
+        id            = stableId,
+        workplaceName = self.workplaceName,
+        hourlyWage    = self.hourlyWage,
+        triggerRadius = self.triggerRadius,
+        posX          = self.posX,
+        posY          = self.posY,
+        posZ          = self.posZ,
+        paySchedule   = self.paySchedule,
+        playerInside  = false,
+    }
+    local ok, err = pcall(function()
+        sys.triggerManager:registerTrigger(triggerData)
+    end)
+    if not ok then
+        wtLog("Server: registerTrigger error (trigger still queued): " .. tostring(err))
     end
 
-    -- Only the SERVER places the placeable; FS25 then replicates it to all
-    -- connected clients automatically via the placeable network layer.
-    local xmlFilename = sys.modDirectory .. "placeables/workTrigger/workTrigger.xml"
-    if g_placeableSystem and g_placeableSystem.loadPlaceable then
-        g_placeableSystem:loadPlaceable(
-            xmlFilename,
-            self.posX, self.posY, self.posZ,
-            0, 0, 0,
-            self.farmId,
-            0,      -- price: free
-            true,   -- isServer
-            true,   -- isClient
-            nil
-        )
-    end
-
-    -- Broadcast the stable ID and full config to ALL clients so they can
-    -- queue their pendingCreate before the replicated placeable arrives.
+    -- Broadcast to all clients so they register the same trigger data
+    -- NOTE: broadcast runs even if visual setup failed above
     g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
         WorkplaceMultiplayerEvent.TYPE_TRIGGER_CREATED,
         {
@@ -241,26 +231,25 @@ end
 
 -- Runs on every CLIENT after the server acknowledged creation.
 function WorkplaceMultiplayerEvent:handleTriggerCreated(sys)
-    -- Server already handled this inside handleCreateTrigger
+    -- Server already registered it inside handleCreateTrigger
     if g_currentMission:getIsServer() then return end
 
     wtLog("Client: received trigger-created id=" .. tostring(self.triggerId)
           .. " name='" .. self.workplaceName .. "'")
 
-    -- Queue pendingCreate with the stable ID so that when the replicated
-    -- placeable arrives and calls onLoad, it picks up the right name/wage.
-    if sys.saveLoad then
-        sys.saveLoad:queuePendingCreate({
-            stableId      = self.triggerId,
-            workplaceName = self.workplaceName,
-            hourlyWage    = self.hourlyWage,
-            triggerRadius = self.triggerRadius,
-            paySchedule   = self.paySchedule,
-            posX          = self.posX,
-            posY          = self.posY,
-            posZ          = self.posZ,
-        })
-    end
+    -- Register directly on this client (no placeable)
+    local triggerData = {
+        id            = self.triggerId,
+        workplaceName = self.workplaceName,
+        hourlyWage    = self.hourlyWage,
+        triggerRadius = self.triggerRadius,
+        posX          = self.posX,
+        posY          = self.posY,
+        posZ          = self.posZ,
+        paySchedule   = self.paySchedule,
+        playerInside  = false,
+    }
+    sys.triggerManager:registerTrigger(triggerData)
 end
 
 -- Runs when any client edits an existing trigger's name/wage/radius.
@@ -344,23 +333,44 @@ end
 function WorkplaceMultiplayerEvent.sendCreateTrigger(data)
     if g_currentMission == nil then return end
     if g_currentMission:getIsServer() then
-        -- SP / listen-server host: handle directly (no network round-trip needed)
+        -- SP / listen-server: create trigger data directly, no placeable needed
         local sys = g_WorkplaceSystem
         if sys == nil then return end
         local stableId = generateStableId()
-        data.stableId = stableId
-        if sys.saveLoad then
-            sys.saveLoad:queuePendingCreate(data)
+        local triggerData = {
+            id            = stableId,
+            workplaceName = data.workplaceName or "Workplace",
+            hourlyWage    = data.hourlyWage    or 500,
+            triggerRadius = data.triggerRadius or 4,
+            posX          = data.posX          or 0,
+            posY          = data.posY          or 0,
+            posZ          = data.posZ          or 0,
+            paySchedule   = data.paySchedule   or "hourly",
+            playerInside  = false,
+        }
+        local ok2, err2 = pcall(function()
+            sys.triggerManager:registerTrigger(triggerData)
+        end)
+        if not ok2 then
+            wtLog("sendCreateTrigger: registerTrigger error: " .. tostring(err2))
         end
-        local xmlFilename = sys.modDirectory .. "placeables/workTrigger/workTrigger.xml"
-        if g_placeableSystem and g_placeableSystem.loadPlaceable then
-            g_placeableSystem:loadPlaceable(
-                xmlFilename,
-                data.posX or 0, data.posY or 0, data.posZ or 0,
-                0, 0, 0,
-                data.farmId or g_currentMission:getFarmId(),
-                0, true, true, nil
-            )
+
+        -- Listen-server: broadcast to any connected clients
+        if g_server then
+            g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
+                WorkplaceMultiplayerEvent.TYPE_TRIGGER_CREATED,
+                {
+                    triggerId     = stableId,
+                    workplaceName = triggerData.workplaceName,
+                    hourlyWage    = triggerData.hourlyWage,
+                    triggerRadius = triggerData.triggerRadius,
+                    paySchedule   = triggerData.paySchedule,
+                    posX          = triggerData.posX,
+                    posY          = triggerData.posY,
+                    posZ          = triggerData.posZ,
+                    farmId        = data.farmId or 1,
+                }
+            ))
         end
     else
         g_client:getServerConnection():sendEvent(
@@ -392,6 +402,61 @@ function WorkplaceMultiplayerEvent.sendUpdateTrigger(triggerId, data)
         g_client:getServerConnection():sendEvent(
             WorkplaceMultiplayerEvent.new(
                 WorkplaceMultiplayerEvent.TYPE_UPDATE_TRIGGER, data)
+        )
+    end
+end
+
+-- Runs on every machine to deregister a trigger by ID.
+-- On a dedicated server, re-broadcasts to all other clients.
+function WorkplaceMultiplayerEvent:handleDeleteTrigger(sys)
+    if sys.shiftTracker and sys.shiftTracker:isShiftActive() then
+        if tostring(sys.shiftTracker.activeTriggerId) == self.triggerId then
+            sys.shiftTracker:endShift()
+        end
+    end
+    if sys.triggerManager then
+        sys.triggerManager:deregisterTrigger(self.triggerId)
+    end
+    wtLog("Deleted trigger id=" .. tostring(self.triggerId))
+
+    -- Dedicated server: forward to all clients
+    if g_currentMission:getIsServer() and g_server then
+        g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
+            WorkplaceMultiplayerEvent.TYPE_DELETE_TRIGGER,
+            { triggerId = self.triggerId }
+        ))
+    end
+end
+
+-- Called from WTListDialog:onClickDel — routes through server so all clients sync
+function WorkplaceMultiplayerEvent.sendDeleteTrigger(triggerId)
+    if g_currentMission == nil then return end
+    local sys = g_WorkplaceSystem
+    if sys == nil then return end
+
+    if g_currentMission:getIsServer() then
+        -- SP / listen-server: deregister locally then broadcast
+        if sys.shiftTracker and sys.shiftTracker:isShiftActive() then
+            if tostring(sys.shiftTracker.activeTriggerId) == tostring(triggerId) then
+                sys.shiftTracker:endShift()
+            end
+        end
+        if sys.triggerManager then
+            sys.triggerManager:deregisterTrigger(triggerId)
+        end
+        if g_server then
+            g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
+                WorkplaceMultiplayerEvent.TYPE_DELETE_TRIGGER,
+                { triggerId = tostring(triggerId) }
+            ))
+        end
+    else
+        -- Dedicated server client: ask server to delete
+        g_client:getServerConnection():sendEvent(
+            WorkplaceMultiplayerEvent.new(
+                WorkplaceMultiplayerEvent.TYPE_DELETE_TRIGGER,
+                { triggerId = tostring(triggerId) }
+            )
         )
     end
 end
