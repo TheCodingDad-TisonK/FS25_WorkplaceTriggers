@@ -325,90 +325,36 @@ function WTEditDialog:onClickSave()
     if name == "" then name = "Workplace" end
 
     if self.isNew then
-        -- Spawn the actual workTrigger placeable so its i3d markerNode exists in
-        -- the world and the floating marker is visible.
-        -- The placeable's onLoad() will call triggerManager:registerTrigger() itself,
-        -- so we do NOT register a separate data record here.
-        local xmlFilename = (self.system and self.system.modDirectory or "") .. "placeables/workTrigger/workTrigger.xml"
-        local posX = self.posX or 0
-        local posY = self.posY or 0
-        local posZ = self.posZ or 0
-
-        -- Queue the name/wage so workTrigger.lua:onLoad() can pick them up via
-        -- saveLoad:applyPendingRestore() after the placeable registers itself.
-        if self.system and self.system.saveLoad then
-            self.system.saveLoad:queuePendingCreate({
+        -- FIX: never call g_placeableSystem directly from the client.
+        -- Route through the MP event layer so the server is always the one
+        -- that places the placeable and generates the stable cross-machine ID.
+        -- sendCreateTrigger() handles SP/listen-server inline and sends a
+        -- TYPE_CREATE_TRIGGER network event on a dedicated server.
+        local farmId = g_currentMission and g_currentMission:getFarmId() or 1
+        WorkplaceMultiplayerEvent.sendCreateTrigger({
+            workplaceName = name,
+            hourlyWage    = self.wage,
+            triggerRadius = self.radius,
+            paySchedule   = self.paySchedule,
+            posX          = self.posX or 0,
+            posY          = self.posY or 0,
+            posZ          = self.posZ or 0,
+            farmId        = farmId,
+        })
+        print("[WorkplaceTriggers] Requested trigger creation: " .. name)
+    else
+        -- FIX: route edits through the MP event layer as well, so every client
+        -- sees the updated name/wage/radius without a rejoin.
+        local t = self.trigger
+        if t then
+            WorkplaceMultiplayerEvent.sendUpdateTrigger(tostring(t.id), {
                 workplaceName = name,
                 hourlyWage    = self.wage,
                 triggerRadius = self.radius,
                 paySchedule   = self.paySchedule,
-                posX          = posX,
-                posY          = posY,
-                posZ          = posZ,
             })
         end
-
-        -- Use PlaceableSystem to load and place the placeable at the chosen position.
-        -- Price=0 so the player is never charged; farm=local player's farm.
-        local farmId = g_currentMission:getFarmId()
-        if g_placeableSystem and g_placeableSystem.loadPlaceable then
-            -- FS25 public API: loadPlaceable(xmlFilename, x, y, z, rotX, rotY, rotZ,
-            --                                farmId, price, isServer, isClient, callback)
-            g_placeableSystem:loadPlaceable(
-                xmlFilename,
-                posX, posY, posZ,
-                0, 0, 0,
-                farmId,
-                0,        -- price: free
-                true,     -- isServer
-                true,     -- isClient
-                nil       -- no extra callback needed; onLoad handles registration
-            )
-            print("[WorkplaceTriggers] Spawning placeable for trigger: " .. name)
-        else
-            -- Fallback: PlaceableSystem API unavailable - fall back to data-only record
-            -- (marker will not show, but the trigger zone will still function)
-            print("[WorkplaceTriggers] WARNING: g_placeableSystem unavailable - creating data-only trigger (no floating marker)")
-            local id = "gui_" .. tostring(g_currentMission and math.floor(g_currentMission.time) or 0)
-                       .. "_" .. tostring(WTEditDialog.idCounter or 0)
-            WTEditDialog.idCounter = (WTEditDialog.idCounter or 0) + 1
-            local t = {
-                id            = id,
-                workplaceName = name,
-                hourlyWage    = self.wage,
-                triggerRadius = self.radius,
-                posX          = posX,
-                posY          = posY,
-                posZ          = posZ,
-                rotY          = 0,
-                playerInside  = false,
-                placeableRef  = nil,
-                isRuntimeOnly = true,
-            }
-            if self.system and self.system.triggerManager then
-                self.system.triggerManager:registerTrigger(t)
-            end
-        end
-        print("[WorkplaceTriggers] Created trigger: " .. name)
-    else
-        -- Update existing
-        local t = self.trigger
-        if t then
-            t.workplaceName = name
-            t.hourlyWage    = self.wage
-            t.triggerRadius = self.radius
-            t.paySchedule   = self.paySchedule
-            if t.placeableRef then
-                local ref = t.placeableRef
-                if ref.setWorkplaceName then ref:setWorkplaceName(name) end
-                if ref.setHourlyWage    then ref:setHourlyWage(self.wage) end
-            end
-            -- Sync map hotspot name live
-            if self.system and self.system.triggerManager then
-                self.system.triggerManager:updateMapHotspotName(t)
-            end
-        end
-        print("[WorkplaceTriggers] Updated trigger: " .. name)
+        print("[WorkplaceTriggers] Requested trigger update: " .. name)
     end
 
     self:close()
