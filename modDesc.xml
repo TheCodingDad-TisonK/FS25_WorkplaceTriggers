@@ -90,7 +90,7 @@ Umiec wyzwalacz, nadaj mu nazwe, ustaw stawke i zarabiaj podczas dyspozycji.
             <binding device="KB_MOUSE_DEFAULT" input="KEY_F4"/>
         </actionBinding>
         <actionBinding action="WT_HUD_EDIT">
-            <binding device="KB_MOUSE_DEFAULT" input="KEY_lshift"/>
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_F7"/>
         </actionBinding>
     </inputBinding>
 

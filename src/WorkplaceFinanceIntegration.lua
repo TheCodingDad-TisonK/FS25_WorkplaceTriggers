@@ -3,8 +3,8 @@
 -- Pays shift earnings into the farm account.
 -- =========================================================
 -- Pattern: FinanceIntegration.lua from FS25_SeasonalCropStress
--- Uses g_currentMission.economyManager (preferred) with
--- g_currentMission.updateFunds as fallback.
+-- Uses farm:changeBalance as the canonical path (economyManager:updateFunds
+-- always errors in practice); g_currentMission:updateFunds as fallback.
 -- =========================================================
 
 WorkplaceFinanceIntegration = {}
@@ -41,35 +41,8 @@ function WorkplaceFinanceIntegration:addMoney(amount, workplaceName)
     -- Determine farm ID
     local farmId = self:getPlayerFarmId()
 
-    -- Method 1: economyManager (preferred FS25 way, tracks in financial history)
-    if g_currentMission and g_currentMission.economyManager then
-        local ok, err = pcall(function()
-            local reasonType = EconomyManager.INCOME_TYPE_OTHER or 0
-            g_currentMission.economyManager:updateFunds(farmId, amountInt, reasonType, true)
-        end)
-        if ok then
-            wtLog(string.format("Paid $%d to farmId=%d from '%s' via economyManager", amountInt, farmId, label))
-            return
-        else
-            wtLog("economyManager:updateFunds failed: " .. tostring(err) .. " - trying fallback")
-        end
-    end
-
-    -- Method 2: updateFunds direct (SeasonalCropStress pattern)
-    if g_currentMission and g_currentMission.updateFunds then
-        local ok, err = pcall(function()
-            local reasonType = (FundsReasonType ~= nil and FundsReasonType.OTHER) or 0
-            g_currentMission:updateFunds(farmId, amountInt, reasonType, true)
-        end)
-        if ok then
-            wtLog(string.format("Paid $%d to farmId=%d from '%s' via updateFunds", amountInt, farmId, label))
-            return
-        else
-            wtLog("updateFunds failed: " .. tostring(err))
-        end
-    end
-
-    -- Method 3: direct farm money add
+    -- Canonical path: farm:changeBalance (confirmed working in FS25;
+    -- economyManager:updateFunds was removed — it always errors in practice)
     if g_farmManager then
         local ok, err = pcall(function()
             local farm = g_farmManager:getFarmById(farmId)
@@ -82,6 +55,20 @@ function WorkplaceFinanceIntegration:addMoney(amount, workplaceName)
             return
         else
             wtLog("farm:changeBalance failed: " .. tostring(err))
+        end
+    end
+
+    -- Fallback: g_currentMission:updateFunds
+    if g_currentMission and g_currentMission.updateFunds then
+        local ok, err = pcall(function()
+            local reasonType = (FundsReasonType ~= nil and FundsReasonType.OTHER) or 0
+            g_currentMission:updateFunds(farmId, amountInt, reasonType, true)
+        end)
+        if ok then
+            wtLog(string.format("Paid $%d to farmId=%d from '%s' via updateFunds", amountInt, farmId, label))
+            return
+        else
+            wtLog("updateFunds failed: " .. tostring(err))
         end
     end
 
