@@ -124,13 +124,24 @@ function WorkTriggerPlaceable.onLoad(self, savegame)
             if savegame == nil then
                 local pending = g_WorkplaceSystem.saveLoad:popPendingCreate()
                 if pending then
+                    -- CRITICAL: use the server-assigned stableId as the canonical ID.
+                    -- triggerData.id was set to tostring(self.id) above (the engine's
+                    -- local node handle), but WorkplaceTrigger.new() reads the same
+                    -- pendingCreate via peekPendingCreate() and sets its own id to
+                    -- pending.stableId.  Without this assignment the two objects end
+                    -- up with different IDs and getTriggerById() never finds the entry,
+                    -- so the marker stays "pending" and is never placed on the map.
+                    if pending.stableId and pending.stableId ~= "" then
+                        triggerData.id = pending.stableId
+                    end
                     triggerData.workplaceName = pending.workplaceName
                     triggerData.hourlyWage    = pending.hourlyWage
                     triggerData.triggerRadius = pending.triggerRadius
                     self.workplaceName        = pending.workplaceName
                     self.hourlyWage           = pending.hourlyWage
                     self.triggerRadius        = pending.triggerRadius
-                    wtLog(string.format("Applied pending create config: '%s' $%d/hr", pending.workplaceName, pending.hourlyWage))
+                    wtLog(string.format("Applied pending create config: '%s' $%d/hr stableId=%s",
+                        pending.workplaceName, pending.hourlyWage, tostring(pending.stableId)))
                 end
             end
             -- Re-scale ground ring to match restored radius (was scaled to default before restore)
@@ -225,9 +236,13 @@ function WorkTriggerPlaceable.onDelete(self)
         self.triggerNodeId = nil
     end
 
-    -- Deregister from manager
+    -- Deregister from manager.
+    -- Use the stableId stored in _triggerData (set during onLoad) rather than
+    -- tostring(self.id), because _triggerData.id was corrected to the
+    -- server-assigned stableId when the pendingCreate was applied.
     if g_WorkplaceSystem and g_WorkplaceSystem.triggerManager then
-        g_WorkplaceSystem.triggerManager:deregisterTrigger(tostring(self.id))
+        local deregId = (self._triggerData and self._triggerData.id) or tostring(self.id)
+        g_WorkplaceSystem.triggerManager:deregisterTrigger(deregId)
     end
 
     self._triggerData = nil

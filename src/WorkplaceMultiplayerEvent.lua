@@ -261,38 +261,6 @@ function WorkplaceMultiplayerEvent:handleTriggerCreated(sys)
             posZ          = self.posZ,
         })
     end
-
-    -- Race-condition guard: if the placeable replicated before this event
-    -- arrived, it already registered with default values. Find it by position
-    -- and patch it now, then pop the queue entry so it does not accumulate.
-    if sys.triggerManager and sys.saveLoad then
-        local px, py, pz = self.posX or 0, self.posY or 0, self.posZ or 0
-        for _, trigger in ipairs(sys.triggerManager:getAllTriggers()) do
-            local dx = (trigger.posX or 0) - px
-            local dy = (trigger.posY or 0) - py
-            local dz = (trigger.posZ or 0) - pz
-            if (dx*dx + dy*dy + dz*dz) < 1.0 then
-                trigger.workplaceName = self.workplaceName
-                trigger.hourlyWage    = self.hourlyWage
-                trigger.triggerRadius = self.triggerRadius
-                if trigger.placeableRef then
-                    trigger.placeableRef.workplaceName = self.workplaceName
-                    trigger.placeableRef.hourlyWage    = self.hourlyWage
-                    trigger.placeableRef.triggerRadius = self.triggerRadius
-                    local ringNode = trigger.placeableRef._groundRingNode
-                    if ringNode and ringNode ~= 0 then
-                        local s = self.triggerRadius
-                        setScale(ringNode, s, 1.0, s)
-                    end
-                end
-                sys.triggerManager:updateMapHotspotName(trigger)
-                sys.saveLoad:popPendingCreate()
-                wtLog(string.format("Race-guard: patched trigger at (%.1f,%.1f,%.1f) -> '%s'",
-                    px, py, pz, self.workplaceName))
-                break
-            end
-        end
-    end
 end
 
 -- Runs when any client edits an existing trigger's name/wage/radius.
