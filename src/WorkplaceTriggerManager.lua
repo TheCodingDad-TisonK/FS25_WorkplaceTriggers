@@ -83,8 +83,9 @@ function WorkplaceTriggerManager:registerTrigger(triggerData)
 end
 
 function WorkplaceTriggerManager:deregisterTrigger(triggerId)
+    local searchId = tostring(triggerId)
     for i = #self.triggers, 1, -1 do
-        if self.triggers[i].id == triggerId then
+        if tostring(self.triggers[i].id) == searchId then
             self:destroyMarkerForTrigger(self.triggers[i])
             self:destroyMapHotspotForTrigger(self.triggers[i])
             wtLog(string.format("Deregistered trigger id=%s", tostring(triggerId)))
@@ -288,8 +289,9 @@ function WorkplaceTriggerManager:getActiveTrigger()
     if not self.system.shiftTracker then return nil end
     local activeId = self.system.shiftTracker.activeTriggerId
     if not activeId then return nil end
+    local searchId = tostring(activeId)
     for _, trigger in ipairs(self.triggers) do
-        if trigger.id == activeId then return trigger end
+        if tostring(trigger.id) == searchId then return trigger end
     end
     return nil
 end
@@ -297,8 +299,11 @@ end
 function WorkplaceTriggerManager:getAllTriggers()   return self.triggers end
 
 function WorkplaceTriggerManager:getTriggerById(id)
+    -- Compare as strings: trigger.id is always a string (set in WorkplaceTrigger.new),
+    -- but callers may pass an integer node handle from older code paths.
+    local searchId = tostring(id)
     for _, trigger in ipairs(self.triggers) do
-        if trigger.id == id then return trigger end
+        if tostring(trigger.id) == searchId then return trigger end
     end
     return nil
 end

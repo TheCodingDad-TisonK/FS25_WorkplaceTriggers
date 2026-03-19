@@ -281,6 +281,15 @@ end
 function WorkplaceSaveLoad:popPendingCreate()
     if self.pendingCreates == nil or #self.pendingCreates == 0 then return nil end
     local data = table.remove(self.pendingCreates, 1)
-    wtLog(string.format("Popped pending create for '%s'", data.workplaceName or "?"))
+    wtLog(string.format("Popped pending create for '%s' (stableId=%s)",
+        data.workplaceName or "?", tostring(data.stableId)))
     return data
+end
+
+-- Non-destructive peek: WorkplaceTrigger.new() uses this to claim the
+-- server-assigned stableId during onLoad BEFORE popPendingCreate is called.
+-- Returns the first entry or nil without removing it.
+function WorkplaceSaveLoad:peekPendingCreate()
+    if self.pendingCreates == nil or #self.pendingCreates == 0 then return nil end
+    return self.pendingCreates[1]
 end
