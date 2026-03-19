@@ -41,17 +41,19 @@ function WorkplaceFinanceIntegration:addMoney(amount, workplaceName)
     -- Determine farm ID
     local farmId = self:getPlayerFarmId()
 
-    -- Method 1: economyManager (preferred FS25 way, tracks in financial history)
-    if g_currentMission and g_currentMission.economyManager then
+    -- Method 1: direct farm balance (confirmed working FS25 path)
+    if g_farmManager then
         local ok, err = pcall(function()
-            local reasonType = EconomyManager.INCOME_TYPE_OTHER or 0
-            g_currentMission.economyManager:updateFunds(farmId, amountInt, reasonType, true)
+            local farm = g_farmManager:getFarmById(farmId)
+            if farm then
+                farm:changeBalance(amountInt)
+            end
         end)
         if ok then
-            wtLog(string.format("Paid $%d to farmId=%d from '%s' via economyManager", amountInt, farmId, label))
+            wtLog(string.format("Paid $%d to farmId=%d from '%s' via farm:changeBalance", amountInt, farmId, label))
             return
         else
-            wtLog("economyManager:updateFunds failed: " .. tostring(err) .. " - trying fallback")
+            wtLog("farm:changeBalance failed: " .. tostring(err))
         end
     end
 
@@ -66,22 +68,6 @@ function WorkplaceFinanceIntegration:addMoney(amount, workplaceName)
             return
         else
             wtLog("updateFunds failed: " .. tostring(err))
-        end
-    end
-
-    -- Method 3: direct farm money add
-    if g_farmManager then
-        local ok, err = pcall(function()
-            local farm = g_farmManager:getFarmById(farmId)
-            if farm then
-                farm:changeBalance(amountInt)
-            end
-        end)
-        if ok then
-            wtLog(string.format("Paid $%d to farmId=%d from '%s' via farm:changeBalance", amountInt, farmId, label))
-            return
-        else
-            wtLog("farm:changeBalance failed: " .. tostring(err))
         end
     end
 

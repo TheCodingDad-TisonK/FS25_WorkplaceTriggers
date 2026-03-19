@@ -246,9 +246,11 @@ function WorkplaceTriggerManager:destroyMarkerForTrigger(triggerData)
     if triggerData._markerRootNode and triggerData._markerRootNode ~= 0 then
         delete(triggerData._markerRootNode)
         triggerData._markerRootNode = nil
+        local i3dHandle = triggerData._markerI3DNode
         triggerData._markerI3DNode  = nil
-        g_i3DManager:releaseSharedI3DFile(
-            triggerData._markerI3DResolved or Utils.getFilename(MARKER_I3D_RAW, ""))
+        if i3dHandle and i3dHandle ~= 0 then
+            g_i3DManager:releaseSharedI3DFile(i3dHandle)
+        end
     end
 end
 
