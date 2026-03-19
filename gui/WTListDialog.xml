@@ -38,10 +38,10 @@
             <Text profile="wtCellPos"   id="r1pos"  position="195px -72px"  text=""/>
             <Bitmap profile="wtBtnBg"   id="r1editbg"  position="285px -72px"/>
             <Text   profile="wtBtnText" id="r1edittxt" position="285px -73px" text="Edit"/>
-            <Button profile="wtBtnHit"  id="r1edit"    position="285px -72px" onClick="onClickEdit1" toolTip="Edit trigger"/>
+            <Button profile="wtBtnHit"  id="r1edit"    position="285px -72px" onClick="onClickEdit1"/>
             <Bitmap profile="wtBtnDelBg"   id="r1delbg"  position="340px -72px"/>
             <Text   profile="wtBtnText"    id="r1deltxt" position="340px -73px" text="Del"/>
-            <Button profile="wtBtnHit"     id="r1del"    position="340px -72px" onClick="onClickDel1" toolTip="Delete trigger"/>
+            <Button profile="wtBtnHit"     id="r1del"    position="340px -72px" onClick="onClickDel1"/>
 
             <!-- ROW 2 -->
             <Bitmap profile="wtRowEven" id="r2bg"  position="0px -92px"/>
@@ -50,10 +50,10 @@
             <Text profile="wtCellPos"   id="r2pos"  position="195px -93px"  text=""/>
             <Bitmap profile="wtBtnBg"   id="r2editbg"  position="285px -93px"/>
             <Text   profile="wtBtnText" id="r2edittxt" position="285px -94px" text="Edit"/>
-            <Button profile="wtBtnHit"  id="r2edit"    position="285px -93px" onClick="onClickEdit2" toolTip="Edit trigger"/>
+            <Button profile="wtBtnHit"  id="r2edit"    position="285px -93px" onClick="onClickEdit2"/>
             <Bitmap profile="wtBtnDelBg"   id="r2delbg"  position="340px -93px"/>
             <Text   profile="wtBtnText"    id="r2deltxt" position="340px -94px" text="Del"/>
-            <Button profile="wtBtnHit"     id="r2del"    position="340px -93px" onClick="onClickDel2" toolTip="Delete trigger"/>
+            <Button profile="wtBtnHit"     id="r2del"    position="340px -93px" onClick="onClickDel2"/>
 
             <!-- ROW 3 -->
             <Bitmap profile="wtRowOdd"  id="r3bg"  position="0px -113px"/>
@@ -62,10 +62,10 @@
             <Text profile="wtCellPos"   id="r3pos"  position="195px -114px"  text=""/>
             <Bitmap profile="wtBtnBg"   id="r3editbg"  position="285px -114px"/>
             <Text   profile="wtBtnText" id="r3edittxt" position="285px -115px" text="Edit"/>
-            <Button profile="wtBtnHit"  id="r3edit"    position="285px -114px" onClick="onClickEdit3" toolTip="Edit trigger"/>
+            <Button profile="wtBtnHit"  id="r3edit"    position="285px -114px" onClick="onClickEdit3"/>
             <Bitmap profile="wtBtnDelBg"   id="r3delbg"  position="340px -114px"/>
             <Text   profile="wtBtnText"    id="r3deltxt" position="340px -115px" text="Del"/>
-            <Button profile="wtBtnHit"     id="r3del"    position="340px -114px" onClick="onClickDel3" toolTip="Delete trigger"/>
+            <Button profile="wtBtnHit"     id="r3del"    position="340px -114px" onClick="onClickDel3"/>
 
             <!-- ROW 4 -->
             <Bitmap profile="wtRowEven" id="r4bg"  position="0px -134px"/>
@@ -74,10 +74,10 @@
             <Text profile="wtCellPos"   id="r4pos"  position="195px -135px"  text=""/>
             <Bitmap profile="wtBtnBg"   id="r4editbg"  position="285px -135px"/>
             <Text   profile="wtBtnText" id="r4edittxt" position="285px -136px" text="Edit"/>
-            <Button profile="wtBtnHit"  id="r4edit"    position="285px -135px" onClick="onClickEdit4" toolTip="Edit trigger"/>
+            <Button profile="wtBtnHit"  id="r4edit"    position="285px -135px" onClick="onClickEdit4"/>
             <Bitmap profile="wtBtnDelBg"   id="r4delbg"  position="340px -135px"/>
             <Text   profile="wtBtnText"    id="r4deltxt" position="340px -136px" text="Del"/>
-            <Button profile="wtBtnHit"     id="r4del"    position="340px -135px" onClick="onClickDel4" toolTip="Delete trigger"/>
+            <Button profile="wtBtnHit"     id="r4del"    position="340px -135px" onClick="onClickDel4"/>
 
             <!-- ROW 5 -->
             <Bitmap profile="wtRowOdd"  id="r5bg"  position="0px -155px"/>
@@ -86,10 +86,10 @@
             <Text profile="wtCellPos"   id="r5pos"  position="195px -156px"  text=""/>
             <Bitmap profile="wtBtnBg"   id="r5editbg"  position="285px -156px"/>
             <Text   profile="wtBtnText" id="r5edittxt" position="285px -157px" text="Edit"/>
-            <Button profile="wtBtnHit"  id="r5edit"    position="285px -156px" onClick="onClickEdit5" toolTip="Edit trigger"/>
+            <Button profile="wtBtnHit"  id="r5edit"    position="285px -156px" onClick="onClickEdit5"/>
             <Bitmap profile="wtBtnDelBg"   id="r5delbg"  position="340px -156px"/>
             <Text   profile="wtBtnText"    id="r5deltxt" position="340px -157px" text="Del"/>
-            <Button profile="wtBtnHit"     id="r5del"    position="340px -156px" onClick="onClickDel5" toolTip="Delete trigger"/>
+            <Button profile="wtBtnHit"     id="r5del"    position="340px -156px" onClick="onClickDel5"/>
 
             <!-- ROW 6 -->
             <Bitmap profile="wtRowEven" id="r6bg"  position="0px -176px"/>
@@ -98,10 +98,10 @@
             <Text profile="wtCellPos"   id="r6pos"  position="195px -177px"  text=""/>
             <Bitmap profile="wtBtnBg"   id="r6editbg"  position="285px -177px"/>
             <Text   profile="wtBtnText" id="r6edittxt" position="285px -178px" text="Edit"/>
-            <Button profile="wtBtnHit"  id="r6edit"    position="285px -177px" onClick="onClickEdit6" toolTip="Edit trigger"/>
+            <Button profile="wtBtnHit"  id="r6edit"    position="285px -177px" onClick="onClickEdit6"/>
             <Bitmap profile="wtBtnDelBg"   id="r6delbg"  position="340px -177px"/>
             <Text   profile="wtBtnText"    id="r6deltxt" position="340px -178px" text="Del"/>
-            <Button profile="wtBtnHit"     id="r6del"    position="340px -177px" onClick="onClickDel6" toolTip="Delete trigger"/>
+            <Button profile="wtBtnHit"     id="r6del"    position="340px -177px" onClick="onClickDel6"/>
 
             <!-- ROW 7 -->
             <Bitmap profile="wtRowOdd"  id="r7bg"  position="0px -197px"/>
@@ -110,10 +110,10 @@
             <Text profile="wtCellPos"   id="r7pos"  position="195px -198px"  text=""/>
             <Bitmap profile="wtBtnBg"   id="r7editbg"  position="285px -198px"/>
             <Text   profile="wtBtnText" id="r7edittxt" position="285px -199px" text="Edit"/>
-            <Button profile="wtBtnHit"  id="r7edit"    position="285px -198px" onClick="onClickEdit7" toolTip="Edit trigger"/>
+            <Button profile="wtBtnHit"  id="r7edit"    position="285px -198px" onClick="onClickEdit7"/>
             <Bitmap profile="wtBtnDelBg"   id="r7delbg"  position="340px -198px"/>
             <Text   profile="wtBtnText"    id="r7deltxt" position="340px -199px" text="Del"/>
-            <Button profile="wtBtnHit"     id="r7del"    position="340px -198px" onClick="onClickDel7" toolTip="Delete trigger"/>
+            <Button profile="wtBtnHit"     id="r7del"    position="340px -198px" onClick="onClickDel7"/>
 
             <!-- ROW 8 -->
             <Bitmap profile="wtRowEven" id="r8bg"  position="0px -218px"/>
@@ -122,10 +122,10 @@
             <Text profile="wtCellPos"   id="r8pos"  position="195px -219px"  text=""/>
             <Bitmap profile="wtBtnBg"   id="r8editbg"  position="285px -219px"/>
             <Text   profile="wtBtnText" id="r8edittxt" position="285px -220px" text="Edit"/>
-            <Button profile="wtBtnHit"  id="r8edit"    position="285px -219px" onClick="onClickEdit8" toolTip="Edit trigger"/>
+            <Button profile="wtBtnHit"  id="r8edit"    position="285px -219px" onClick="onClickEdit8"/>
             <Bitmap profile="wtBtnDelBg"   id="r8delbg"  position="340px -219px"/>
             <Text   profile="wtBtnText"    id="r8deltxt" position="340px -220px" text="Del"/>
-            <Button profile="wtBtnHit"     id="r8del"    position="340px -219px" onClick="onClickDel8" toolTip="Delete trigger"/>
+            <Button profile="wtBtnHit"     id="r8del"    position="340px -219px" onClick="onClickDel8"/>
 
             <!-- Bottom divider -->
             <Bitmap profile="wtDivider" id="bottomDivider" position="0px -240px"/>
