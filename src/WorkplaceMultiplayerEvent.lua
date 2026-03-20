@@ -158,10 +158,12 @@ function WorkplaceMultiplayerEvent:handleShiftStart(sys, connection)
             wtLog("Server: started shift at '" .. (trigger.workplaceName or "?") .. "'")
             g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
                 WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM,
-                { triggerId     = self.triggerId,
-                  workplaceName = trigger.workplaceName or "",
-                  earnings        = 0,
-                  timeMultiplier  = trigger.timeMultiplier or 0 }
+                { triggerId      = self.triggerId,
+                  workplaceName  = trigger.workplaceName  or "",
+                  earnings       = 0,
+                  hourlyWage     = trigger.hourlyWage     or 500,
+                  paySchedule    = trigger.paySchedule    or "hourly",
+                  timeMultiplier = trigger.timeMultiplier or 0 }
             ))
         else
             wtLog("Server: shift start rejected - trigger not found: " .. tostring(self.triggerId))
