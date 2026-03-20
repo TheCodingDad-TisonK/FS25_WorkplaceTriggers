@@ -29,13 +29,16 @@ function WorkplaceShiftTracker.new(system)
     local self = setmetatable({}, WorkplaceShiftTracker_mt)
     self.system = system
 
-    self.activeTriggerId   = nil
+    self.activeTriggerId    = nil
     self.activeWorkplaceName = nil
-    self.activeHourlyWage  = 0
-    self.activePaySchedule = WorkplaceShiftTracker.PAY_HOURLY
-    self.shiftStartTime    = nil   -- g_currentMission.time at shift start (ms)
-    self.shiftElapsedMs    = 0     -- accumulated ms (updated each frame)
-    self.totalEarned       = 0     -- lifetime earnings this session
+    self.activeHourlyWage   = 0
+    self.activePaySchedule  = WorkplaceShiftTracker.PAY_HOURLY
+    self.activeTimeMultiplier = 0     -- 0=Auto, 1=x1(real), 3=x3, 5=x5, 10=x10
+    self.activeFarmId       = 1     -- farm to pay when shift ends (set from shift-start event)
+    self.shiftStartTime     = nil   -- g_currentMission.time at shift start (ms)
+    self.shiftElapsedMs     = 0     -- kept for reset/compat; not accumulated during play
+    self.shiftOwnerIsLocal  = true  -- false when shift belongs to a remote MP client
+    self.totalEarned        = 0     -- lifetime earnings this session
 
     -- Shift history log (capped at 50 entries)
     self.shiftHistory      = {}
@@ -68,8 +71,10 @@ function WorkplaceShiftTracker:startShift(trigger)
     self.activeWorkplaceName = trigger.workplaceName or "Workplace"
     self.activeHourlyWage    = trigger.hourlyWage or 500
     self.activePaySchedule   = trigger.paySchedule or WorkplaceShiftTracker.PAY_HOURLY
+    self.activeTimeMultiplier = trigger.timeMultiplier or 0
     self.shiftStartTime      = self:getCurrentMissionTime()
     self.shiftElapsedMs      = 0
+    self.shiftOwnerIsLocal   = true  -- caller sets false for remote-client shifts
 
     wtLog(string.format("Shift started at '%s' | $%d/hr", self.activeWorkplaceName, self.activeHourlyWage))
 
@@ -94,9 +99,9 @@ function WorkplaceShiftTracker:endShift()
     -- Record in history
     self:recordHistory(self.activeWorkplaceName, elapsedHours, earnings, self.activePaySchedule)
 
-    -- Pay the farm
+    -- Pay the farm (use activeFarmId set at shift start from the client's event)
     if earnings > 0 then
-        self.system.financeIntegration:addMoney(earnings, self.activeWorkplaceName)
+        self.system.financeIntegration:addMoney(earnings, self.activeWorkplaceName, self.activeFarmId)
     end
 
     self.totalEarned = self.totalEarned + earnings
@@ -120,9 +125,12 @@ function WorkplaceShiftTracker:endShift()
     self.activeTriggerId     = nil
     self.activeWorkplaceName = nil
     self.activeHourlyWage    = 0
-    self.activePaySchedule   = WorkplaceShiftTracker.PAY_HOURLY
+    self.activePaySchedule    = WorkplaceShiftTracker.PAY_HOURLY
+    self.activeTimeMultiplier = 0
+    self.activeFarmId         = 1
     self.shiftStartTime      = nil
     self.shiftElapsedMs      = 0
+    self.shiftOwnerIsLocal   = true
 end
 
 -- =========================================================
@@ -150,7 +158,7 @@ function WorkplaceShiftTracker:endShiftPenalty()
 
     -- Pay only the penalty fraction
     if penaltyPay > 0 then
-        self.system.financeIntegration:addMoney(penaltyPay, self.activeWorkplaceName)
+        self.system.financeIntegration:addMoney(penaltyPay, self.activeWorkplaceName, self.activeFarmId)
     end
 
     self.totalEarned = self.totalEarned + penaltyPay
@@ -174,9 +182,12 @@ function WorkplaceShiftTracker:endShiftPenalty()
     self.activeTriggerId     = nil
     self.activeWorkplaceName = nil
     self.activeHourlyWage    = 0
-    self.activePaySchedule   = WorkplaceShiftTracker.PAY_HOURLY
+    self.activePaySchedule    = WorkplaceShiftTracker.PAY_HOURLY
+    self.activeTimeMultiplier = 0
+    self.activeFarmId         = 1
     self.shiftStartTime      = nil
     self.shiftElapsedMs      = 0
+    self.shiftOwnerIsLocal   = true
 end
 
 -- =========================================================
@@ -190,18 +201,21 @@ function WorkplaceShiftTracker:update(dtSec)
     if not self.isInitialized then return end
     if not self:isShiftActive() then return end
 
-    -- Accumulate real elapsed time in ms
-    self.shiftElapsedMs = self.shiftElapsedMs + (dtSec * 1000.0)
-
-    -- Zone-leave detection
+    -- Elapsed time is computed on-the-fly from shiftStartTime in getElapsedHours(),
+    -- so both server and client stay in sync with the shared game clock.
     self:updateZoneCheck(dtSec)
 end
 
 function WorkplaceShiftTracker:updateZoneCheck(dtSec)
-    -- On a headless dedicated server there is no local player, so getPlayerPosition()
-    -- returns nil and the distance check would always report "out of zone".
-    -- Zone tracking runs on the client machine instead (see handleShiftConfirm sync).
+    -- Zone tracking must run on the player's own client machine only.
+    -- On a headless dedicated server there is no local player at all.
+    -- On a listen-server (getIsServer() AND getIsClient()), the host's local player
+    -- would be used for zone checks, but the active shift may belong to a remote client
+    -- (Dafke, etc.) — using the host's position for their zone would cause false
+    -- penalties and prevent them from stopping the shift with the E key.
+    -- Remote clients track their own zone and send TYPE_SHIFT_END when needed.
     if not g_currentMission:getIsClient() then return end
+    if self.shiftOwnerIsLocal == false then return end
 
     -- Respect the endShiftOnLeave setting
     local settings = self.system and self.system.settings
@@ -283,9 +297,19 @@ end
 
 function WorkplaceShiftTracker:getElapsedHours()
     if not self:isShiftActive() then return 0 end
-    -- Convert real ms to in-game hours using the mission time scale
-    local timeScale = self:getMissionTimeScale()
-    return (self.shiftElapsedMs * timeScale) / (1000.0 * 60.0 * 60.0)
+    if not self.shiftStartTime then return 0 end
+    -- Compute elapsed from the game clock so server and client stay in sync.
+    -- g_currentMission.time is the authoritative real-ms counter on all machines.
+    local realElapsedMs = self:getCurrentMissionTime() - self.shiftStartTime
+    if realElapsedMs < 0 then realElapsedMs = 0 end
+    -- timeMultiplier: 0=Auto (server game speed), 1=real time, 3/5/10=fixed multipliers.
+    local timeScale
+    if self.activeTimeMultiplier == 0 then
+        timeScale = self:getMissionTimeScale()
+    else
+        timeScale = self.activeTimeMultiplier
+    end
+    return (realElapsedMs * timeScale) / (1000.0 * 60.0 * 60.0)
 end
 
 function WorkplaceShiftTracker:getElapsedMinutes()

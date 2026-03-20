@@ -42,6 +42,11 @@
         <text name="wt_sched_hint_hourly" text="Earns wage x hours worked"/>
         <text name="wt_sched_hint_flat"   text="Fixed payout at end of shift"/>
         <text name="wt_sched_hint_daily"  text="Earns wage x in-game days worked"/>
+        <text name="wt_time_hint_x1"   text="Wage per real hour (ignores game speed)"/>
+        <text name="wt_time_hint_x3"   text="Wage at 3x real-time rate"/>
+        <text name="wt_time_hint_x5"   text="Wage at 5x real-time rate"/>
+        <text name="wt_time_hint_x10"  text="Wage at 10x real-time rate"/>
+        <text name="wt_time_hint_auto" text="Wage scales with server game speed (automatic)"/>
         <text name="wt_wage_label_hourly" text="Hourly Wage"/>
         <text name="wt_wage_label_flat"   text="Flat Rate (per shift)"/>
         <text name="wt_wage_label_daily"  text="Daily Rate"/>

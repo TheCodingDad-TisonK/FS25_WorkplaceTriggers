@@ -31,7 +31,7 @@ end
 -- Pays the amount into the player's farm account.
 -- workplaceName is used for the log message only.
 -- =========================================================
-function WorkplaceFinanceIntegration:addMoney(amount, workplaceName)
+function WorkplaceFinanceIntegration:addMoney(amount, workplaceName, farmId)
     if not self.isInitialized then return end
     if amount == nil or amount <= 0 then return end
     if not g_server then return end  -- payments are server-authoritative only
@@ -39,8 +39,11 @@ function WorkplaceFinanceIntegration:addMoney(amount, workplaceName)
     local amountInt = math.floor(amount)
     local label = workplaceName or "Workplace"
 
-    -- Determine farm ID
-    local farmId = self:getPlayerFarmId()
+    -- Use caller-supplied farmId (set from the shift-start event which carries the
+    -- client's own farmId). Fall back to local player detection for SP/listen-server.
+    if not farmId or farmId <= 0 then
+        farmId = self:getPlayerFarmId()
+    end
 
     -- Method 1: direct farm balance (confirmed working FS25 path)
     if g_farmManager then

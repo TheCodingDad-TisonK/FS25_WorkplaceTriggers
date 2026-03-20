@@ -23,7 +23,8 @@ function WTEditDialog.new(target, custom_mt)
     self.wage        = 500
     self.radius      = 4
     self.wageStep    = 10     -- current wage adjustment step
-    self.paySchedule = WorkplaceShiftTracker.PAY_HOURLY
+    self.paySchedule     = WorkplaceShiftTracker.PAY_HOURLY
+    self.timeMultiplier  = 0  -- 0=Auto, 1=x1(real time), 3=x3, 5=x5, 10=x10
     self.posX        = 0
     self.posY        = 0
     self.posZ        = 0
@@ -45,22 +46,24 @@ function WTEditDialog:setData(system, trigger, isNew)
 
     if isNew or trigger == nil then
         -- Defaults for new trigger
-        self.trigger  = nil
-        self.wage     = 500
-        self.radius   = 4
-        self.wageStep = 10
-        self.paySchedule = WorkplaceShiftTracker.PAY_HOURLY
+        self.trigger        = nil
+        self.wage           = 500
+        self.radius         = 4
+        self.wageStep       = 10
+        self.paySchedule    = WorkplaceShiftTracker.PAY_HOURLY
+        self.timeMultiplier = 0
         -- Snap position to player immediately
         self:snapToPlayer()
     else
-        self.trigger  = trigger
-        self.wage     = trigger.hourlyWage    or 500
-        self.radius   = trigger.triggerRadius or 4
-        self.posX     = trigger.posX or 0
-        self.posY     = trigger.posY or 0
-        self.posZ     = trigger.posZ or 0
-        self.wageStep = 10
-        self.paySchedule = trigger.paySchedule or WorkplaceShiftTracker.PAY_HOURLY
+        self.trigger     = trigger
+        self.wage        = trigger.hourlyWage    or 500
+        self.radius      = trigger.triggerRadius or 4
+        self.posX        = trigger.posX or 0
+        self.posY        = trigger.posY or 0
+        self.posZ        = trigger.posZ or 0
+        self.wageStep       = 10
+        self.paySchedule    = trigger.paySchedule or WorkplaceShiftTracker.PAY_HOURLY
+        self.timeMultiplier = trigger.timeMultiplier or 0
     end
 end
 
@@ -124,6 +127,7 @@ function WTEditDialog:onOpen()
     self:updatePosDisplay()
     self:updateStepDisplay()
     self:updateSchedDisplay()
+    self:updateTimeModeDisplay()
 end
 
 -- =========================================================
@@ -261,6 +265,71 @@ function WTEditDialog:onClickSchedDaily()
 end
 
 -- =========================================================
+-- Time multiplier display + click handlers
+-- =========================================================
+local TIME_MULT_IDS = {0, 1, 3, 5, 10}
+local TIME_MULT_BG  = {[0]="timeMult0Bg",  [1]="timeMult1Bg",  [3]="timeMult3Bg",  [5]="timeMult5Bg",  [10]="timeMult10Bg"}
+local TIME_MULT_TXT = {[0]="timeMult0Txt", [1]="timeMult1Txt", [3]="timeMult3Txt", [5]="timeMult5Txt", [10]="timeMult10Txt"}
+local TIME_MULT_HINT_KEYS = {
+    [0]  = "wt_time_hint_auto",
+    [1]  = "wt_time_hint_x1",
+    [3]  = "wt_time_hint_x3",
+    [5]  = "wt_time_hint_x5",
+    [10] = "wt_time_hint_x10",
+}
+local TIME_MULT_HINT_FALLBACK = {
+    [0]  = "Wage scales with server game speed (automatic)",
+    [1]  = "Wage per real hour (ignores game speed)",
+    [3]  = "Wage at 3x real-time rate",
+    [5]  = "Wage at 5x real-time rate",
+    [10] = "Wage at 10x real-time rate",
+}
+
+function WTEditDialog:updateTimeModeDisplay()
+    local active = self.timeMultiplier or 0
+
+    for _, m in ipairs(TIME_MULT_IDS) do
+        local bg  = self[TIME_MULT_BG[m]]
+        local txt = self[TIME_MULT_TXT[m]]
+        local isActive = (m == active)
+        if bg  then bg:setImageColor(isActive and 0.18 or 0.10, isActive and 0.30 or 0.14, isActive and 0.55 or 0.28, 1) end
+        if txt then txt:setTextColor(isActive and 1 or 0.65, isActive and 1 or 0.75, isActive and 1 or 0.9, 1) end
+    end
+
+    if self.timeModeHint then
+        local key      = TIME_MULT_HINT_KEYS[active]    or "wt_time_hint_auto"
+        local fallback = TIME_MULT_HINT_FALLBACK[active] or ""
+        local str = key and g_i18n:getText(key)
+        self.timeModeHint:setText((str and str ~= "") and str or fallback)
+    end
+end
+
+function WTEditDialog:onClickTimeMultAuto()
+    self.timeMultiplier = 0
+    self:updateTimeModeDisplay()
+end
+
+function WTEditDialog:onClickTimeMult1()
+    self.timeMultiplier = 1
+    self:updateTimeModeDisplay()
+end
+
+function WTEditDialog:onClickTimeMult3()
+    self.timeMultiplier = 3
+    self:updateTimeModeDisplay()
+end
+
+function WTEditDialog:onClickTimeMult5()
+    self.timeMultiplier = 5
+    self:updateTimeModeDisplay()
+end
+
+function WTEditDialog:onClickTimeMult10()
+    self.timeMultiplier = 10
+    self:updateTimeModeDisplay()
+end
+
+-- =========================================================
 -- Wage adjustment
 -- =========================================================
 function WTEditDialog:onClickWageDec()
@@ -332,6 +401,7 @@ function WTEditDialog:onClickSave()
                 hourlyWage    = self.wage,
                 triggerRadius = self.radius,
                 paySchedule   = self.paySchedule,
+                timeMultiplier = self.timeMultiplier or 0,
                 posX          = self.posX or 0,
                 posY          = self.posY or 0,
                 posZ          = self.posZ or 0,
@@ -352,6 +422,7 @@ function WTEditDialog:onClickSave()
                 hourlyWage    = self.wage,
                 triggerRadius = self.radius,
                 paySchedule   = self.paySchedule,
+                timeMultiplier = self.timeMultiplier or 0,
             })
         end
         print("[WorkplaceTriggers] Requested trigger update: " .. name)

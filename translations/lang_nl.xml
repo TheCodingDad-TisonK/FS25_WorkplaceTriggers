@@ -42,6 +42,11 @@
         <text name="wt_sched_hint_hourly" text="Verdient loon × gewerkte uren"/>
         <text name="wt_sched_hint_flat"   text="Vaste uitbetaling aan het einde van de dienst"/>
         <text name="wt_sched_hint_daily"  text="Verdient loon × gewerkte spel dagen"/>
+        <text name="wt_time_hint_x1"   text="Loon per echt uur (negeert spelsnelheid)"/>
+        <text name="wt_time_hint_x3"   text="Loon op 3x echte tijdsnelheid"/>
+        <text name="wt_time_hint_x5"   text="Loon op 5x echte tijdsnelheid"/>
+        <text name="wt_time_hint_x10"  text="Loon op 10x echte tijdsnelheid"/>
+        <text name="wt_time_hint_auto" text="Loon schaalt mee met de spelsnelheid van de server (automatisch)"/>
         <text name="wt_wage_label_hourly" text="Uurloon"/>
         <text name="wt_wage_label_flat"   text="Vast tarief (per dienst)"/>
         <text name="wt_wage_label_daily"  text="Dagtarief"/>
