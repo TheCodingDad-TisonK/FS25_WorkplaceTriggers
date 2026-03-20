@@ -12,8 +12,8 @@ WTEditDialog.WAGE_STEPS   = {1, 10, 100}
 WTEditDialog.WAGE_MIN     = 0
 WTEditDialog.WAGE_MAX     = 99999
 WTEditDialog.RADIUS_MIN   = 1
-WTEditDialog.RADIUS_MAX   = 50
-WTEditDialog.RADIUS_STEP  = 1
+WTEditDialog.RADIUS_MAX   = 300
+WTEditDialog.RADIUS_STEP  = 5
 
 function WTEditDialog.new(target, custom_mt)
     local self = MessageDialog.new(target, custom_mt or WTEditDialog_mt)
@@ -48,7 +48,7 @@ function WTEditDialog:setData(system, trigger, isNew)
         -- Defaults for new trigger
         self.trigger        = nil
         self.wage           = 500
-        self.radius         = 4
+        self.radius         = 5
         self.wageStep       = 10
         self.paySchedule    = WorkplaceShiftTracker.PAY_HOURLY
         self.timeMultiplier = 0
@@ -57,7 +57,7 @@ function WTEditDialog:setData(system, trigger, isNew)
     else
         self.trigger     = trigger
         self.wage        = trigger.hourlyWage    or 500
-        self.radius      = trigger.triggerRadius or 4
+        self.radius      = trigger.triggerRadius or 5
         self.posX        = trigger.posX or 0
         self.posY        = trigger.posY or 0
         self.posZ        = trigger.posZ or 0
