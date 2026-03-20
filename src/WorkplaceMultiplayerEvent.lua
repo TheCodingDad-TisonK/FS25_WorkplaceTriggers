@@ -65,6 +65,7 @@ function WorkplaceMultiplayerEvent.new(eventType, data)
     self.triggerId     = (data and data.triggerId)     or ""
     self.workplaceName = (data and data.workplaceName) or ""
     self.earnings      = (data and data.earnings)      or 0
+    self.isPenalty     = (data and data.isPenalty)     or false
     -- trigger create/update fields
     self.posX          = (data and data.posX)          or 0
     self.posY          = (data and data.posY)          or 0
@@ -84,6 +85,7 @@ function WorkplaceMultiplayerEvent:writeStream(streamId, connection)
     streamWriteString(streamId, self.triggerId     or "")
     streamWriteString(streamId, self.workplaceName or "")
     streamWriteInt32(streamId,  math.floor(self.earnings or 0))
+    streamWriteBool(streamId,   self.isPenalty or false)
     -- trigger create/update fields (written for all types; cheap)
     streamWriteFloat32(streamId, self.posX          or 0)
     streamWriteFloat32(streamId, self.posY          or 0)
@@ -99,6 +101,7 @@ function WorkplaceMultiplayerEvent:readStream(streamId, connection)
     self.triggerId     = streamReadString(streamId)
     self.workplaceName = streamReadString(streamId)
     self.earnings      = streamReadInt32(streamId)
+    self.isPenalty     = streamReadBool(streamId)
     self.posX          = streamReadFloat32(streamId)
     self.posY          = streamReadFloat32(streamId)
     self.posZ          = streamReadFloat32(streamId)
@@ -162,14 +165,26 @@ end
 function WorkplaceMultiplayerEvent:handleShiftEnd(sys, connection)
     if g_currentMission:getIsServer() then
         if sys.shiftTracker:isShiftActive() then
-            local earned = sys.shiftTracker:getCurrentEarnings()
             local name   = sys.shiftTracker:getActiveWorkplaceName()
-            -- pcall for same reason as handleShiftStart (g_i18n nil on headless server)
-            local ok, err = pcall(function() sys.shiftTracker:endShift() end)
-            if not ok then
-                wtLog("Server: endShift error (harmless on headless): " .. tostring(err))
+            local earned
+            if self.isPenalty then
+                -- Client triggered penalty (player left zone too long)
+                local full = sys.shiftTracker:getCurrentEarnings()
+                earned = math.floor(full * WorkplaceShiftTracker.ABANDON_PAY_FRACTION)
+                local ok, err = pcall(function() sys.shiftTracker:endShiftPenalty() end)
+                if not ok then
+                    wtLog("Server: endShiftPenalty error (harmless on headless): " .. tostring(err))
+                end
+                wtLog(string.format("Server: penalty-ended shift, paid $%d from '%s'", earned, name or "?"))
+            else
+                earned = sys.shiftTracker:getCurrentEarnings()
+                -- pcall for same reason as handleShiftStart (g_i18n nil on headless server)
+                local ok, err = pcall(function() sys.shiftTracker:endShift() end)
+                if not ok then
+                    wtLog("Server: endShift error (harmless on headless): " .. tostring(err))
+                end
+                wtLog(string.format("Server: ended shift, paid $%d from '%s'", earned, name or "?"))
             end
-            wtLog(string.format("Server: ended shift, paid $%d from '%s'", earned, name or "?"))
             g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
                 WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM,
                 { triggerId = "", workplaceName = name or "", earnings = earned }
@@ -188,6 +203,34 @@ function WorkplaceMultiplayerEvent:handleShiftConfirm(sys)
             sys.hud:onShiftStarted(self.workplaceName, 0)
         end
     end
+
+    -- Sync shift state to client's shiftTracker so zone tracking can run client-side.
+    -- The server owns the authoritative shift; clients mirror just enough state to
+    -- detect zone violations and route them back through sendShiftEnd(isPenalty=true).
+    if sys.shiftTracker then
+        if self.earnings > 0 then
+            -- Shift ended: clear all active-shift fields
+            sys.shiftTracker.activeTriggerId     = nil
+            sys.shiftTracker.activeWorkplaceName = nil
+            sys.shiftTracker.activeHourlyWage    = 0
+            sys.shiftTracker.activePaySchedule   = WorkplaceShiftTracker.PAY_HOURLY
+            sys.shiftTracker.shiftStartTime      = nil
+            sys.shiftTracker.shiftElapsedMs      = 0
+            sys.shiftTracker.leaveWarnActive     = false
+            sys.shiftTracker.leaveWarnTimer      = 0
+        else
+            -- Shift started: populate tracker so updateZoneCheck works client-side
+            sys.shiftTracker.activeTriggerId     = self.triggerId
+            sys.shiftTracker.activeWorkplaceName = self.workplaceName
+            sys.shiftTracker.activeHourlyWage    = self.hourlyWage
+            sys.shiftTracker.activePaySchedule   = self.paySchedule
+            sys.shiftTracker.shiftStartTime      = sys.shiftTracker:getCurrentMissionTime()
+            sys.shiftTracker.shiftElapsedMs      = 0
+            sys.shiftTracker.leaveWarnActive     = false
+            sys.shiftTracker.leaveWarnTimer      = 0
+        end
+    end
+
     wtLog("Received shift confirm for '" .. tostring(self.workplaceName) .. "'")
 end
 
@@ -334,19 +377,23 @@ function WorkplaceMultiplayerEvent.sendShiftStart(triggerId)
     end
 end
 
-function WorkplaceMultiplayerEvent.sendShiftEnd()
+function WorkplaceMultiplayerEvent.sendShiftEnd(isPenalty)
     if g_currentMission == nil then return end
     if g_currentMission:getIsServer() then
         local sys = g_WorkplaceSystem
         if sys and sys.shiftTracker:isShiftActive() then
-            sys.shiftTracker:endShift()
+            if isPenalty then
+                sys.shiftTracker:endShiftPenalty()
+            else
+                sys.shiftTracker:endShift()
+            end
         end
     else
         if g_client == nil then wtLog("sendShiftEnd: g_client is nil"); return end
         local conn = g_client:getServerConnection()
         if conn == nil then wtLog("sendShiftEnd: getServerConnection() nil"); return end
         conn:sendEvent(WorkplaceMultiplayerEvent.new(
-            WorkplaceMultiplayerEvent.TYPE_SHIFT_END, {}))
+            WorkplaceMultiplayerEvent.TYPE_SHIFT_END, { isPenalty = isPenalty or false }))
     end
 end
 

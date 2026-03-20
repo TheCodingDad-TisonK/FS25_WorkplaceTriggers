@@ -198,6 +198,11 @@ function WorkplaceShiftTracker:update(dtSec)
 end
 
 function WorkplaceShiftTracker:updateZoneCheck(dtSec)
+    -- On a headless dedicated server there is no local player, so getPlayerPosition()
+    -- returns nil and the distance check would always report "out of zone".
+    -- Zone tracking runs on the client machine instead (see handleShiftConfirm sync).
+    if not g_currentMission:getIsClient() then return end
+
     -- Respect the endShiftOnLeave setting
     local settings = self.system and self.system.settings
     if settings and settings.endShiftOnLeave == false then
@@ -257,7 +262,10 @@ function WorkplaceShiftTracker:updateZoneCheck(dtSec)
             self.leaveWarnActive = false
             self.leaveWarnTimer  = 0
             if self.system.hud then self.system.hud:hideLeaveWarning() end
-            self:endShiftPenalty()
+            -- Clear activeTriggerId immediately so zone check stops while the
+            -- penalty event travels to the server and SHIFT_CONFIRM comes back.
+            self.activeTriggerId = nil
+            WorkplaceMultiplayerEvent.sendShiftEnd(true)
         end
     end
 end
