@@ -102,6 +102,14 @@ local function loadedMission(mission, node)
         if workplaceSystem.triggerManager then
             workplaceSystem.triggerManager:installMapHook()
         end
+        -- Startup banner (client only — server has no HUD)
+        if workplaceSystem.hud and g_currentMission and g_currentMission:getIsClient() then
+            workplaceSystem.hud:showFlash(
+                "Workplace Triggers v" .. modVersion .. " loaded",
+                {0.3, 0.85, 1, 1},
+                5.0
+            )
+        end
     end
 end
 
@@ -140,6 +148,22 @@ end
 -- Update hook
 if FSBaseMission and FSBaseMission.update then
     FSBaseMission.update = Utils.appendedFunction(FSBaseMission.update, function(mission, dt)
+        -- Lazy-init fallback: Mission00.loadMission00Finished does not fire in MP (listen-server)
+        -- mode. Detect on the first update frame and initialize then.
+        if workplaceSystem and not workplaceSystem.isInitialized then
+            print("[WorkplaceTriggers] Lazy-init triggered from update hook")
+            workplaceSystem:onMissionLoaded()
+            if workplaceSystem.triggerManager then
+                workplaceSystem.triggerManager:installMapHook()
+            end
+            if workplaceSystem.hud and g_currentMission and g_currentMission:getIsClient() then
+                workplaceSystem.hud:showFlash(
+                    "Workplace Triggers v" .. modVersion .. " loaded",
+                    {0.3, 0.85, 1, 1},
+                    5.0
+                )
+            end
+        end
         if workplaceSystem then
             workplaceSystem:update(dt)
         end
@@ -371,6 +395,12 @@ if FSCareerMissionInfo and FSCareerMissionInfo.saveToXMLFile then
     FSCareerMissionInfo.saveToXMLFile = Utils.appendedFunction(
         FSCareerMissionInfo.saveToXMLFile,
         function(missionInfo)
+            -- Only save on the authoritative server (listen-server or dedicated server process).
+            -- On a dedicated-server CLIENT, FSCareerMissionInfo.saveToXMLFile also fires for
+            -- local client data, but our trigger table is server-authoritative and the client
+            -- may not have received all TYPE_TRIGGER_CREATED events yet — skipping avoids
+            -- misleading "Saved 0 triggers" log entries from the client side.
+            if g_currentMission and not g_currentMission:getIsServer() then return end
             if workplaceSystem and workplaceSystem.isInitialized then
                 workplaceSystem:saveToXMLFile(missionInfo)
             end

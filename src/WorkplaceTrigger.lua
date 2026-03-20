@@ -159,20 +159,14 @@ function WorkplaceTrigger:triggerCallback(triggerId, otherId, onEnter, onLeave, 
                     g_currentMission.activatableObjectsSystem:addActivatable(self.activatable)
                 end
                 
-                -- Notify manager of player entry
-                if self.system then
-                    self.system:onPlayerEnteredTrigger(self)
-                end
+                -- Notify manager of player entry (proximity tracking is handled by TriggerManager:update)
             else
                 -- Remove from activatable system
                 if g_currentMission and g_currentMission.activatableObjectsSystem then
                     g_currentMission.activatableObjectsSystem:removeActivatable(self.activatable)
                 end
                 
-                -- Notify manager of player exit
-                if self.system then
-                    self.system:onPlayerExitedTrigger(self)
-                end
+                -- Player exit tracked by TriggerManager:update proximity check
             end
         end
     end
@@ -204,9 +198,9 @@ function WorkplaceTrigger:openWorkplace()
         g_localPlayer:setMovementYaw(MathUtil.getYRotationFromDirection(dx, dz))
     end
     
-    -- Open workplace UI
+    -- Open workplace UI (manager list dialog)
     if self.system then
-        self.system:openWorkplaceUI(self)
+        WTDialogLoader.showList(self.system)
     end
 end
 

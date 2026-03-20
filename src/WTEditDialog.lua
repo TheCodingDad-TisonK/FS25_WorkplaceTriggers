@@ -325,22 +325,22 @@ function WTEditDialog:onClickSave()
     if name == "" then name = "Workplace" end
 
     if self.isNew then
-        -- FIX: never call g_placeableSystem directly from the client.
-        -- Route through the MP event layer so the server is always the one
-        -- that places the placeable and generates the stable cross-machine ID.
-        -- sendCreateTrigger() handles SP/listen-server inline and sends a
-        -- TYPE_CREATE_TRIGGER network event on a dedicated server.
         local farmId = g_currentMission and g_currentMission:getFarmId() or 1
-        WorkplaceMultiplayerEvent.sendCreateTrigger({
-            workplaceName = name,
-            hourlyWage    = self.wage,
-            triggerRadius = self.radius,
-            paySchedule   = self.paySchedule,
-            posX          = self.posX or 0,
-            posY          = self.posY or 0,
-            posZ          = self.posZ or 0,
-            farmId        = farmId,
-        })
+        local ok, err = pcall(function()
+            WorkplaceMultiplayerEvent.sendCreateTrigger({
+                workplaceName = name,
+                hourlyWage    = self.wage,
+                triggerRadius = self.radius,
+                paySchedule   = self.paySchedule,
+                posX          = self.posX or 0,
+                posY          = self.posY or 0,
+                posZ          = self.posZ or 0,
+                farmId        = farmId,
+            })
+        end)
+        if not ok then
+            print("[WorkplaceTriggers] onClickSave ERROR: " .. tostring(err))
+        end
         print("[WorkplaceTriggers] Requested trigger creation: " .. name)
     else
         -- FIX: route edits through the MP event layer as well, so every client

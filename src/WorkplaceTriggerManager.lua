@@ -78,8 +78,14 @@ function WorkplaceTriggerManager:registerTrigger(triggerData)
     wtLog(string.format("Registered trigger '%s' (id=%s)",
         triggerData.workplaceName or "?", tostring(triggerData.id)))
 
-    self:spawnMarkerForTrigger(triggerData)
-    self:createMapHotspotForTrigger(triggerData)
+    -- Visual setup is wrapped in pcall so a failure never aborts registration
+    local ok, err = pcall(function()
+        self:spawnMarkerForTrigger(triggerData)
+        self:createMapHotspotForTrigger(triggerData)
+    end)
+    if not ok then
+        wtLog("Warning: visual setup failed for trigger '" .. tostring(triggerData.workplaceName) .. "': " .. tostring(err))
+    end
 end
 
 function WorkplaceTriggerManager:deregisterTrigger(triggerId)
@@ -181,6 +187,12 @@ function WorkplaceTriggerManager:spawnMarkerForTrigger(triggerData)
     if triggerData == nil then return end
     if triggerData._markerRootNode and triggerData._markerRootNode ~= 0 then return end
 
+    -- Skip on headless dedicated server: no rendering context, no i3d manager
+    if g_i3DManager == nil then
+        wtLog("spawnMarkerForTrigger: g_i3DManager not available (dedicated server?) - skipping visual marker")
+        return
+    end
+
     local rootNode = createTransformGroup("wt_marker_" .. tostring(triggerData.id))
     if rootNode == nil or rootNode == 0 then
         wtLog("spawnMarkerForTrigger: createTransformGroup failed")
@@ -246,9 +258,11 @@ function WorkplaceTriggerManager:destroyMarkerForTrigger(triggerData)
     if triggerData._markerRootNode and triggerData._markerRootNode ~= 0 then
         delete(triggerData._markerRootNode)
         triggerData._markerRootNode = nil
+        local i3dHandle = triggerData._markerI3DNode
         triggerData._markerI3DNode  = nil
-        g_i3DManager:releaseSharedI3DFile(
-            triggerData._markerI3DResolved or Utils.getFilename(MARKER_I3D_RAW, ""))
+        if i3dHandle and i3dHandle ~= 0 then
+            g_i3DManager:releaseSharedI3DFile(i3dHandle)
+        end
     end
 end
 
@@ -324,25 +338,26 @@ end
 -- Player Position (4 fallback methods)
 -- =========================================================
 function WorkplaceTriggerManager:getPlayerPosition()
+    -- NOTE: check x ~= nil, not just x, because x=0 is a valid coordinate (falsy in Lua)
     if g_localPlayer and g_localPlayer.getPosition then
         local ok, x, y, z = pcall(function() return g_localPlayer:getPosition() end)
-        if ok and x then return {x=x, y=y, z=z} end
+        if ok and x ~= nil then return {x=x, y=y, z=z} end
     end
     local mp = g_currentMission and g_currentMission.player
     if mp and mp.getPosition then
         local ok, x, y, z = pcall(function() return mp:getPosition() end)
-        if ok and x then return {x=x, y=y, z=z} end
+        if ok and x ~= nil then return {x=x, y=y, z=z} end
     end
     local v = g_currentMission and g_currentMission.controlledVehicle
     if v then
         local ok, x, y, z = pcall(function() return getWorldTranslation(v.rootNode) end)
-        if ok and x then return {x=x, y=y, z=z} end
+        if ok and x ~= nil then return {x=x, y=y, z=z} end
     end
     if getCamera then
         local cam = getCamera()
         if cam and cam ~= 0 then
             local ok, x, y, z = pcall(function() return getWorldTranslation(cam) end)
-            if ok and x then return {x=x, y=y, z=z} end
+            if ok and x ~= nil then return {x=x, y=y, z=z} end
         end
     end
     return nil

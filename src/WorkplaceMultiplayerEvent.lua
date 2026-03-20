@@ -5,7 +5,7 @@
 -- Pattern: FS25 Event class (VehicleAttachEvent reference)
 --
 -- FS25 rules:
---   Engine auto-registers via Class(); NO Event.registerEvent()
+--   InitEventClass() registers the event — Class() alone is NOT sufficient for MP
 --   Event.new() takes only the metatable (no typeId arg)
 --   emptyNew() required for engine deserialisation
 --   readStream must call self:run(connection) at the end
@@ -23,6 +23,7 @@
 
 WorkplaceMultiplayerEvent = {}
 WorkplaceMultiplayerEvent_mt = Class(WorkplaceMultiplayerEvent, Event)
+InitEventClass(WorkplaceMultiplayerEvent, "WorkplaceMultiplayerEvent")
 
 WorkplaceMultiplayerEvent.TYPE_SHIFT_START     = 1
 WorkplaceMultiplayerEvent.TYPE_SHIFT_END       = 2
@@ -30,6 +31,7 @@ WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM   = 3
 WorkplaceMultiplayerEvent.TYPE_CREATE_TRIGGER  = 4   -- client -> server
 WorkplaceMultiplayerEvent.TYPE_TRIGGER_CREATED = 5   -- server -> all clients
 WorkplaceMultiplayerEvent.TYPE_UPDATE_TRIGGER  = 6   -- client -> server (edit existing)
+WorkplaceMultiplayerEvent.TYPE_DELETE_TRIGGER  = 7   -- server -> all clients
 
 local LOG = "[WorkplaceTriggers] MPEvent: "
 local function wtLog(msg) print(LOG .. tostring(msg)) end
@@ -63,6 +65,7 @@ function WorkplaceMultiplayerEvent.new(eventType, data)
     self.triggerId     = (data and data.triggerId)     or ""
     self.workplaceName = (data and data.workplaceName) or ""
     self.earnings      = (data and data.earnings)      or 0
+    self.isPenalty     = (data and data.isPenalty)     or false
     -- trigger create/update fields
     self.posX          = (data and data.posX)          or 0
     self.posY          = (data and data.posY)          or 0
@@ -82,6 +85,7 @@ function WorkplaceMultiplayerEvent:writeStream(streamId, connection)
     streamWriteString(streamId, self.triggerId     or "")
     streamWriteString(streamId, self.workplaceName or "")
     streamWriteInt32(streamId,  math.floor(self.earnings or 0))
+    streamWriteBool(streamId,   self.isPenalty or false)
     -- trigger create/update fields (written for all types; cheap)
     streamWriteFloat32(streamId, self.posX          or 0)
     streamWriteFloat32(streamId, self.posY          or 0)
@@ -97,6 +101,7 @@ function WorkplaceMultiplayerEvent:readStream(streamId, connection)
     self.triggerId     = streamReadString(streamId)
     self.workplaceName = streamReadString(streamId)
     self.earnings      = streamReadInt32(streamId)
+    self.isPenalty     = streamReadBool(streamId)
     self.posX          = streamReadFloat32(streamId)
     self.posY          = streamReadFloat32(streamId)
     self.posZ          = streamReadFloat32(streamId)
@@ -121,6 +126,7 @@ function WorkplaceMultiplayerEvent:run(connection)
     elseif t == WorkplaceMultiplayerEvent.TYPE_CREATE_TRIGGER  then self:handleCreateTrigger(sys, connection)
     elseif t == WorkplaceMultiplayerEvent.TYPE_TRIGGER_CREATED then self:handleTriggerCreated(sys)
     elseif t == WorkplaceMultiplayerEvent.TYPE_UPDATE_TRIGGER  then self:handleUpdateTrigger(sys)
+    elseif t == WorkplaceMultiplayerEvent.TYPE_DELETE_TRIGGER  then self:handleDeleteTrigger(sys)
     end
 end
 
@@ -131,7 +137,14 @@ function WorkplaceMultiplayerEvent:handleShiftStart(sys, connection)
     if g_currentMission:getIsServer() then
         local trigger = sys.triggerManager:getTriggerById(self.triggerId)
         if trigger then
-            sys.shiftTracker:startShift(trigger)
+            -- pcall: startShift calls hud:onShiftStarted which needs g_i18n;
+            -- on headless dedicated server g_i18n is nil and would crash here,
+            -- preventing the SHIFT_CONFIRM broadcast. pcall ensures we always
+            -- broadcast even if the server-side HUD update fails.
+            local ok, err = pcall(function() sys.shiftTracker:startShift(trigger) end)
+            if not ok then
+                wtLog("Server: startShift error (harmless on headless): " .. tostring(err))
+            end
             wtLog("Server: started shift at '" .. (trigger.workplaceName or "?") .. "'")
             g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
                 WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM,
@@ -152,10 +165,26 @@ end
 function WorkplaceMultiplayerEvent:handleShiftEnd(sys, connection)
     if g_currentMission:getIsServer() then
         if sys.shiftTracker:isShiftActive() then
-            local earned = sys.shiftTracker:getCurrentEarnings()
             local name   = sys.shiftTracker:getActiveWorkplaceName()
-            sys.shiftTracker:endShift()
-            wtLog(string.format("Server: ended shift, paid $%d from '%s'", earned, name or "?"))
+            local earned
+            if self.isPenalty then
+                -- Client triggered penalty (player left zone too long)
+                local full = sys.shiftTracker:getCurrentEarnings()
+                earned = math.floor(full * WorkplaceShiftTracker.ABANDON_PAY_FRACTION)
+                local ok, err = pcall(function() sys.shiftTracker:endShiftPenalty() end)
+                if not ok then
+                    wtLog("Server: endShiftPenalty error (harmless on headless): " .. tostring(err))
+                end
+                wtLog(string.format("Server: penalty-ended shift, paid $%d from '%s'", earned, name or "?"))
+            else
+                earned = sys.shiftTracker:getCurrentEarnings()
+                -- pcall for same reason as handleShiftStart (g_i18n nil on headless server)
+                local ok, err = pcall(function() sys.shiftTracker:endShift() end)
+                if not ok then
+                    wtLog("Server: endShift error (harmless on headless): " .. tostring(err))
+                end
+                wtLog(string.format("Server: ended shift, paid $%d from '%s'", earned, name or "?"))
+            end
             g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
                 WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM,
                 { triggerId = "", workplaceName = name or "", earnings = earned }
@@ -174,6 +203,34 @@ function WorkplaceMultiplayerEvent:handleShiftConfirm(sys)
             sys.hud:onShiftStarted(self.workplaceName, 0)
         end
     end
+
+    -- Sync shift state to client's shiftTracker so zone tracking can run client-side.
+    -- The server owns the authoritative shift; clients mirror just enough state to
+    -- detect zone violations and route them back through sendShiftEnd(isPenalty=true).
+    if sys.shiftTracker then
+        if self.earnings > 0 then
+            -- Shift ended: clear all active-shift fields
+            sys.shiftTracker.activeTriggerId     = nil
+            sys.shiftTracker.activeWorkplaceName = nil
+            sys.shiftTracker.activeHourlyWage    = 0
+            sys.shiftTracker.activePaySchedule   = WorkplaceShiftTracker.PAY_HOURLY
+            sys.shiftTracker.shiftStartTime      = nil
+            sys.shiftTracker.shiftElapsedMs      = 0
+            sys.shiftTracker.leaveWarnActive     = false
+            sys.shiftTracker.leaveWarnTimer      = 0
+        else
+            -- Shift started: populate tracker so updateZoneCheck works client-side
+            sys.shiftTracker.activeTriggerId     = self.triggerId
+            sys.shiftTracker.activeWorkplaceName = self.workplaceName
+            sys.shiftTracker.activeHourlyWage    = self.hourlyWage
+            sys.shiftTracker.activePaySchedule   = self.paySchedule
+            sys.shiftTracker.shiftStartTime      = sys.shiftTracker:getCurrentMissionTime()
+            sys.shiftTracker.shiftElapsedMs      = 0
+            sys.shiftTracker.leaveWarnActive     = false
+            sys.shiftTracker.leaveWarnTimer      = 0
+        end
+    end
+
     wtLog("Received shift confirm for '" .. tostring(self.workplaceName) .. "'")
 end
 
@@ -181,48 +238,37 @@ end
 -- Trigger creation handlers
 -- =========================================================
 
--- Runs on the SERVER when a client requests trigger creation.
+-- Runs on the SERVER when a dedicated-server client requests trigger creation.
+-- In SP/listen-server this is bypassed by sendCreateTrigger() above.
 function WorkplaceMultiplayerEvent:handleCreateTrigger(sys, connection)
     if not g_currentMission:getIsServer() then return end
 
-    -- Generate a stable ID that will be the same string on every machine
-    local stableId = generateStableId()
+    -- Use client-provided id if present so client's optimistic registration matches
+    local stableId = (self.triggerId and self.triggerId ~= "") and self.triggerId or generateStableId()
     wtLog("Server: creating trigger id=" .. stableId
           .. " name='" .. self.workplaceName .. "'")
 
-    -- Queue the pendingCreate on the server with the stable ID, so that
-    -- when the placeable's onLoad fires it picks up the right config.
-    if sys.saveLoad then
-        sys.saveLoad:queuePendingCreate({
-            stableId      = stableId,
-            workplaceName = self.workplaceName,
-            hourlyWage    = self.hourlyWage,
-            triggerRadius = self.triggerRadius,
-            paySchedule   = self.paySchedule,
-            posX          = self.posX,
-            posY          = self.posY,
-            posZ          = self.posZ,
-        })
+    -- Register directly on the server (no placeable)
+    local triggerData = {
+        id            = stableId,
+        workplaceName = self.workplaceName,
+        hourlyWage    = self.hourlyWage,
+        triggerRadius = self.triggerRadius,
+        posX          = self.posX,
+        posY          = self.posY,
+        posZ          = self.posZ,
+        paySchedule   = self.paySchedule,
+        playerInside  = false,
+    }
+    local ok, err = pcall(function()
+        sys.triggerManager:registerTrigger(triggerData)
+    end)
+    if not ok then
+        wtLog("Server: registerTrigger error (trigger still queued): " .. tostring(err))
     end
 
-    -- Only the SERVER places the placeable; FS25 then replicates it to all
-    -- connected clients automatically via the placeable network layer.
-    local xmlFilename = sys.modDirectory .. "placeables/workTrigger/workTrigger.xml"
-    if g_placeableSystem and g_placeableSystem.loadPlaceable then
-        g_placeableSystem:loadPlaceable(
-            xmlFilename,
-            self.posX, self.posY, self.posZ,
-            0, 0, 0,
-            self.farmId,
-            0,      -- price: free
-            true,   -- isServer
-            true,   -- isClient
-            nil
-        )
-    end
-
-    -- Broadcast the stable ID and full config to ALL clients so they can
-    -- queue their pendingCreate before the replicated placeable arrives.
+    -- Broadcast to all clients so they register the same trigger data
+    -- NOTE: broadcast runs even if visual setup failed above
     g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
         WorkplaceMultiplayerEvent.TYPE_TRIGGER_CREATED,
         {
@@ -241,26 +287,31 @@ end
 
 -- Runs on every CLIENT after the server acknowledged creation.
 function WorkplaceMultiplayerEvent:handleTriggerCreated(sys)
-    -- Server already handled this inside handleCreateTrigger
+    -- Server already registered it inside handleCreateTrigger
     if g_currentMission:getIsServer() then return end
 
     wtLog("Client: received trigger-created id=" .. tostring(self.triggerId)
           .. " name='" .. self.workplaceName .. "'")
 
-    -- Queue pendingCreate with the stable ID so that when the replicated
-    -- placeable arrives and calls onLoad, it picks up the right name/wage.
-    if sys.saveLoad then
-        sys.saveLoad:queuePendingCreate({
-            stableId      = self.triggerId,
-            workplaceName = self.workplaceName,
-            hourlyWage    = self.hourlyWage,
-            triggerRadius = self.triggerRadius,
-            paySchedule   = self.paySchedule,
-            posX          = self.posX,
-            posY          = self.posY,
-            posZ          = self.posZ,
-        })
+    -- Skip if already registered via optimistic local registration
+    if sys.triggerManager:getTriggerById(self.triggerId) then
+        wtLog("Client: trigger already registered locally - skipping duplicate")
+        return
     end
+
+    -- Register directly on this client (no placeable)
+    local triggerData = {
+        id            = self.triggerId,
+        workplaceName = self.workplaceName,
+        hourlyWage    = self.hourlyWage,
+        triggerRadius = self.triggerRadius,
+        posX          = self.posX,
+        posY          = self.posY,
+        posZ          = self.posZ,
+        paySchedule   = self.paySchedule,
+        playerInside  = false,
+    }
+    sys.triggerManager:registerTrigger(triggerData)
 end
 
 -- Runs when any client edits an existing trigger's name/wage/radius.
@@ -317,56 +368,110 @@ function WorkplaceMultiplayerEvent.sendShiftStart(triggerId)
             if trigger then sys.shiftTracker:startShift(trigger) end
         end
     else
-        g_client:getServerConnection():sendEvent(
-            WorkplaceMultiplayerEvent.new(
-                WorkplaceMultiplayerEvent.TYPE_SHIFT_START,
-                { triggerId = triggerId })
-        )
+        if g_client == nil then wtLog("sendShiftStart: g_client is nil"); return end
+        local conn = g_client:getServerConnection()
+        if conn == nil then wtLog("sendShiftStart: getServerConnection() nil"); return end
+        conn:sendEvent(WorkplaceMultiplayerEvent.new(
+            WorkplaceMultiplayerEvent.TYPE_SHIFT_START,
+            { triggerId = triggerId }))
     end
 end
 
-function WorkplaceMultiplayerEvent.sendShiftEnd()
+function WorkplaceMultiplayerEvent.sendShiftEnd(isPenalty)
     if g_currentMission == nil then return end
     if g_currentMission:getIsServer() then
         local sys = g_WorkplaceSystem
         if sys and sys.shiftTracker:isShiftActive() then
-            sys.shiftTracker:endShift()
+            if isPenalty then
+                sys.shiftTracker:endShiftPenalty()
+            else
+                sys.shiftTracker:endShift()
+            end
         end
     else
-        g_client:getServerConnection():sendEvent(
-            WorkplaceMultiplayerEvent.new(
-                WorkplaceMultiplayerEvent.TYPE_SHIFT_END, {})
-        )
+        if g_client == nil then wtLog("sendShiftEnd: g_client is nil"); return end
+        local conn = g_client:getServerConnection()
+        if conn == nil then wtLog("sendShiftEnd: getServerConnection() nil"); return end
+        conn:sendEvent(WorkplaceMultiplayerEvent.new(
+            WorkplaceMultiplayerEvent.TYPE_SHIFT_END, { isPenalty = isPenalty or false }))
     end
 end
 
 -- Called from WTEditDialog:onClickSave() for new triggers
 function WorkplaceMultiplayerEvent.sendCreateTrigger(data)
-    if g_currentMission == nil then return end
+    if g_currentMission == nil then wtLog("sendCreateTrigger: g_currentMission nil"); return end
+    wtLog("sendCreateTrigger: isServer=" .. tostring(g_currentMission:getIsServer())
+        .. " isClient=" .. tostring(g_currentMission:getIsClient())
+        .. " sys=" .. tostring(g_WorkplaceSystem ~= nil))
     if g_currentMission:getIsServer() then
-        -- SP / listen-server host: handle directly (no network round-trip needed)
+        -- SP / listen-server: create trigger data directly, no placeable needed
         local sys = g_WorkplaceSystem
         if sys == nil then return end
         local stableId = generateStableId()
-        data.stableId = stableId
-        if sys.saveLoad then
-            sys.saveLoad:queuePendingCreate(data)
+        local triggerData = {
+            id            = stableId,
+            workplaceName = data.workplaceName or "Workplace",
+            hourlyWage    = data.hourlyWage    or 500,
+            triggerRadius = data.triggerRadius or 4,
+            posX          = data.posX          or 0,
+            posY          = data.posY          or 0,
+            posZ          = data.posZ          or 0,
+            paySchedule   = data.paySchedule   or "hourly",
+            playerInside  = false,
+        }
+        local ok2, err2 = pcall(function()
+            sys.triggerManager:registerTrigger(triggerData)
+        end)
+        if not ok2 then
+            wtLog("sendCreateTrigger: registerTrigger error: " .. tostring(err2))
         end
-        local xmlFilename = sys.modDirectory .. "placeables/workTrigger/workTrigger.xml"
-        if g_placeableSystem and g_placeableSystem.loadPlaceable then
-            g_placeableSystem:loadPlaceable(
-                xmlFilename,
-                data.posX or 0, data.posY or 0, data.posZ or 0,
-                0, 0, 0,
-                data.farmId or g_currentMission:getFarmId(),
-                0, true, true, nil
-            )
+
+        -- Listen-server: broadcast to any connected clients
+        if g_server then
+            g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
+                WorkplaceMultiplayerEvent.TYPE_TRIGGER_CREATED,
+                {
+                    triggerId     = stableId,
+                    workplaceName = triggerData.workplaceName,
+                    hourlyWage    = triggerData.hourlyWage,
+                    triggerRadius = triggerData.triggerRadius,
+                    paySchedule   = triggerData.paySchedule,
+                    posX          = triggerData.posX,
+                    posY          = triggerData.posY,
+                    posZ          = triggerData.posZ,
+                    farmId        = data.farmId or 1,
+                }
+            ))
         end
     else
-        g_client:getServerConnection():sendEvent(
-            WorkplaceMultiplayerEvent.new(
-                WorkplaceMultiplayerEvent.TYPE_CREATE_TRIGGER, data)
-        )
+        -- Dedicated server client: register locally immediately (optimistic) so the
+        -- trigger shows in the dialog right away, then send to server for persistence
+        -- and sync to all other clients.
+        local sys = g_WorkplaceSystem
+        local clientId = string.format("wt_%d_%d",
+            math.floor((g_currentMission and g_currentMission.time) or 0),
+            math.floor(math.random() * 100000))
+        if sys then
+            local triggerData = {
+                id            = clientId,
+                workplaceName = data.workplaceName or "Workplace",
+                hourlyWage    = data.hourlyWage    or 500,
+                triggerRadius = data.triggerRadius or 4,
+                posX          = data.posX          or 0,
+                posY          = data.posY          or 0,
+                posZ          = data.posZ          or 0,
+                paySchedule   = data.paySchedule   or "hourly",
+                playerInside  = false,
+            }
+            pcall(function() sys.triggerManager:registerTrigger(triggerData) end)
+        end
+        -- Send to server so it registers + broadcasts to other clients
+        data.triggerId = clientId
+        if g_client == nil then wtLog("sendCreateTrigger: g_client is nil"); return end
+        local conn = g_client:getServerConnection()
+        if conn == nil then wtLog("sendCreateTrigger: getServerConnection() returned nil"); return end
+        conn:sendEvent(WorkplaceMultiplayerEvent.new(
+            WorkplaceMultiplayerEvent.TYPE_CREATE_TRIGGER, data))
     end
 end
 
@@ -389,10 +494,66 @@ function WorkplaceMultiplayerEvent.sendUpdateTrigger(triggerId, data)
             end
         end
     else
-        g_client:getServerConnection():sendEvent(
-            WorkplaceMultiplayerEvent.new(
-                WorkplaceMultiplayerEvent.TYPE_UPDATE_TRIGGER, data)
-        )
+        if g_client == nil then wtLog("sendUpdateTrigger: g_client is nil"); return end
+        local conn = g_client:getServerConnection()
+        if conn == nil then wtLog("sendUpdateTrigger: getServerConnection() nil"); return end
+        conn:sendEvent(WorkplaceMultiplayerEvent.new(
+            WorkplaceMultiplayerEvent.TYPE_UPDATE_TRIGGER, data))
+    end
+end
+
+-- Runs on every machine to deregister a trigger by ID.
+-- On a dedicated server, re-broadcasts to all other clients.
+function WorkplaceMultiplayerEvent:handleDeleteTrigger(sys)
+    if sys.shiftTracker and sys.shiftTracker:isShiftActive() then
+        if tostring(sys.shiftTracker.activeTriggerId) == self.triggerId then
+            sys.shiftTracker:endShift()
+        end
+    end
+    if sys.triggerManager then
+        sys.triggerManager:deregisterTrigger(self.triggerId)
+    end
+    wtLog("Deleted trigger id=" .. tostring(self.triggerId))
+
+    -- Dedicated server: forward to all clients
+    if g_currentMission:getIsServer() and g_server then
+        g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
+            WorkplaceMultiplayerEvent.TYPE_DELETE_TRIGGER,
+            { triggerId = self.triggerId }
+        ))
+    end
+end
+
+-- Called from WTListDialog:onClickDel — routes through server so all clients sync
+function WorkplaceMultiplayerEvent.sendDeleteTrigger(triggerId)
+    if g_currentMission == nil then return end
+    local sys = g_WorkplaceSystem
+    if sys == nil then return end
+
+    if g_currentMission:getIsServer() then
+        -- SP / listen-server: deregister locally then broadcast
+        if sys.shiftTracker and sys.shiftTracker:isShiftActive() then
+            if tostring(sys.shiftTracker.activeTriggerId) == tostring(triggerId) then
+                sys.shiftTracker:endShift()
+            end
+        end
+        if sys.triggerManager then
+            sys.triggerManager:deregisterTrigger(triggerId)
+        end
+        if g_server then
+            g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
+                WorkplaceMultiplayerEvent.TYPE_DELETE_TRIGGER,
+                { triggerId = tostring(triggerId) }
+            ))
+        end
+    else
+        -- Dedicated server client: ask server to delete
+        if g_client == nil then wtLog("sendDeleteTrigger: g_client is nil"); return end
+        local conn = g_client:getServerConnection()
+        if conn == nil then wtLog("sendDeleteTrigger: getServerConnection() nil"); return end
+        conn:sendEvent(WorkplaceMultiplayerEvent.new(
+            WorkplaceMultiplayerEvent.TYPE_DELETE_TRIGGER,
+            { triggerId = tostring(triggerId) }))
     end
 end
 

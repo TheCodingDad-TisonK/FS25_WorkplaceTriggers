@@ -566,7 +566,7 @@ function WorkplaceHUD:drawShiftPanel(tracker, shiftActive)
         setTextBold(false)
         setTextColor(self.COLORS.HINT[1], self.COLORS.HINT[2],
                      self.COLORS.HINT[3], self.COLORS.HINT[4])
-        local hintText = g_i18n:getText("wt_hud_edit_hint") or "Drag | Corners=Scale | Edges=Width | Shift=Exit"
+        local hintText = g_i18n:getText("wt_hud_edit_hint") or "Drag | Corners=Scale | Edges=Width | F7=Exit"
         local scaleStr = string.format(" (%d%%)", math.floor(self.scale * 100 + 0.5))
         renderText(self.posX, panelY - ts * 1.4, ts * 0.85, hintText .. scaleStr)
         setTextColor(1, 1, 1, 1)
