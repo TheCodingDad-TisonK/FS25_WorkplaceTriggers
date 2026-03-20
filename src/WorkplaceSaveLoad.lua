@@ -171,16 +171,20 @@ function WorkplaceSaveLoad:loadFromXMLFile(missionInfo)
         local savedPosZ   = xmlFile:getFloat( key .. "#posZ",          0)
         local savedSched  = xmlFile:getString(key .. "#paySchedule",   "hourly")
 
-        local trigger = self.system.triggerManager:getTriggerById(savedId)
-        if trigger then
-            trigger.workplaceName  = savedName
-            trigger.hourlyWage     = savedWage
-            trigger.triggerRadius  = savedRadius
-            trigger.paySchedule    = savedSched
-            wtLog(string.format("Restored trigger '%s' (id=%s)", savedName, savedId))
-        else
-            self:storePendingRestore(savedId, savedName, savedWage, savedRadius, savedPosX, savedPosY, savedPosZ, savedSched)
-        end
+        -- Triggers are pure data objects — register directly, no placeable needed
+        local triggerData = {
+            id            = savedId,
+            workplaceName = savedName,
+            hourlyWage    = savedWage,
+            triggerRadius = savedRadius,
+            posX          = savedPosX,
+            posY          = savedPosY,
+            posZ          = savedPosZ,
+            paySchedule   = savedSched,
+            playerInside  = false,
+        }
+        self.system.triggerManager:registerTrigger(triggerData)
+        wtLog(string.format("Restored trigger '%s' (id=%s)", savedName, savedId))
 
         i = i + 1
     end

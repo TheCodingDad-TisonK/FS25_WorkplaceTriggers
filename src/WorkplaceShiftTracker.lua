@@ -73,8 +73,8 @@ function WorkplaceShiftTracker:startShift(trigger)
 
     wtLog(string.format("Shift started at '%s' | $%d/hr", self.activeWorkplaceName, self.activeHourlyWage))
 
-    -- Notify HUD
-    if self.system.hud then
+    -- Notify HUD (client-only: dedicated server has no g_i18n / rendering context)
+    if self.system.hud and g_currentMission and g_currentMission:getIsClient() then
         self.system.hud:onShiftStarted(self.activeWorkplaceName, self.activeHourlyWage)
     end
 end
@@ -101,8 +101,8 @@ function WorkplaceShiftTracker:endShift()
 
     self.totalEarned = self.totalEarned + earnings
 
-    -- Notify HUD
-    if self.system.hud then
+    -- Notify HUD (client-only: dedicated server has no g_i18n / rendering context)
+    if self.system.hud and g_currentMission and g_currentMission:getIsClient() then
         self.system.hud:onShiftEnded(self.activeWorkplaceName, earnings)
     end
 
@@ -155,8 +155,8 @@ function WorkplaceShiftTracker:endShiftPenalty()
 
     self.totalEarned = self.totalEarned + penaltyPay
 
-    -- Notify HUD with the penalty message
-    if self.system.hud then
+    -- Notify HUD with the penalty message (client-only)
+    if self.system.hud and g_currentMission and g_currentMission:getIsClient() then
         self.system.hud:onShiftAbandonedPenalty(self.activeWorkplaceName, penaltyPay, fullEarnings)
     end
 

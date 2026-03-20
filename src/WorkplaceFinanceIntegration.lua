@@ -34,6 +34,7 @@ end
 function WorkplaceFinanceIntegration:addMoney(amount, workplaceName)
     if not self.isInitialized then return end
     if amount == nil or amount <= 0 then return end
+    if not g_server then return end  -- payments are server-authoritative only
 
     local amountInt = math.floor(amount)
     local label = workplaceName or "Workplace"

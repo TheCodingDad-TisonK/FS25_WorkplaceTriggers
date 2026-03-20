@@ -338,25 +338,26 @@ end
 -- Player Position (4 fallback methods)
 -- =========================================================
 function WorkplaceTriggerManager:getPlayerPosition()
+    -- NOTE: check x ~= nil, not just x, because x=0 is a valid coordinate (falsy in Lua)
     if g_localPlayer and g_localPlayer.getPosition then
         local ok, x, y, z = pcall(function() return g_localPlayer:getPosition() end)
-        if ok and x then return {x=x, y=y, z=z} end
+        if ok and x ~= nil then return {x=x, y=y, z=z} end
     end
     local mp = g_currentMission and g_currentMission.player
     if mp and mp.getPosition then
         local ok, x, y, z = pcall(function() return mp:getPosition() end)
-        if ok and x then return {x=x, y=y, z=z} end
+        if ok and x ~= nil then return {x=x, y=y, z=z} end
     end
     local v = g_currentMission and g_currentMission.controlledVehicle
     if v then
         local ok, x, y, z = pcall(function() return getWorldTranslation(v.rootNode) end)
-        if ok and x then return {x=x, y=y, z=z} end
+        if ok and x ~= nil then return {x=x, y=y, z=z} end
     end
     if getCamera then
         local cam = getCamera()
         if cam and cam ~= 0 then
             local ok, x, y, z = pcall(function() return getWorldTranslation(cam) end)
-            if ok and x then return {x=x, y=y, z=z} end
+            if ok and x ~= nil then return {x=x, y=y, z=z} end
         end
     end
     return nil

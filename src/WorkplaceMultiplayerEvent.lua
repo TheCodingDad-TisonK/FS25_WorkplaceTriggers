@@ -5,7 +5,7 @@
 -- Pattern: FS25 Event class (VehicleAttachEvent reference)
 --
 -- FS25 rules:
---   Engine auto-registers via Class(); NO Event.registerEvent()
+--   InitEventClass() registers the event — Class() alone is NOT sufficient for MP
 --   Event.new() takes only the metatable (no typeId arg)
 --   emptyNew() required for engine deserialisation
 --   readStream must call self:run(connection) at the end
@@ -23,6 +23,7 @@
 
 WorkplaceMultiplayerEvent = {}
 WorkplaceMultiplayerEvent_mt = Class(WorkplaceMultiplayerEvent, Event)
+InitEventClass(WorkplaceMultiplayerEvent, "WorkplaceMultiplayerEvent")
 
 WorkplaceMultiplayerEvent.TYPE_SHIFT_START     = 1
 WorkplaceMultiplayerEvent.TYPE_SHIFT_END       = 2
@@ -133,7 +134,14 @@ function WorkplaceMultiplayerEvent:handleShiftStart(sys, connection)
     if g_currentMission:getIsServer() then
         local trigger = sys.triggerManager:getTriggerById(self.triggerId)
         if trigger then
-            sys.shiftTracker:startShift(trigger)
+            -- pcall: startShift calls hud:onShiftStarted which needs g_i18n;
+            -- on headless dedicated server g_i18n is nil and would crash here,
+            -- preventing the SHIFT_CONFIRM broadcast. pcall ensures we always
+            -- broadcast even if the server-side HUD update fails.
+            local ok, err = pcall(function() sys.shiftTracker:startShift(trigger) end)
+            if not ok then
+                wtLog("Server: startShift error (harmless on headless): " .. tostring(err))
+            end
             wtLog("Server: started shift at '" .. (trigger.workplaceName or "?") .. "'")
             g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
                 WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM,
@@ -156,7 +164,11 @@ function WorkplaceMultiplayerEvent:handleShiftEnd(sys, connection)
         if sys.shiftTracker:isShiftActive() then
             local earned = sys.shiftTracker:getCurrentEarnings()
             local name   = sys.shiftTracker:getActiveWorkplaceName()
-            sys.shiftTracker:endShift()
+            -- pcall for same reason as handleShiftStart (g_i18n nil on headless server)
+            local ok, err = pcall(function() sys.shiftTracker:endShift() end)
+            if not ok then
+                wtLog("Server: endShift error (harmless on headless): " .. tostring(err))
+            end
             wtLog(string.format("Server: ended shift, paid $%d from '%s'", earned, name or "?"))
             g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
                 WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM,
@@ -188,7 +200,8 @@ end
 function WorkplaceMultiplayerEvent:handleCreateTrigger(sys, connection)
     if not g_currentMission:getIsServer() then return end
 
-    local stableId = generateStableId()
+    -- Use client-provided id if present so client's optimistic registration matches
+    local stableId = (self.triggerId and self.triggerId ~= "") and self.triggerId or generateStableId()
     wtLog("Server: creating trigger id=" .. stableId
           .. " name='" .. self.workplaceName .. "'")
 
@@ -236,6 +249,12 @@ function WorkplaceMultiplayerEvent:handleTriggerCreated(sys)
 
     wtLog("Client: received trigger-created id=" .. tostring(self.triggerId)
           .. " name='" .. self.workplaceName .. "'")
+
+    -- Skip if already registered via optimistic local registration
+    if sys.triggerManager:getTriggerById(self.triggerId) then
+        wtLog("Client: trigger already registered locally - skipping duplicate")
+        return
+    end
 
     -- Register directly on this client (no placeable)
     local triggerData = {
@@ -306,11 +325,12 @@ function WorkplaceMultiplayerEvent.sendShiftStart(triggerId)
             if trigger then sys.shiftTracker:startShift(trigger) end
         end
     else
-        g_client:getServerConnection():sendEvent(
-            WorkplaceMultiplayerEvent.new(
-                WorkplaceMultiplayerEvent.TYPE_SHIFT_START,
-                { triggerId = triggerId })
-        )
+        if g_client == nil then wtLog("sendShiftStart: g_client is nil"); return end
+        local conn = g_client:getServerConnection()
+        if conn == nil then wtLog("sendShiftStart: getServerConnection() nil"); return end
+        conn:sendEvent(WorkplaceMultiplayerEvent.new(
+            WorkplaceMultiplayerEvent.TYPE_SHIFT_START,
+            { triggerId = triggerId }))
     end
 end
 
@@ -322,16 +342,20 @@ function WorkplaceMultiplayerEvent.sendShiftEnd()
             sys.shiftTracker:endShift()
         end
     else
-        g_client:getServerConnection():sendEvent(
-            WorkplaceMultiplayerEvent.new(
-                WorkplaceMultiplayerEvent.TYPE_SHIFT_END, {})
-        )
+        if g_client == nil then wtLog("sendShiftEnd: g_client is nil"); return end
+        local conn = g_client:getServerConnection()
+        if conn == nil then wtLog("sendShiftEnd: getServerConnection() nil"); return end
+        conn:sendEvent(WorkplaceMultiplayerEvent.new(
+            WorkplaceMultiplayerEvent.TYPE_SHIFT_END, {}))
     end
 end
 
 -- Called from WTEditDialog:onClickSave() for new triggers
 function WorkplaceMultiplayerEvent.sendCreateTrigger(data)
-    if g_currentMission == nil then return end
+    if g_currentMission == nil then wtLog("sendCreateTrigger: g_currentMission nil"); return end
+    wtLog("sendCreateTrigger: isServer=" .. tostring(g_currentMission:getIsServer())
+        .. " isClient=" .. tostring(g_currentMission:getIsClient())
+        .. " sys=" .. tostring(g_WorkplaceSystem ~= nil))
     if g_currentMission:getIsServer() then
         -- SP / listen-server: create trigger data directly, no placeable needed
         local sys = g_WorkplaceSystem
@@ -373,10 +397,34 @@ function WorkplaceMultiplayerEvent.sendCreateTrigger(data)
             ))
         end
     else
-        g_client:getServerConnection():sendEvent(
-            WorkplaceMultiplayerEvent.new(
-                WorkplaceMultiplayerEvent.TYPE_CREATE_TRIGGER, data)
-        )
+        -- Dedicated server client: register locally immediately (optimistic) so the
+        -- trigger shows in the dialog right away, then send to server for persistence
+        -- and sync to all other clients.
+        local sys = g_WorkplaceSystem
+        local clientId = string.format("wt_%d_%d",
+            math.floor((g_currentMission and g_currentMission.time) or 0),
+            math.floor(math.random() * 100000))
+        if sys then
+            local triggerData = {
+                id            = clientId,
+                workplaceName = data.workplaceName or "Workplace",
+                hourlyWage    = data.hourlyWage    or 500,
+                triggerRadius = data.triggerRadius or 4,
+                posX          = data.posX          or 0,
+                posY          = data.posY          or 0,
+                posZ          = data.posZ          or 0,
+                paySchedule   = data.paySchedule   or "hourly",
+                playerInside  = false,
+            }
+            pcall(function() sys.triggerManager:registerTrigger(triggerData) end)
+        end
+        -- Send to server so it registers + broadcasts to other clients
+        data.triggerId = clientId
+        if g_client == nil then wtLog("sendCreateTrigger: g_client is nil"); return end
+        local conn = g_client:getServerConnection()
+        if conn == nil then wtLog("sendCreateTrigger: getServerConnection() returned nil"); return end
+        conn:sendEvent(WorkplaceMultiplayerEvent.new(
+            WorkplaceMultiplayerEvent.TYPE_CREATE_TRIGGER, data))
     end
 end
 
@@ -399,10 +447,11 @@ function WorkplaceMultiplayerEvent.sendUpdateTrigger(triggerId, data)
             end
         end
     else
-        g_client:getServerConnection():sendEvent(
-            WorkplaceMultiplayerEvent.new(
-                WorkplaceMultiplayerEvent.TYPE_UPDATE_TRIGGER, data)
-        )
+        if g_client == nil then wtLog("sendUpdateTrigger: g_client is nil"); return end
+        local conn = g_client:getServerConnection()
+        if conn == nil then wtLog("sendUpdateTrigger: getServerConnection() nil"); return end
+        conn:sendEvent(WorkplaceMultiplayerEvent.new(
+            WorkplaceMultiplayerEvent.TYPE_UPDATE_TRIGGER, data))
     end
 end
 
@@ -452,12 +501,12 @@ function WorkplaceMultiplayerEvent.sendDeleteTrigger(triggerId)
         end
     else
         -- Dedicated server client: ask server to delete
-        g_client:getServerConnection():sendEvent(
-            WorkplaceMultiplayerEvent.new(
-                WorkplaceMultiplayerEvent.TYPE_DELETE_TRIGGER,
-                { triggerId = tostring(triggerId) }
-            )
-        )
+        if g_client == nil then wtLog("sendDeleteTrigger: g_client is nil"); return end
+        local conn = g_client:getServerConnection()
+        if conn == nil then wtLog("sendDeleteTrigger: getServerConnection() nil"); return end
+        conn:sendEvent(WorkplaceMultiplayerEvent.new(
+            WorkplaceMultiplayerEvent.TYPE_DELETE_TRIGGER,
+            { triggerId = tostring(triggerId) }))
     end
 end
 

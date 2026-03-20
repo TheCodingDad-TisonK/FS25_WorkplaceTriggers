@@ -218,17 +218,8 @@ for i = 1, WTListDialog.MAX_ROWS do
         local triggers = self:getTriggers()
         local t = triggers[idx]
         if not t then return end
-        -- End shift if active at this trigger
-        if self.system and self.system.shiftTracker then
-            local st = self.system.shiftTracker
-            if st:isShiftActive() and st.activeTriggerId == t.id then
-                st:endShift()
-            end
-        end
-        -- Deregister
-        if self.system and self.system.triggerManager then
-            self.system.triggerManager:deregisterTrigger(t.id)
-        end
+        -- Route through MP event so all machines sync
+        WorkplaceMultiplayerEvent.sendDeleteTrigger(t.id)
         -- Clamp scroll
         local remaining = #self:getTriggers()
         if self.scrollOffset > 0 and self.scrollOffset >= remaining then
