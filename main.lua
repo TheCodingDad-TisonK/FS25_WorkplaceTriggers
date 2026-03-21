@@ -408,20 +408,6 @@ if FSCareerMissionInfo and FSCareerMissionInfo.saveToXMLFile then
     )
 end
 
-if Mission00 and Mission00.onStartMission then
-    Mission00.onStartMission = Utils.appendedFunction(
-        Mission00.onStartMission,
-        function(mission)
-            if workplaceSystem and workplaceSystem.isInitialized then
-                local missionInfo = g_currentMission and g_currentMission.missionInfo
-                if missionInfo then
-                    workplaceSystem:loadFromXMLFile(missionInfo)
-                end
-            end
-        end
-    )
-end
-
 -- =========================================================
 -- Mod Event Listener
 -- =========================================================

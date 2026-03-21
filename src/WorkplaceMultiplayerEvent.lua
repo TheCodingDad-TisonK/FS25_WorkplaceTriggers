@@ -32,6 +32,7 @@ WorkplaceMultiplayerEvent.TYPE_CREATE_TRIGGER  = 4   -- client -> server
 WorkplaceMultiplayerEvent.TYPE_TRIGGER_CREATED = 5   -- server -> all clients
 WorkplaceMultiplayerEvent.TYPE_UPDATE_TRIGGER  = 6   -- client -> server (edit existing)
 WorkplaceMultiplayerEvent.TYPE_DELETE_TRIGGER  = 7   -- server -> all clients
+WorkplaceMultiplayerEvent.TYPE_REQUEST_SYNC    = 8   -- client -> server on join/rejoin
 
 local LOG = "[WorkplaceTriggers] MPEvent: "
 local function wtLog(msg) print(LOG .. tostring(msg)) end
@@ -73,6 +74,7 @@ function WorkplaceMultiplayerEvent.new(eventType, data)
     self.hourlyWage    = (data and data.hourlyWage)    or 500
     self.triggerRadius = (data and data.triggerRadius) or 4
     self.paySchedule   = (data and data.paySchedule)   or "hourly"
+    self.timeMultiplier = (data and data.timeMultiplier) or 0
     self.farmId        = (data and data.farmId)        or 1
     return self
 end
@@ -92,7 +94,8 @@ function WorkplaceMultiplayerEvent:writeStream(streamId, connection)
     streamWriteFloat32(streamId, self.posZ          or 0)
     streamWriteInt32(streamId,   math.floor(self.hourlyWage    or 500))
     streamWriteFloat32(streamId, self.triggerRadius or 4)
-    streamWriteString(streamId,  self.paySchedule   or "hourly")
+    streamWriteString(streamId,  self.paySchedule    or "hourly")
+    streamWriteInt32(streamId,   math.floor(self.timeMultiplier or 0))
     streamWriteInt32(streamId,   math.floor(self.farmId or 1))
 end
 
@@ -107,8 +110,9 @@ function WorkplaceMultiplayerEvent:readStream(streamId, connection)
     self.posZ          = streamReadFloat32(streamId)
     self.hourlyWage    = streamReadInt32(streamId)
     self.triggerRadius = streamReadFloat32(streamId)
-    self.paySchedule   = streamReadString(streamId)
-    self.farmId        = streamReadInt32(streamId)
+    self.paySchedule    = streamReadString(streamId)
+    self.timeMultiplier = streamReadInt32(streamId)
+    self.farmId         = streamReadInt32(streamId)
     self:run(connection)   -- FS25 requirement
 end
 
@@ -127,6 +131,7 @@ function WorkplaceMultiplayerEvent:run(connection)
     elseif t == WorkplaceMultiplayerEvent.TYPE_TRIGGER_CREATED then self:handleTriggerCreated(sys)
     elseif t == WorkplaceMultiplayerEvent.TYPE_UPDATE_TRIGGER  then self:handleUpdateTrigger(sys)
     elseif t == WorkplaceMultiplayerEvent.TYPE_DELETE_TRIGGER  then self:handleDeleteTrigger(sys)
+    elseif t == WorkplaceMultiplayerEvent.TYPE_REQUEST_SYNC    then self:handleRequestSync(sys, connection)
     end
 end
 
@@ -145,12 +150,20 @@ function WorkplaceMultiplayerEvent:handleShiftStart(sys, connection)
             if not ok then
                 wtLog("Server: startShift error (harmless on headless): " .. tostring(err))
             end
+            -- Store the requesting client's farmId so payout goes to the right farm.
+            sys.shiftTracker.activeFarmId = self.farmId or 1
+            -- Mark this shift as belonging to a remote client so the server's
+            -- updateZoneCheck doesn't use the host's player position for Dafke's zone.
+            sys.shiftTracker.shiftOwnerIsLocal = false
             wtLog("Server: started shift at '" .. (trigger.workplaceName or "?") .. "'")
             g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
                 WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM,
-                { triggerId     = self.triggerId,
-                  workplaceName = trigger.workplaceName or "",
-                  earnings      = 0 }
+                { triggerId      = self.triggerId,
+                  workplaceName  = trigger.workplaceName  or "",
+                  earnings       = 0,
+                  hourlyWage     = trigger.hourlyWage     or 500,
+                  paySchedule    = trigger.paySchedule    or "hourly",
+                  timeMultiplier = trigger.timeMultiplier or 0 }
             ))
         else
             wtLog("Server: shift start rejected - trigger not found: " .. tostring(self.triggerId))
@@ -195,9 +208,15 @@ function WorkplaceMultiplayerEvent:handleShiftEnd(sys, connection)
 end
 
 function WorkplaceMultiplayerEvent:handleShiftConfirm(sys)
+    -- triggerId == "" means shift ended; triggerId ~= "" means shift started.
+    -- Do NOT use earnings > 0: that check breaks when a shift ends with $0 earned
+    -- (e.g. stopped within the first fraction of a second), causing the client to
+    -- misread the end-confirm as a start-confirm and leave the shift stuck active.
+    local isEnd = (self.triggerId == "")
+
     -- This is the ONLY place client HUDs update for shift events
     if sys.hud then
-        if self.earnings > 0 then
+        if isEnd then
             sys.hud:onShiftEnded(self.workplaceName, self.earnings)
         else
             sys.hud:onShiftStarted(self.workplaceName, 0)
@@ -208,7 +227,7 @@ function WorkplaceMultiplayerEvent:handleShiftConfirm(sys)
     -- The server owns the authoritative shift; clients mirror just enough state to
     -- detect zone violations and route them back through sendShiftEnd(isPenalty=true).
     if sys.shiftTracker then
-        if self.earnings > 0 then
+        if isEnd then
             -- Shift ended: clear all active-shift fields
             sys.shiftTracker.activeTriggerId     = nil
             sys.shiftTracker.activeWorkplaceName = nil
@@ -224,6 +243,7 @@ function WorkplaceMultiplayerEvent:handleShiftConfirm(sys)
             sys.shiftTracker.activeWorkplaceName = self.workplaceName
             sys.shiftTracker.activeHourlyWage    = self.hourlyWage
             sys.shiftTracker.activePaySchedule   = self.paySchedule
+            sys.shiftTracker.activeTimeMultiplier = self.timeMultiplier or 0
             sys.shiftTracker.shiftStartTime      = sys.shiftTracker:getCurrentMissionTime()
             sys.shiftTracker.shiftElapsedMs      = 0
             sys.shiftTracker.leaveWarnActive     = false
@@ -258,6 +278,7 @@ function WorkplaceMultiplayerEvent:handleCreateTrigger(sys, connection)
         posY          = self.posY,
         posZ          = self.posZ,
         paySchedule   = self.paySchedule,
+        timeMultiplier = self.timeMultiplier or 0,
         playerInside  = false,
     }
     local ok, err = pcall(function()
@@ -277,6 +298,7 @@ function WorkplaceMultiplayerEvent:handleCreateTrigger(sys, connection)
             hourlyWage    = self.hourlyWage,
             triggerRadius = self.triggerRadius,
             paySchedule   = self.paySchedule,
+            timeMultiplier = self.timeMultiplier or 0,
             posX          = self.posX,
             posY          = self.posY,
             posZ          = self.posZ,
@@ -309,6 +331,7 @@ function WorkplaceMultiplayerEvent:handleTriggerCreated(sys)
         posY          = self.posY,
         posZ          = self.posZ,
         paySchedule   = self.paySchedule,
+        timeMultiplier = self.timeMultiplier or 0,
         playerInside  = false,
     }
     sys.triggerManager:registerTrigger(triggerData)
@@ -323,6 +346,7 @@ function WorkplaceMultiplayerEvent:handleUpdateTrigger(sys)
             trigger.hourlyWage    = self.hourlyWage
             trigger.triggerRadius = self.triggerRadius
             trigger.paySchedule   = self.paySchedule
+            trigger.timeMultiplier = self.timeMultiplier or 0
             if sys.triggerManager then
                 sys.triggerManager:updateMapHotspotName(trigger)
             end
@@ -336,6 +360,7 @@ function WorkplaceMultiplayerEvent:handleUpdateTrigger(sys)
                     hourlyWage    = self.hourlyWage,
                     triggerRadius = self.triggerRadius,
                     paySchedule   = self.paySchedule,
+                    timeMultiplier = self.timeMultiplier or 0,
                 }
             ))
         else
@@ -349,6 +374,7 @@ function WorkplaceMultiplayerEvent:handleUpdateTrigger(sys)
             trigger.hourlyWage    = self.hourlyWage
             trigger.triggerRadius = self.triggerRadius
             trigger.paySchedule   = self.paySchedule
+            trigger.timeMultiplier = self.timeMultiplier or 0
             if sys.triggerManager then
                 sys.triggerManager:updateMapHotspotName(trigger)
             end
@@ -371,9 +397,10 @@ function WorkplaceMultiplayerEvent.sendShiftStart(triggerId)
         if g_client == nil then wtLog("sendShiftStart: g_client is nil"); return end
         local conn = g_client:getServerConnection()
         if conn == nil then wtLog("sendShiftStart: getServerConnection() nil"); return end
+        local clientFarmId = g_currentMission:getFarmId() or 1
         conn:sendEvent(WorkplaceMultiplayerEvent.new(
             WorkplaceMultiplayerEvent.TYPE_SHIFT_START,
-            { triggerId = triggerId }))
+            { triggerId = triggerId, farmId = clientFarmId }))
     end
 end
 
@@ -417,6 +444,7 @@ function WorkplaceMultiplayerEvent.sendCreateTrigger(data)
             posY          = data.posY          or 0,
             posZ          = data.posZ          or 0,
             paySchedule   = data.paySchedule   or "hourly",
+            timeMultiplier = data.timeMultiplier or 0,
             playerInside  = false,
         }
         local ok2, err2 = pcall(function()
@@ -436,6 +464,7 @@ function WorkplaceMultiplayerEvent.sendCreateTrigger(data)
                     hourlyWage    = triggerData.hourlyWage,
                     triggerRadius = triggerData.triggerRadius,
                     paySchedule   = triggerData.paySchedule,
+                    timeMultiplier = triggerData.timeMultiplier,
                     posX          = triggerData.posX,
                     posY          = triggerData.posY,
                     posZ          = triggerData.posZ,
@@ -461,6 +490,7 @@ function WorkplaceMultiplayerEvent.sendCreateTrigger(data)
                 posY          = data.posY          or 0,
                 posZ          = data.posZ          or 0,
                 paySchedule   = data.paySchedule   or "hourly",
+                timeMultiplier = data.timeMultiplier or 0,
                 playerInside  = false,
             }
             pcall(function() sys.triggerManager:registerTrigger(triggerData) end)
@@ -488,6 +518,7 @@ function WorkplaceMultiplayerEvent.sendUpdateTrigger(triggerId, data)
                 trigger.hourlyWage    = data.hourlyWage
                 trigger.triggerRadius = data.triggerRadius
                 trigger.paySchedule   = data.paySchedule
+                trigger.timeMultiplier = data.timeMultiplier or 0
                 if sys.triggerManager then
                     sys.triggerManager:updateMapHotspotName(trigger)
                 end
@@ -522,6 +553,53 @@ function WorkplaceMultiplayerEvent:handleDeleteTrigger(sys)
             { triggerId = self.triggerId }
         ))
     end
+end
+
+-- =========================================================
+-- Join sync: client requests all triggers on connect/rejoin
+-- =========================================================
+
+-- Runs on the SERVER when a newly connected client sends TYPE_REQUEST_SYNC.
+-- Broadcasts all triggers to ALL clients (connection param is nil on dedicated
+-- server readStream, so connection:sendEvent() silently fails there).
+-- handleTriggerCreated has a duplicate-check so broadcast is safe.
+function WorkplaceMultiplayerEvent:handleRequestSync(sys, connection)
+    wtLog(string.format("handleRequestSync: isServer=%s g_server=%s",
+        tostring(g_currentMission and g_currentMission:getIsServer()),
+        tostring(g_server ~= nil)))
+    if not g_currentMission:getIsServer() then return end
+    if g_server == nil then return end
+    local triggers = sys.triggerManager and sys.triggerManager:getAllTriggers() or {}
+    for _, trigger in ipairs(triggers) do
+        g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
+            WorkplaceMultiplayerEvent.TYPE_TRIGGER_CREATED,
+            {
+                triggerId     = tostring(trigger.id),
+                workplaceName = trigger.workplaceName or "Workplace",
+                hourlyWage    = trigger.hourlyWage    or 500,
+                triggerRadius = trigger.triggerRadius or 4,
+                paySchedule    = trigger.paySchedule    or "hourly",
+                timeMultiplier = trigger.timeMultiplier or 0,
+                posX          = trigger.posX          or 0,
+                posY          = trigger.posY          or 0,
+                posZ          = trigger.posZ          or 0,
+                farmId        = 1,
+            }
+        ))
+    end
+    wtLog(string.format("Sent %d trigger(s) to all clients (sync request)", #triggers))
+end
+
+-- Called by WorkplaceSystem:onMissionLoaded() on clients.
+-- Asks the server to push all existing triggers to this client.
+function WorkplaceMultiplayerEvent.sendRequestSync()
+    if g_currentMission == nil then return end
+    if g_currentMission:getIsServer() then return end   -- host has triggers already
+    if g_client == nil then wtLog("sendRequestSync: g_client nil"); return end
+    local conn = g_client:getServerConnection()
+    if conn == nil then wtLog("sendRequestSync: no server connection"); return end
+    conn:sendEvent(WorkplaceMultiplayerEvent.new(WorkplaceMultiplayerEvent.TYPE_REQUEST_SYNC, {}))
+    wtLog("Sent trigger sync request to server")
 end
 
 -- Called from WTListDialog:onClickDel — routes through server so all clients sync

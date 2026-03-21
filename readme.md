@@ -1,4 +1,4 @@
-# 🏢 FS25 Workplace Triggers
+# FS25 Workplace Triggers
 ### *Placeable Off-Farm Work System*
 
 [![Downloads](https://img.shields.io/github/downloads/TheCodingDad-TisonK/FS25_WorkplaceTriggers/total?style=for-the-badge&logo=github&color=4caf50&logoColor=white)](https://github.com/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases)
@@ -19,24 +19,28 @@
 
 ## Features
 
-**Placeable trigger zones** — invisible zones you drop anywhere on any map, indoors or outdoors. No 3D object cluttering your scenery, just a named work location.
+**Placeable trigger zones** — invisible zones you drop anywhere on any map, indoors or outdoors. No 3D object cluttering your scenery, just a named work location. Zone radius is configurable per trigger from 1 m up to 300 m.
 
 **Custom workplace names** — call it Post Office, Feed Mill, Grandpa's Workshop, or anything that fits your map and your roleplay.
 
 **Three pay schedules** — choose per trigger how you get paid:
 - **Hourly** — wage x in-game hours worked (classic time-on-clock pay)
-- **Flat Rate** — a fixed amount paid out at the end of every shift
-- **Daily** — wage x number of in-game days you worked
+- **Flat Rate** — a fixed amount paid out at the end of every shift, regardless of time spent
+- **Daily** — wage x number of in-game days worked
 
-**Shift tracking HUD** — while on shift, a panel shows your active workplace, time elapsed, and current earnings in real time. Drag it anywhere on screen, resize it, and the position is saved.
+**Time multiplier per trigger** — control how fast in-game time counts for wage calculation. Options: Auto (follows server game speed), x1 (real time), x3, x5, x10.
 
-**Workplace Manager (F4)** — a full list dialog showing all your placed triggers with name, wage, and coordinates. Edit or delete any trigger from one screen.
+**Zone-leave penalty** — if you leave the trigger zone during a shift, a 10-second countdown appears in the HUD. Step back inside (or within 8 m of the zone edge) to cancel it. If the countdown expires the shift auto-ends and you receive only 20% of your accrued earnings.
 
-**Shift history log** — the last 50 completed shifts are recorded with workplace name, duration, payout, and in-game day.
+**Shift tracking HUD** — while on shift a panel shows the active workplace, time elapsed, and current earnings in real time. Press `F7` to enter edit mode where you can drag and resize the panel; position and scale are saved per savegame.
 
-**Persistent saves** — all trigger placements, names, wages, and pay schedules survive game saves and reloads. Each savegame has its own set.
+**Workplace Manager (F4)** — a full list dialog showing all placed triggers with name, wage, pay schedule, and coordinates. Add, edit, or delete any trigger from one screen.
 
-**Multiplayer** — each player tracks their own shifts independently; earnings go into the shared farm account. Shift start and end are synced to the server so the economy stays consistent.
+**Shift history log** — the last 50 completed shifts are recorded with workplace name, duration, payout, pay schedule, and in-game day.
+
+**Persistent saves** — all trigger placements, names, wages, pay schedules, and HUD position survive game saves and reloads. Each savegame has its own independent set.
+
+**Multiplayer** — each player tracks their own shift independently; earnings go into the shared farm account. All shift events are server-authoritative. Triggers are synced to clients on join/rejoin automatically.
 
 **Optional integrations:**
 - *FS25_NPCFavor* — completing shifts builds your relationship with the NPC you work for
@@ -48,11 +52,11 @@ Both integrations are silently skipped if those mods are not loaded.
 
 ## How to Use
 
-1. Press **[F4]** to open the Workplace Manager and click **Add** to create a new trigger
-2. Name the workplace, set a wage, and choose a pay schedule — then confirm
-3. Place the trigger at any location on the map
-4. Walk into the trigger zone and press **[E]** to start your shift
-5. Press **[E]** again to end your shift and collect your wages
+1. Press **[F4]** to open the Workplace Manager and click **Add**
+2. Name the workplace, set a wage, choose a pay schedule, time multiplier, and zone radius — then confirm
+3. The trigger is placed at your current player position
+4. Walk into the trigger zone — an interaction prompt appears
+5. Press **[E]** to start your shift; press **[E]** again to end it and collect wages
 
 **Controls:**
 
@@ -60,19 +64,19 @@ Both integrations are silently skipped if those mods are not loaded.
 |-----|--------|
 | `E` | Start / end shift (when inside a trigger zone) |
 | `F4` | Open / close Workplace Manager |
-| `Left Shift` | Toggle HUD edit mode (drag and resize the panel) |
+| `F7` | Toggle HUD edit mode (drag and resize the shift panel) |
 
 ---
 
 ## Console Commands
 
-Open the developer console (default: `~`) and type:
+Open the developer console (default: `` ` ``) and type:
 
 | Command | Description |
 |---------|-------------|
 | `wtHelp` | Show all available commands |
-| `wtStatus` | Show current shift status |
-| `wtList` | List all placed workplace triggers |
+| `wtStatus` | Show current shift status and live earnings |
+| `wtList` | List all placed workplace triggers with coordinates |
 | `wtDebug` | Toggle debug logging |
 | `wtGui` | Toggle the Workplace Manager GUI |
 
@@ -82,21 +86,39 @@ Open the developer console (default: `~`) and type:
 
 Available under **ESC > Settings > General Settings > Workplace Triggers:**
 
-- Show Shift HUD
-- HUD Scale
-- Show Notifications
-- Wage Multiplier (global multiplier on top of per-trigger wages)
-- End Shift on Leave (auto-cancel shift when you leave the zone)
-- Show Earnings in HUD
-- Debug Mode
+| Setting | Default | Description |
+|---------|---------|-------------|
+| Show Shift HUD | On | Show the shift panel while on shift |
+| HUD Scale | 1.0x | Scale of the panel (0.75x / 1.0x / 1.25x / 1.5x / 2.0x) |
+| Show Notifications | On | Flash notifications on shift start and end |
+| Wage Multiplier | 1.0x | Global multiplier applied on top of per-trigger wages (0.5x – 2.0x) |
+| End Shift on Leave | On | Auto-cancel with 20% penalty when you leave the zone |
+| Show Earnings in HUD | On | Show the current earnings row in the HUD panel |
+| Debug Mode | Off | Write detailed entries to the game log |
+
+Settings are saved per savegame to `<savegameDir>/workplace_triggers_settings.xml`.
 
 ---
 
 ## Changelog
 
+### v1.0.4.0
+- Raised trigger radius maximum from 50 m to 300 m; edit dialog step increased to 5 m
+
+### v1.0.3.0
+- Fixed MP trigger sync; triggers now survive client join/rejoin via deferred sync request with up to 5 retry attempts
+- Fixed farm ID routing so wages reach the correct farm in multiplayer
+- Added time multiplier selector per trigger (Auto / x1 / x3 / x5 / x10)
+
+### v1.0.2.0
+- Fixed SHIFT_CONFIRM broadcast to include `hourlyWage` and `paySchedule` so zone-leave penalty calculates correctly on the client
+
+### v1.0.1.0
+- Added zone-leave penalty: 10-second countdown when player leaves the zone, 20% payout on auto-cancel
+
 ### v1.0.0.0
 - Pay schedules: Hourly, Flat Rate, and Daily options per trigger
-- Multiplayer sync: shift start/end routed through network events, server-authoritative
+- Multiplayer sync: shift events routed through network events, server-authoritative
 - Shift history log: last 50 completed shifts stored per session
 - FS25_NPCFavor integration: optional, graceful, builds NPC favor on shift completion
 - FS25_WorkerCosts integration: optional, graceful, registers triggers as off-farm jobs
@@ -118,7 +140,7 @@ This mod is licensed under **[CC BY-NC-ND 4.0](https://creativecommons.org/licen
 
 You may share it in its original form with attribution. You may not sell it, modify and redistribute it, or reupload it under a different name or authorship. Contributions via pull request are explicitly permitted and encouraged.
 
-**Author:** TisonK · **Version:** 1.0.0.0
+**Author:** TisonK · **Version:** 1.0.4.0
 
 © 2026 TisonK — See [LICENSE](LICENSE) for full terms.
 
@@ -128,6 +150,6 @@ You may share it in its original form with attribution. You may not sell it, mod
 
 *Farming Simulator 25 is published by GIANTS Software. This is an independent fan creation, not affiliated with or endorsed by GIANTS Software.*
 
-*Work anywhere, earn everywhere.* 🏢💸
+*Work anywhere, earn everywhere.*
 
 </div>

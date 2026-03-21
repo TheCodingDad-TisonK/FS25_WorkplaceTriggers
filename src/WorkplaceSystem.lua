@@ -75,16 +75,65 @@ function WorkplaceSystem:onMissionLoaded()
 
     wtLog("All subsystems initialized - mod ready")
     self:registerConsoleCommands()
+
+    -- Server: load trigger data from the mod save file.
+    -- This must happen AFTER all subsystems are initialized (saveLoad.isInitialized = true).
+    -- Client: schedule a deferred sync request instead of sending immediately.
+    -- Sending REQUEST_SYNC during onMissionLoaded() is too early — the server's
+    -- broadcast back may not reach the client while the stream is still opening.
+    -- The update() loop sends it after a short warm-up delay.
+    if g_currentMission then
+        if g_currentMission:getIsServer() then
+            self:loadFromXMLFile(g_currentMission.missionInfo)
+        else
+            -- Arm the deferred sync. update() will fire it after SYNC_DELAY_SEC.
+            self.syncPending      = true
+            self.syncDelayTimer   = 0
+            self.syncAttempts     = 0
+            wtLog("Client: deferred trigger sync armed")
+        end
+    end
 end
 
 -- =========================================================
 -- Update (dt in milliseconds from FS25)
 -- =========================================================
+-- Seconds to wait before first REQUEST_SYNC attempt on client.
+-- Gives the server stream time to fully open before we expect a broadcast back.
+WorkplaceSystem.SYNC_DELAY_SEC   = 2.0
+WorkplaceSystem.SYNC_RETRY_SEC   = 8.0
+WorkplaceSystem.SYNC_MAX_ATTEMPTS = 5
+
 function WorkplaceSystem:update(dt)
     if not self.isInitialized then return end
 
     -- Convert ms to seconds for subsystem use
     local dtSec = dt / 1000.0
+
+    -- Deferred client sync: send REQUEST_SYNC after warm-up, retry until triggers arrive
+    if self.syncPending and g_currentMission and not g_currentMission:getIsServer() then
+        self.syncDelayTimer = (self.syncDelayTimer or 0) + dtSec
+        local threshold = (self.syncAttempts == 0)
+            and WorkplaceSystem.SYNC_DELAY_SEC
+            or  WorkplaceSystem.SYNC_RETRY_SEC
+        if self.syncDelayTimer >= threshold then
+            self.syncDelayTimer = 0
+            self.syncAttempts   = (self.syncAttempts or 0) + 1
+            local triggerCount  = #self.triggerManager:getAllTriggers()
+            wtLog(string.format("Client: sync attempt %d (have %d triggers)",
+                self.syncAttempts, triggerCount))
+            if triggerCount > 0 then
+                -- We have triggers — sync succeeded (or we're the host)
+                self.syncPending = false
+                wtLog("Client: sync complete — triggers received")
+            elseif self.syncAttempts <= WorkplaceSystem.SYNC_MAX_ATTEMPTS then
+                WorkplaceMultiplayerEvent.sendRequestSync()
+            else
+                self.syncPending = false
+                wtLog("Client: sync gave up after " .. WorkplaceSystem.SYNC_MAX_ATTEMPTS .. " attempts")
+            end
+        end
+    end
 
     self.triggerManager:update(dtSec)
     self.shiftTracker:update(dtSec)
