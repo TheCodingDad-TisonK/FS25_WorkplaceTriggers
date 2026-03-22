@@ -15,6 +15,16 @@ local WTListDialog_mt = Class(WTListDialog, MessageDialog)
 
 WTListDialog.MAX_ROWS = 8
 
+-- =========================================================
+-- Admin helper
+-- =========================================================
+local function isAdmin()
+    if WorkplaceSystem and WorkplaceSystem.isLocalPlayerAdmin then
+        return WorkplaceSystem.isLocalPlayerAdmin()
+    end
+    return g_currentMission ~= nil and g_currentMission:getIsServer()
+end
+
 function WTListDialog.new(target, custom_mt)
     local self = MessageDialog.new(target, custom_mt or WTListDialog_mt)
     self.system      = nil
@@ -108,6 +118,16 @@ function WTListDialog:refresh()
     local hasUp = (self.scrollOffset > 0)
     local hasDn = (endIdx < total)
     self:setScrollVisible(hasUp, hasDn)
+
+    -- "New Trigger" button: admin only
+    local adminVis = isAdmin()
+    local function setNewVis(id)
+        local el = self[id]
+        if el then el:setVisible(adminVis) end
+    end
+    setNewVis("newBg")
+    setNewVis("newTxt")
+    setNewVis("newBtn")
 end
 
 function WTListDialog:getTriggers()
@@ -172,15 +192,20 @@ function WTListDialog:fillRow(rowNum, trigger)
         posEl:setText(string.format("%.0f, %.0f", trigger.posX or 0, trigger.posZ or 0))
     end
 
-    -- Edit button (3 layers)
-    show(p .. "editbg")
-    show(p .. "edittxt")
-    show(p .. "edit")
+    -- Edit button (3 layers) - admin only
+    local adminVis = isAdmin()
+    local function setAdminVis(id)
+        local el = self[id]
+        if el then el:setVisible(adminVis) end
+    end
+    setAdminVis(p .. "editbg")
+    setAdminVis(p .. "edittxt")
+    setAdminVis(p .. "edit")
 
-    -- Delete button (3 layers)
-    show(p .. "delbg")
-    show(p .. "deltxt")
-    show(p .. "del")
+    -- Delete button (3 layers) - admin only
+    setAdminVis(p .. "delbg")
+    setAdminVis(p .. "deltxt")
+    setAdminVis(p .. "del")
 end
 
 function WTListDialog:setScrollVisible(showUp, showDn)
@@ -201,6 +226,7 @@ end
 -- =========================================================
 for i = 1, WTListDialog.MAX_ROWS do
     WTListDialog["onClickEdit" .. i] = function(self)
+        if not isAdmin() then return end
         local idx = self.rowTriggerIndex[i]
         if not idx then return end
         local triggers = self:getTriggers()
@@ -213,6 +239,7 @@ for i = 1, WTListDialog.MAX_ROWS do
     end
 
     WTListDialog["onClickDel" .. i] = function(self)
+        if not isAdmin() then return end
         local idx = self.rowTriggerIndex[i]
         if not idx then return end
         local triggers = self:getTriggers()
@@ -233,6 +260,7 @@ end
 -- Other button handlers
 -- =========================================================
 function WTListDialog:onClickNew()
+    if not isAdmin() then return end
     self:close()
     if WTDialogLoader then
         WTDialogLoader.showEdit(self.system, nil, true)

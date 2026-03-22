@@ -312,6 +312,12 @@ end
 function WorkplaceMultiplayerEvent:handleCreateTrigger(sys, connection)
     if not g_currentMission:getIsServer() then return end
 
+    -- ADMIN GUARD: only admin connections may create triggers on a dedicated server
+    if connection and connection.getIsAdmin and not connection:getIsAdmin() then
+        wtLog("Server: CREATE_TRIGGER rejected - sender is not admin")
+        return
+    end
+
     -- Use client-provided id if present so client's optimistic registration matches
     local stableId = (self.triggerId and self.triggerId ~= "") and self.triggerId or generateStableId()
     wtLog("Server: creating trigger id=" .. stableId
@@ -595,6 +601,17 @@ end
 -- Runs on every machine to deregister a trigger by ID.
 -- On a dedicated server, re-broadcasts to all other clients.
 function WorkplaceMultiplayerEvent:handleDeleteTrigger(sys)
+    -- ADMIN GUARD: on a dedicated server, only admin clients may delete triggers.
+    -- The connection object is not passed to run() so we check via g_currentMission.
+    -- On a dedicated server clients, isMasterUser reflects the admin flag.
+    -- (SP / listen-server hosts always pass through since getIsServer() is true.)
+    if g_currentMission:getIsClient() and not g_currentMission:getIsServer() then
+        if g_currentMission.isMasterUser ~= true then
+            wtLog("Client: DELETE_TRIGGER blocked - not admin")
+            return
+        end
+    end
+
     if sys.shiftTracker and sys.shiftTracker:isShiftActive() then
         if tostring(sys.shiftTracker.activeTriggerId) == self.triggerId then
             sys.shiftTracker:endShift()

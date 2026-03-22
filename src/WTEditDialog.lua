@@ -5,6 +5,16 @@
 -- Pattern: NPCAdminEditDialog.lua from FS25_NPCFavor
 -- =========================================================
 
+-- =========================================================
+-- Admin helper
+-- =========================================================
+local function isAdmin()
+    if WorkplaceSystem and WorkplaceSystem.isLocalPlayerAdmin then
+        return WorkplaceSystem.isLocalPlayerAdmin()
+    end
+    return g_currentMission ~= nil and g_currentMission:getIsServer()
+end
+
 WTEditDialog = {}
 local WTEditDialog_mt = Class(WTEditDialog, MessageDialog)
 
@@ -413,13 +423,20 @@ end
 -- Save
 -- =========================================================
 function WTEditDialog:onClickSave()
+    -- ADMIN GUARD: belt-and-suspenders — UI already hides this dialog from
+    -- non-admins, but block here too in case of crafted input.
+    if not isAdmin() then
+        print("[WorkplaceTriggers] WTEditDialog: save blocked - player is not admin")
+        self:close()
+        return
+    end
+
     local name = ""
     if self.nameInput then
         name = self.nameInput:getText() or ""
     end
     name = name:match("^%s*(.-)%s*$")  -- trim whitespace
     if name == "" then name = "Workplace" end
-
     if self.isNew then
         local farmId = g_currentMission and g_currentMission:getFarmId() or 1
         local ok, err = pcall(function()
