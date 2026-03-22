@@ -78,7 +78,13 @@ function WorkplaceMultiplayerEvent.new(eventType, data)
     self.timeMultiplier  = (data and data.timeMultiplier)  or 0
     self.farmId          = (data and data.farmId)          or 1
     -- per-trigger zone behaviour
-    self.endShiftOnLeave = (data and data.endShiftOnLeave ~= nil) and data.endShiftOnLeave or true
+    -- NOTE: cannot use (a and b or c) here because b may be boolean false, which
+    -- would cause Lua to evaluate the 'or' branch and always return true.
+    if data ~= nil and data.endShiftOnLeave ~= nil then
+        self.endShiftOnLeave = data.endShiftOnLeave
+    else
+        self.endShiftOnLeave = true
+    end
     -- TYPE_SYNC_SETTINGS payload (server -> all clients)
     self.wageMultiplier  = (data and data.wageMultiplier)  or 1.0
     return self

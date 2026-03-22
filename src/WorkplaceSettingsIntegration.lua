@@ -50,13 +50,13 @@ function WorkplaceSettingsIntegration:onFrameOpen()
 
     WorkplaceSettingsIntegration:addSettingsElements(self)
 
-    self.gameSettingsLayout:invalidateLayout()
+    self.generalSettingsLayout:invalidateLayout()
 
     if self.updateAlternatingElements then
-        self:updateAlternatingElements(self.gameSettingsLayout)
+        self:updateAlternatingElements(self.generalSettingsLayout)
     end
     if self.updateGeneralSettings then
-        self:updateGeneralSettings(self.gameSettingsLayout)
+        self:updateGeneralSettings(self.generalSettingsLayout)
     end
 
     self.wt_initDone = true
@@ -126,7 +126,7 @@ function WorkplaceSettingsIntegration:addSectionHeader(frame, text)
     el.name = "sectionHeader"
     el:loadProfile(g_gui:getProfile("fs25_settingsSectionHeader"), true)
     el:setText(text)
-    frame.gameSettingsLayout:addElement(el)
+    frame.generalSettingsLayout:addElement(el)
     el:onGuiSetupFinished()
 end
 
@@ -157,7 +157,7 @@ function WorkplaceSettingsIntegration:addBinaryOption(frame, callbackName, title
     titleEl:onGuiSetupFinished()
     tooltipEl:onGuiSetupFinished()
 
-    frame.gameSettingsLayout:addElement(container)
+    frame.generalSettingsLayout:addElement(container)
     container:onGuiSetupFinished()
 
     return option
@@ -190,7 +190,7 @@ function WorkplaceSettingsIntegration:addMultiTextOption(frame, callbackName, te
     titleEl:onGuiSetupFinished()
     tooltipEl:onGuiSetupFinished()
 
-    frame.gameSettingsLayout:addElement(container)
+    frame.generalSettingsLayout:addElement(container)
     container:onGuiSetupFinished()
 
     return option
