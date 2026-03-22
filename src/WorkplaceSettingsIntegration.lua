@@ -257,8 +257,10 @@ local function apply(key, value, msg)
     local s = getSettings()
     if not s then return end
     s[key] = value
-    -- Persist next full save; no immediate disk write needed (UsedPlus pattern)
     if msg then wtLog(msg) end
+    -- Write immediately so changes survive a restart without an explicit game save
+    local mi = g_currentMission and g_currentMission.missionInfo
+    if mi then s:saveToXMLFile(mi) end
 end
 
 function WorkplaceSettingsIntegration:onShowHudChanged(state)
