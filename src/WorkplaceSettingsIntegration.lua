@@ -298,7 +298,7 @@ end
 
 function WorkplaceSettingsIntegration:onEndShiftOnLeaveChanged(state)
     local v = (state == BinaryOptionElement.STATE_RIGHT)
-    apply("endShiftOnLeave", v, nil, true)
+    apply("endShiftOnLeave", v)  -- per-player preference, not broadcast to others
 end
 
 function WorkplaceSettingsIntegration:onShowEarningsChanged(state)
