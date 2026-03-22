@@ -33,6 +33,7 @@ WorkplaceMultiplayerEvent.TYPE_TRIGGER_CREATED = 5   -- server -> all clients
 WorkplaceMultiplayerEvent.TYPE_UPDATE_TRIGGER  = 6   -- client -> server (edit existing)
 WorkplaceMultiplayerEvent.TYPE_DELETE_TRIGGER  = 7   -- server -> all clients
 WorkplaceMultiplayerEvent.TYPE_REQUEST_SYNC    = 8   -- client -> server on join/rejoin
+WorkplaceMultiplayerEvent.TYPE_SYNC_SETTINGS   = 9   -- server -> all clients (global settings)
 
 local LOG = "[WorkplaceTriggers] MPEvent: "
 local function wtLog(msg) print(LOG .. tostring(msg)) end
@@ -74,8 +75,11 @@ function WorkplaceMultiplayerEvent.new(eventType, data)
     self.hourlyWage    = (data and data.hourlyWage)    or 500
     self.triggerRadius = (data and data.triggerRadius) or 4
     self.paySchedule   = (data and data.paySchedule)   or "hourly"
-    self.timeMultiplier = (data and data.timeMultiplier) or 0
-    self.farmId        = (data and data.farmId)        or 1
+    self.timeMultiplier  = (data and data.timeMultiplier)  or 0
+    self.farmId          = (data and data.farmId)          or 1
+    -- TYPE_SYNC_SETTINGS payload (server -> all clients)
+    self.wageMultiplier  = (data and data.wageMultiplier)  or 1.0
+    self.endShiftOnLeave = (data and data.endShiftOnLeave ~= nil) and data.endShiftOnLeave or true
     return self
 end
 
@@ -97,6 +101,9 @@ function WorkplaceMultiplayerEvent:writeStream(streamId, connection)
     streamWriteString(streamId,  self.paySchedule    or "hourly")
     streamWriteInt32(streamId,   math.floor(self.timeMultiplier or 0))
     streamWriteInt32(streamId,   math.floor(self.farmId or 1))
+    -- TYPE_SYNC_SETTINGS fields (written for all types; cheap and avoids type-switching)
+    streamWriteFloat32(streamId, self.wageMultiplier  or 1.0)
+    streamWriteBool(streamId,    self.endShiftOnLeave ~= false)
 end
 
 function WorkplaceMultiplayerEvent:readStream(streamId, connection)
@@ -111,8 +118,10 @@ function WorkplaceMultiplayerEvent:readStream(streamId, connection)
     self.hourlyWage    = streamReadInt32(streamId)
     self.triggerRadius = streamReadFloat32(streamId)
     self.paySchedule    = streamReadString(streamId)
-    self.timeMultiplier = streamReadInt32(streamId)
-    self.farmId         = streamReadInt32(streamId)
+    self.timeMultiplier  = streamReadInt32(streamId)
+    self.farmId          = streamReadInt32(streamId)
+    self.wageMultiplier  = streamReadFloat32(streamId)
+    self.endShiftOnLeave = streamReadBool(streamId)
     self:run(connection)   -- FS25 requirement
 end
 
@@ -132,6 +141,7 @@ function WorkplaceMultiplayerEvent:run(connection)
     elseif t == WorkplaceMultiplayerEvent.TYPE_UPDATE_TRIGGER  then self:handleUpdateTrigger(sys)
     elseif t == WorkplaceMultiplayerEvent.TYPE_DELETE_TRIGGER  then self:handleDeleteTrigger(sys)
     elseif t == WorkplaceMultiplayerEvent.TYPE_REQUEST_SYNC    then self:handleRequestSync(sys, connection)
+    elseif t == WorkplaceMultiplayerEvent.TYPE_SYNC_SETTINGS   then self:handleSyncSettings(sys)
     end
 end
 
@@ -142,19 +152,24 @@ function WorkplaceMultiplayerEvent:handleShiftStart(sys, connection)
     if g_currentMission:getIsServer() then
         local trigger = sys.triggerManager:getTriggerById(self.triggerId)
         if trigger then
-            -- pcall: startShift calls hud:onShiftStarted which needs g_i18n;
-            -- on headless dedicated server g_i18n is nil and would crash here,
-            -- preventing the SHIFT_CONFIRM broadcast. pcall ensures we always
-            -- broadcast even if the server-side HUD update fails.
-            local ok, err = pcall(function() sys.shiftTracker:startShift(trigger) end)
+            -- startShift is called silently (no HUD notification) on the server.
+            -- On a listen-server the host player must not see a shift-started popup for
+            -- another farm's shift; the owning client receives its HUD update via the
+            -- TYPE_SHIFT_CONFIRM broadcast instead.
+            -- pcall: still needed in case of any edge-case crash (e.g. headless server).
+            local ok, err = pcall(function() sys.shiftTracker:startShift(trigger, true) end)
             if not ok then
                 wtLog("Server: startShift error (harmless on headless): " .. tostring(err))
             end
             -- Store the requesting client's farmId so payout goes to the right farm.
             sys.shiftTracker.activeFarmId = self.farmId or 1
-            -- Mark this shift as belonging to a remote client so the server's
-            -- updateZoneCheck doesn't use the host's player position for Dafke's zone.
-            sys.shiftTracker.shiftOwnerIsLocal = false
+            -- Determine if the requesting farm is the server's own local farm.
+            -- On a listen-server: shiftOwnerIsLocal=true only when the host started it.
+            -- On a dedicated server: no local player, so always false (zone checks are
+            -- the client's responsibility).
+            local localFarmId = (g_currentMission and g_currentMission:getIsClient()
+                                 and g_currentMission:getFarmId()) or -1
+            sys.shiftTracker.shiftOwnerIsLocal = (self.farmId == localFarmId)
             wtLog("Server: started shift at '" .. (trigger.workplaceName or "?") .. "'")
             g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
                 WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM,
@@ -232,33 +247,45 @@ function WorkplaceMultiplayerEvent:handleShiftConfirm(sys)
     end
 
     -- Sync shift state to client's shiftTracker so zone tracking can run client-side.
-    -- The server owns the authoritative shift; clients mirror just enough state to
-    -- detect zone violations and route them back through sendShiftEnd(isPenalty=true).
+    -- IMPORTANT: only update the shiftTracker for the OWNING farm's clients.
+    -- Other farms must NOT have activeTriggerId set — that would make isShiftActive()
+    -- return true for them, causing wrong E-key prompts and accidental shift-end sends.
+    -- On a listen-server the server already set its state via startShift(); the HOST
+    -- client branch below is a no-op for remote shifts (isOwner=false), leaving the
+    -- server-set state intact for payout purposes while keeping the client UI clean.
     if sys.shiftTracker then
         if isEnd then
-            -- Shift ended: clear all active-shift fields
-            sys.shiftTracker.activeTriggerId     = nil
-            sys.shiftTracker.activeWorkplaceName = nil
-            sys.shiftTracker.activeHourlyWage    = 0
-            sys.shiftTracker.activePaySchedule   = WorkplaceShiftTracker.PAY_HOURLY
-            sys.shiftTracker.shiftStartTime      = nil
-            sys.shiftTracker.shiftElapsedMs      = 0
-            sys.shiftTracker.leaveWarnActive     = false
-            sys.shiftTracker.leaveWarnTimer      = 0
+            -- Shift ended: only clear state on the farm that owned the shift.
+            if isOwner then
+                sys.shiftTracker.activeTriggerId     = nil
+                sys.shiftTracker.activeWorkplaceName = nil
+                sys.shiftTracker.activeHourlyWage    = 0
+                sys.shiftTracker.activePaySchedule   = WorkplaceShiftTracker.PAY_HOURLY
+                sys.shiftTracker.shiftStartTime      = nil
+                sys.shiftTracker.shiftElapsedMs      = 0
+                sys.shiftTracker.leaveWarnActive     = false
+                sys.shiftTracker.leaveWarnTimer      = 0
+            end
         else
-            -- Shift started: populate tracker so updateZoneCheck works client-side.
-            -- shiftOwnerIsLocal controls whether this client runs zone checks —
-            -- only the owning farm should trigger zone violations.
-            sys.shiftTracker.activeTriggerId     = self.triggerId
-            sys.shiftTracker.activeWorkplaceName = self.workplaceName
-            sys.shiftTracker.activeHourlyWage    = self.hourlyWage
-            sys.shiftTracker.activePaySchedule   = self.paySchedule
-            sys.shiftTracker.activeTimeMultiplier = self.timeMultiplier or 0
-            sys.shiftTracker.shiftStartTime      = sys.shiftTracker:getCurrentMissionTime()
-            sys.shiftTracker.shiftElapsedMs      = 0
-            sys.shiftTracker.leaveWarnActive     = false
-            sys.shiftTracker.leaveWarnTimer      = 0
-            sys.shiftTracker.shiftOwnerIsLocal   = isOwner
+            -- Shift started: only the owning farm mirrors state client-side.
+            -- Zone checks (updateZoneCheck) only run when shiftOwnerIsLocal=true,
+            -- so non-owning clients need no state here.
+            if isOwner then
+                sys.shiftTracker.activeTriggerId      = self.triggerId
+                sys.shiftTracker.activeWorkplaceName  = self.workplaceName
+                sys.shiftTracker.activeHourlyWage     = self.hourlyWage
+                sys.shiftTracker.activePaySchedule    = self.paySchedule
+                sys.shiftTracker.activeTimeMultiplier = self.timeMultiplier or 0
+                sys.shiftTracker.shiftStartTime       = sys.shiftTracker:getCurrentMissionTime()
+                sys.shiftTracker.shiftElapsedMs       = 0
+                sys.shiftTracker.leaveWarnActive      = false
+                sys.shiftTracker.leaveWarnTimer       = 0
+                sys.shiftTracker.shiftOwnerIsLocal    = true
+            end
+            -- Non-owners: leave their shiftTracker untouched.
+            -- On a listen-server the server-side startShift() already set the needed
+            -- fields (activeTriggerId, shiftStartTime, etc.) for payout calculation,
+            -- with shiftOwnerIsLocal=false so zone checks don't fire for the host player.
         end
     end
 
@@ -599,6 +626,43 @@ function WorkplaceMultiplayerEvent:handleRequestSync(sys, connection)
         ))
     end
     wtLog(string.format("Sent %d trigger(s) to all clients (sync request)", #triggers))
+
+    -- Also push global settings so non-admin clients use the server's wageMultiplier etc.
+    WorkplaceMultiplayerEvent.sendSyncSettings()
+end
+
+-- =========================================================
+-- Settings sync: server -> all clients (TYPE_SYNC_SETTINGS)
+-- =========================================================
+
+-- Runs on every CLIENT when the server pushes global settings.
+-- Only wageMultiplier and endShiftOnLeave are synced — display/HUD
+-- settings (showHud, hudScale, etc.) remain per-client preferences.
+function WorkplaceMultiplayerEvent:handleSyncSettings(sys)
+    if g_currentMission:getIsServer() then return end   -- host set its own settings already
+    local s = sys and sys.settings
+    if not s then return end
+    s.wageMultiplier  = self.wageMultiplier
+    s.endShiftOnLeave = self.endShiftOnLeave
+    wtLog(string.format("Settings synced from server: wageMult=%.2f endOnLeave=%s",
+        s.wageMultiplier, tostring(s.endShiftOnLeave)))
+end
+
+-- Called by the server to push current global settings to all clients.
+-- Triggered on join (from handleRequestSync) and when admin changes a setting.
+function WorkplaceMultiplayerEvent.sendSyncSettings()
+    if g_currentMission == nil then return end
+    if not g_currentMission:getIsServer() then return end
+    if g_server == nil then return end
+    local s = g_WorkplaceSystem and g_WorkplaceSystem.settings
+    if not s then return end
+    g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
+        WorkplaceMultiplayerEvent.TYPE_SYNC_SETTINGS,
+        { wageMultiplier  = s.wageMultiplier,
+          endShiftOnLeave = s.endShiftOnLeave }
+    ))
+    wtLog(string.format("Broadcast settings to all clients (wageMult=%.2f endOnLeave=%s)",
+        s.wageMultiplier, tostring(s.endShiftOnLeave)))
 end
 
 -- Called by WorkplaceSystem:onMissionLoaded() on clients.

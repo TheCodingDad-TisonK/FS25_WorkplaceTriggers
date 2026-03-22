@@ -170,13 +170,16 @@ function WorkplaceSystem:onInteractPressed()
     if self.gui and self.gui:isOpen() then return end
 
     if self.shiftTracker:isShiftActive() then
-        -- End active shift (routes through MP event on dedicated server)
-        WorkplaceMultiplayerEvent.sendShiftEnd()
+        -- Only allow ending the shift if it belongs to this local player's farm.
+        -- shiftOwnerIsLocal=false means a different farm started it (listen-server case)
+        -- — pressing E must not accidentally end someone else's shift.
+        if self.shiftTracker.shiftOwnerIsLocal ~= false then
+            WorkplaceMultiplayerEvent.sendShiftEnd()
+        end
     else
         -- Start shift at nearest trigger
         local trigger = self.triggerManager:getNearestPlayerTrigger()
         if trigger then
-            -- FIX: always use trigger.id which is now the stable cross-machine string
             WorkplaceMultiplayerEvent.sendShiftStart(tostring(trigger.id))
         end
     end

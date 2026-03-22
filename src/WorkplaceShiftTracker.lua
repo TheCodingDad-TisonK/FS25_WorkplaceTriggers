@@ -56,7 +56,10 @@ end
 -- =========================================================
 -- Shift Control
 -- =========================================================
-function WorkplaceShiftTracker:startShift(trigger)
+-- silentStart=true suppresses the HUD notification (used by the server on a listen-server
+-- so the host player doesn't see a shift-started popup for a remote farm's shift; the owning
+-- client gets its HUD update via the TYPE_SHIFT_CONFIRM broadcast instead).
+function WorkplaceShiftTracker:startShift(trigger, silentStart)
     if trigger == nil then
         wtLog("startShift: nil trigger")
         return
@@ -79,7 +82,8 @@ function WorkplaceShiftTracker:startShift(trigger)
     wtLog(string.format("Shift started at '%s' | $%d/hr", self.activeWorkplaceName, self.activeHourlyWage))
 
     -- Notify HUD (client-only: dedicated server has no g_i18n / rendering context)
-    if self.system.hud and g_currentMission and g_currentMission:getIsClient() then
+    -- Suppressed when silentStart=true (listen-server serving a remote farm's shift)
+    if not silentStart and self.system.hud and g_currentMission and g_currentMission:getIsClient() then
         self.system.hud:onShiftStarted(self.activeWorkplaceName, self.activeHourlyWage)
     end
 end

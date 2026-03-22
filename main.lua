@@ -362,9 +362,14 @@ if FSBaseMission and FSBaseMission.update then
         if not isDialogOpen and workplaceSystem.triggerManager then
             local nearbyTrigger = workplaceSystem.triggerManager:getNearestPlayerTrigger()
             if nearbyTrigger then
+                local st = workplaceSystem.shiftTracker
+                -- Only show "End Shift" when THIS player's farm owns the active shift.
+                -- shiftOwnerIsLocal=false means another farm is working — show nothing
+                -- near their trigger so the player can't accidentally interfere.
+                local ownShiftActive = st and st:isShiftActive() and st.shiftOwnerIsLocal ~= false
                 shouldShow = true
-                if workplaceSystem.shiftTracker and workplaceSystem.shiftTracker:isShiftActive() then
-                    local activeName = workplaceSystem.shiftTracker:getActiveWorkplaceName()
+                if ownShiftActive then
+                    local activeName = st:getActiveWorkplaceName()
                     promptText = string.format(
                         g_i18n:getText("wt_input_end_shift") or "End Shift at %s",
                         activeName or "Workplace"
