@@ -195,6 +195,10 @@ function WorkplaceMultiplayerEvent:handleShiftEnd(sys, connection)
     if g_currentMission:getIsServer() then
         if sys.shiftTracker:isShiftActive() then
             local name   = sys.shiftTracker:getActiveWorkplaceName()
+            -- CRITICAL: save farmId NOW — endShift/endShiftPenalty both reset activeFarmId to 1.
+            -- If we read it after the call the CONFIRM would always go to farm1,
+            -- making it impossible for any other farm to stop their own shift.
+            local farmId = sys.shiftTracker.activeFarmId or 1
             local earned
             if self.isPenalty then
                 -- Client triggered penalty (player left zone too long)
@@ -217,7 +221,7 @@ function WorkplaceMultiplayerEvent:handleShiftEnd(sys, connection)
             g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
                 WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM,
                 { triggerId = "", workplaceName = name or "", earnings = earned,
-                  farmId = sys.shiftTracker.activeFarmId or 1 }
+                  farmId = farmId }
             ))
         end
     end
