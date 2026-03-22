@@ -244,29 +244,17 @@ function WorkplaceShiftTracker:updateZoneCheck(dtSec)
     local dx   = (activeTrigger.posX or 0) - playerPos.x
     local dz   = (activeTrigger.posZ or 0) - playerPos.z
     local dist = math.sqrt(dx * dx + dz * dz)
-    local radius     = activeTrigger.triggerRadius or 4.0
-    local warnRadius = radius + self.WARN_EXTRA_RADIUS
+    local radius = activeTrigger.triggerRadius or 4.0
 
     if dist <= radius then
-        -- Back inside zone - cancel warning
+        -- Back inside zone - cancel warning and reset timer
         if self.leaveWarnActive then
             self.leaveWarnActive = false
             self.leaveWarnTimer  = 0
             if self.system.hud then self.system.hud:hideLeaveWarning() end
         end
-
-    elseif dist <= warnRadius then
-        -- In the warning ring - show warning but freeze timer
-        if not self.leaveWarnActive then
-            self.leaveWarnActive = true
-            self.leaveWarnTimer  = 0
-        end
-        if self.system.hud then
-            self.system.hud:showLeaveWarning(self.WARN_GRACE_SECONDS - self.leaveWarnTimer)
-        end
-
     else
-        -- Beyond warning radius - countdown to auto-cancel
+        -- Outside zone - countdown starts immediately on leaving the radius
         if not self.leaveWarnActive then
             self.leaveWarnActive = true
             self.leaveWarnTimer  = 0
