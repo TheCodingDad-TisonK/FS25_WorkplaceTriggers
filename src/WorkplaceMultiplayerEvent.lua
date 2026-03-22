@@ -640,20 +640,21 @@ end
 -- =========================================================
 
 -- Runs on every CLIENT when the server pushes global settings.
--- Only wageMultiplier is synced — it affects server-side payout calculation
--- so all clients must use the same value.
--- endShiftOnLeave is intentionally per-player: each player decides for themselves
--- whether their own shift ends when they leave the zone.
+-- wageMultiplier and endShiftOnLeave are both server-authoritative:
+-- the game settings page is admin-only in MP, so only the server can
+-- meaningfully change these values. All clients receive the server's values.
 function WorkplaceMultiplayerEvent:handleSyncSettings(sys)
     if g_currentMission:getIsServer() then return end   -- host set its own settings already
     local s = sys and sys.settings
     if not s then return end
-    s.wageMultiplier = self.wageMultiplier
-    wtLog(string.format("Settings synced from server: wageMult=%.2f", s.wageMultiplier))
+    s.wageMultiplier  = self.wageMultiplier
+    s.endShiftOnLeave = self.endShiftOnLeave
+    wtLog(string.format("Settings synced from server: wageMult=%.2f endOnLeave=%s",
+        s.wageMultiplier, tostring(s.endShiftOnLeave)))
 end
 
 -- Called by the server to push global settings to all clients.
--- Triggered on join (from handleRequestSync) and when admin changes wageMultiplier.
+-- Triggered on join (from handleRequestSync) and when admin changes a setting.
 function WorkplaceMultiplayerEvent.sendSyncSettings()
     if g_currentMission == nil then return end
     if not g_currentMission:getIsServer() then return end
@@ -662,7 +663,8 @@ function WorkplaceMultiplayerEvent.sendSyncSettings()
     if not s then return end
     g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
         WorkplaceMultiplayerEvent.TYPE_SYNC_SETTINGS,
-        { wageMultiplier = s.wageMultiplier }
+        { wageMultiplier  = s.wageMultiplier,
+          endShiftOnLeave = s.endShiftOnLeave }
     ))
     wtLog(string.format("Broadcast settings to all clients (wageMult=%.2f endOnLeave=%s)",
         s.wageMultiplier, tostring(s.endShiftOnLeave)))
