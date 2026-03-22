@@ -652,17 +652,13 @@ end
 -- =========================================================
 
 -- Runs on every CLIENT when the server pushes global settings.
--- wageMultiplier and endShiftOnLeave are both server-authoritative:
--- the game settings page is admin-only in MP, so only the server can
--- meaningfully change these values. All clients receive the server's values.
+-- wageMultiplier is server-authoritative (admin-only setting in MP).
 function WorkplaceMultiplayerEvent:handleSyncSettings(sys)
     if g_currentMission:getIsServer() then return end   -- host set its own settings already
     local s = sys and sys.settings
     if not s then return end
-    s.wageMultiplier  = self.wageMultiplier
-    s.endShiftOnLeave = self.endShiftOnLeave
-    wtLog(string.format("Settings synced from server: wageMult=%.2f endOnLeave=%s",
-        s.wageMultiplier, tostring(s.endShiftOnLeave)))
+    s.wageMultiplier = self.wageMultiplier
+    wtLog(string.format("Settings synced from server: wageMult=%.2f", s.wageMultiplier))
 end
 
 -- Called by the server to push global settings to all clients.
@@ -675,11 +671,9 @@ function WorkplaceMultiplayerEvent.sendSyncSettings()
     if not s then return end
     g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
         WorkplaceMultiplayerEvent.TYPE_SYNC_SETTINGS,
-        { wageMultiplier  = s.wageMultiplier,
-          endShiftOnLeave = s.endShiftOnLeave }
+        { wageMultiplier = s.wageMultiplier }
     ))
-    wtLog(string.format("Broadcast settings to all clients (wageMult=%.2f endOnLeave=%s)",
-        s.wageMultiplier, tostring(s.endShiftOnLeave)))
+    wtLog(string.format("Broadcast settings to all clients (wageMult=%.2f)", s.wageMultiplier))
 end
 
 -- Called by WorkplaceSystem:onMissionLoaded() on clients.

@@ -12,7 +12,6 @@
 --   HUD Scale             (MultiTextOption)
 --   Show Notifications    (BinaryOption)
 --   Wage Multiplier       (MultiTextOption)
---   End Shift On Leave    (BinaryOption)
 --   Show Earnings in HUD  (BinaryOption)
 --   Debug Mode            (BinaryOption)
 -- =========================================================
@@ -103,12 +102,6 @@ function WorkplaceSettingsIntegration:addSettingsElements(frame)
         WorkplaceSettings.wageMultOptions,
         g_i18n:getText("wt_settings_wage_mult_short") or "Wage Multiplier",
         g_i18n:getText("wt_settings_wage_mult_long")  or "Global multiplier applied to all hourly wages"
-    )
-
-    frame.wt_endOnLeaveToggle = WorkplaceSettingsIntegration:addBinaryOption(
-        frame, "onEndShiftOnLeaveChanged",
-        g_i18n:getText("wt_settings_end_on_leave_short") or "End Shift on Leave",
-        g_i18n:getText("wt_settings_end_on_leave_long")  or "Automatically end your shift when you leave the trigger zone"
     )
 
     frame.wt_showEarningsToggle = WorkplaceSettingsIntegration:addBinaryOption(
@@ -230,9 +223,6 @@ function WorkplaceSettingsIntegration:updateSettingsUI(frame)
     if frame.wt_wageMult then
         frame.wt_wageMult:setState(findIndex(WorkplaceSettings.wageMultValues, s.wageMultiplier))
     end
-    if frame.wt_endOnLeaveToggle then
-        frame.wt_endOnLeaveToggle:setIsChecked(s.endShiftOnLeave == true, false, false)
-    end
     if frame.wt_showEarningsToggle then
         frame.wt_showEarningsToggle:setIsChecked(s.showEarningsInHud == true, false, false)
     end
@@ -294,11 +284,6 @@ end
 function WorkplaceSettingsIntegration:onWageMultChanged(state)
     local v = WorkplaceSettings.wageMultValues[state] or 1.0
     apply("wageMultiplier", v, "Wage multiplier: " .. v, true)
-end
-
-function WorkplaceSettingsIntegration:onEndShiftOnLeaveChanged(state)
-    local v = (state == BinaryOptionElement.STATE_RIGHT)
-    apply("endShiftOnLeave", v, nil, true)  -- server-authoritative, synced to all clients
 end
 
 function WorkplaceSettingsIntegration:onShowEarningsChanged(state)
