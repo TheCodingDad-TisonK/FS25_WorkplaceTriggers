@@ -163,7 +163,8 @@ function WorkplaceMultiplayerEvent:handleShiftStart(sys, connection)
                   earnings       = 0,
                   hourlyWage     = trigger.hourlyWage     or 500,
                   paySchedule    = trigger.paySchedule    or "hourly",
-                  timeMultiplier = trigger.timeMultiplier or 0 }
+                  timeMultiplier = trigger.timeMultiplier or 0,
+                  farmId         = self.farmId or 1 }
             ))
         else
             wtLog("Server: shift start rejected - trigger not found: " .. tostring(self.triggerId))
@@ -200,7 +201,8 @@ function WorkplaceMultiplayerEvent:handleShiftEnd(sys, connection)
             end
             g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
                 WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM,
-                { triggerId = "", workplaceName = name or "", earnings = earned }
+                { triggerId = "", workplaceName = name or "", earnings = earned,
+                  farmId = sys.shiftTracker.activeFarmId or 1 }
             ))
         end
     end
@@ -214,8 +216,14 @@ function WorkplaceMultiplayerEvent:handleShiftConfirm(sys)
     -- misread the end-confirm as a start-confirm and leave the shift stuck active.
     local isEnd = (self.triggerId == "")
 
-    -- This is the ONLY place client HUDs update for shift events
-    if sys.hud then
+    -- Determine if this confirm belongs to the local player's farm.
+    -- Only the owning farm sees the HUD update; others ignore it.
+    local confirmFarmId = self.farmId or 1
+    local localFarmId   = (g_currentMission and g_currentMission:getFarmId()) or 1
+    local isOwner       = (confirmFarmId == localFarmId)
+
+    -- Only update HUD for the client that owns this shift
+    if sys.hud and isOwner then
         if isEnd then
             sys.hud:onShiftEnded(self.workplaceName, self.earnings)
         else
@@ -238,7 +246,9 @@ function WorkplaceMultiplayerEvent:handleShiftConfirm(sys)
             sys.shiftTracker.leaveWarnActive     = false
             sys.shiftTracker.leaveWarnTimer      = 0
         else
-            -- Shift started: populate tracker so updateZoneCheck works client-side
+            -- Shift started: populate tracker so updateZoneCheck works client-side.
+            -- shiftOwnerIsLocal controls whether this client runs zone checks —
+            -- only the owning farm should trigger zone violations.
             sys.shiftTracker.activeTriggerId     = self.triggerId
             sys.shiftTracker.activeWorkplaceName = self.workplaceName
             sys.shiftTracker.activeHourlyWage    = self.hourlyWage
@@ -248,6 +258,7 @@ function WorkplaceMultiplayerEvent:handleShiftConfirm(sys)
             sys.shiftTracker.shiftElapsedMs      = 0
             sys.shiftTracker.leaveWarnActive     = false
             sys.shiftTracker.leaveWarnTimer      = 0
+            sys.shiftTracker.shiftOwnerIsLocal   = isOwner
         end
     end
 
