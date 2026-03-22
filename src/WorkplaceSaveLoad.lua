@@ -112,7 +112,8 @@ function WorkplaceSaveLoad:saveToXMLFile(missionInfo)
         xmlFile:setFloat( key .. "#posY",         trigger.posY or 0)
         xmlFile:setFloat( key .. "#posZ",         trigger.posZ or 0)
         xmlFile:setFloat( key .. "#rotY",         trigger.rotY or 0)
-        xmlFile:setString(key .. "#paySchedule",  trigger.paySchedule or "hourly")
+        xmlFile:setString(key .. "#paySchedule",    trigger.paySchedule    or "hourly")
+        xmlFile:setInt(   key .. "#timeMultiplier", trigger.timeMultiplier or 0)
         count = count + 1
     end
 
@@ -169,7 +170,8 @@ function WorkplaceSaveLoad:loadFromXMLFile(missionInfo)
         local savedPosX   = xmlFile:getFloat( key .. "#posX",          0)
         local savedPosY   = xmlFile:getFloat( key .. "#posY",          0)
         local savedPosZ   = xmlFile:getFloat( key .. "#posZ",          0)
-        local savedSched  = xmlFile:getString(key .. "#paySchedule",   "hourly")
+        local savedSched          = xmlFile:getString(key .. "#paySchedule",    "hourly")
+        local savedTimeMultiplier = xmlFile:getInt(   key .. "#timeMultiplier", 0)
 
         -- Triggers are pure data objects — register directly, no placeable needed
         local triggerData = {
@@ -181,6 +183,7 @@ function WorkplaceSaveLoad:loadFromXMLFile(missionInfo)
             posY          = savedPosY,
             posZ          = savedPosZ,
             paySchedule   = savedSched,
+            timeMultiplier = savedTimeMultiplier or 0,
             playerInside  = false,
         }
         self.system.triggerManager:registerTrigger(triggerData)

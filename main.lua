@@ -362,9 +362,14 @@ if FSBaseMission and FSBaseMission.update then
         if not isDialogOpen and workplaceSystem.triggerManager then
             local nearbyTrigger = workplaceSystem.triggerManager:getNearestPlayerTrigger()
             if nearbyTrigger then
+                local st = workplaceSystem.shiftTracker
+                -- Only show "End Shift" when THIS player's farm owns the active shift.
+                -- shiftOwnerIsLocal=false means another farm is working — show nothing
+                -- near their trigger so the player can't accidentally interfere.
+                local ownShiftActive = st and st:isShiftActive() and st.shiftOwnerIsLocal ~= false
                 shouldShow = true
-                if workplaceSystem.shiftTracker and workplaceSystem.shiftTracker:isShiftActive() then
-                    local activeName = workplaceSystem.shiftTracker:getActiveWorkplaceName()
+                if ownShiftActive then
+                    local activeName = st:getActiveWorkplaceName()
                     promptText = string.format(
                         g_i18n:getText("wt_input_end_shift") or "End Shift at %s",
                         activeName or "Workplace"
@@ -403,20 +408,6 @@ if FSCareerMissionInfo and FSCareerMissionInfo.saveToXMLFile then
             if g_currentMission and not g_currentMission:getIsServer() then return end
             if workplaceSystem and workplaceSystem.isInitialized then
                 workplaceSystem:saveToXMLFile(missionInfo)
-            end
-        end
-    )
-end
-
-if Mission00 and Mission00.onStartMission then
-    Mission00.onStartMission = Utils.appendedFunction(
-        Mission00.onStartMission,
-        function(mission)
-            if workplaceSystem and workplaceSystem.isInitialized then
-                local missionInfo = g_currentMission and g_currentMission.missionInfo
-                if missionInfo then
-                    workplaceSystem:loadFromXMLFile(missionInfo)
-                end
             end
         end
     )

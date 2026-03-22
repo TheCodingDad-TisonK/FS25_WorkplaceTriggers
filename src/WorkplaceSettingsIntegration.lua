@@ -253,12 +253,22 @@ local function getSettings()
     return g_WorkplaceSystem and g_WorkplaceSystem.settings
 end
 
-local function apply(key, value, msg)
+-- globalSetting=true means this key is a gameplay setting that must be synced to all
+-- clients so non-admin players use the same value as the admin.
+local function apply(key, value, msg, globalSetting)
     local s = getSettings()
     if not s then return end
     s[key] = value
-    -- Persist next full save; no immediate disk write needed (UsedPlus pattern)
     if msg then wtLog(msg) end
+    -- Write immediately so changes survive a restart without an explicit game save.
+    -- Only the server has a valid savegame directory in MP, so the write is a no-op
+    -- on clients (harmless). Clients get the authoritative value via TYPE_SYNC_SETTINGS.
+    local mi = g_currentMission and g_currentMission.missionInfo
+    if mi then s:saveToXMLFile(mi) end
+    -- Broadcast global settings to all connected clients so they take effect immediately.
+    if globalSetting and g_currentMission and g_currentMission:getIsServer() then
+        WorkplaceMultiplayerEvent.sendSyncSettings()
+    end
 end
 
 function WorkplaceSettingsIntegration:onShowHudChanged(state)
@@ -283,12 +293,12 @@ end
 
 function WorkplaceSettingsIntegration:onWageMultChanged(state)
     local v = WorkplaceSettings.wageMultValues[state] or 1.0
-    apply("wageMultiplier", v, "Wage multiplier: " .. v)
+    apply("wageMultiplier", v, "Wage multiplier: " .. v, true)
 end
 
 function WorkplaceSettingsIntegration:onEndShiftOnLeaveChanged(state)
     local v = (state == BinaryOptionElement.STATE_RIGHT)
-    apply("endShiftOnLeave", v)
+    apply("endShiftOnLeave", v, nil, true)
 end
 
 function WorkplaceSettingsIntegration:onShowEarningsChanged(state)

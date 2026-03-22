@@ -24,7 +24,7 @@
     <GuiElement profile="newLayer" />
     <Bitmap profile="dialogFullscreenBg" id="dialogBg" />
 
-    <GuiElement profile="dialogBg" id="dialogElement" size="560px 500px">
+    <GuiElement profile="dialogBg" id="dialogElement" size="560px 540px">
         <ThreePartBitmap profile="fs25_dialogBgMiddle" />
         <ThreePartBitmap profile="fs25_dialogBgTop" />
         <ThreePartBitmap profile="fs25_dialogBgBottom" />
@@ -98,17 +98,42 @@
 
             <Text profile="wtSchedHint" id="schedHintText" position="0px -238px" text=""/>
 
+            <!-- TIME MULTIPLIER -->
+            <Text profile="wtSectionLabel" position="0px -254px" text="Time Multiplier"/>
+
+            <Bitmap profile="wtStepBg"   id="timeMult1Bg"   position="-110px -268px"/>
+            <Text   profile="wtStepText" id="timeMult1Txt"  position="-110px -269px" text="x1"/>
+            <Button profile="wtStepHit"  id="timeMult1"     position="-110px -268px" onClick="onClickTimeMult1"/>
+
+            <Bitmap profile="wtStepBg"   id="timeMult3Bg"   position="-55px -268px"/>
+            <Text   profile="wtStepText" id="timeMult3Txt"  position="-55px -269px"  text="x3"/>
+            <Button profile="wtStepHit"  id="timeMult3"     position="-55px -268px"  onClick="onClickTimeMult3"/>
+
+            <Bitmap profile="wtStepBg"   id="timeMult0Bg"   position="0px -268px"/>
+            <Text   profile="wtStepText" id="timeMult0Txt"  position="0px -269px"    text="Auto"/>
+            <Button profile="wtStepHit"  id="timeMult0"     position="0px -268px"    onClick="onClickTimeMultAuto"/>
+
+            <Bitmap profile="wtStepBg"   id="timeMult5Bg"   position="55px -268px"/>
+            <Text   profile="wtStepText" id="timeMult5Txt"  position="55px -269px"   text="x5"/>
+            <Button profile="wtStepHit"  id="timeMult5"     position="55px -268px"   onClick="onClickTimeMult5"/>
+
+            <Bitmap profile="wtStepBg"   id="timeMult10Bg"  position="110px -268px"/>
+            <Text   profile="wtStepText" id="timeMult10Txt" position="110px -269px"  text="x10"/>
+            <Button profile="wtStepHit"  id="timeMult10"    position="110px -268px"  onClick="onClickTimeMult10"/>
+
+            <Text profile="wtSchedHint" id="timeModeHint" position="0px -284px" text=""/>
+
             <!-- POSITION + SNAP -->
-            <Bitmap profile="wtEditDivider" position="0px -252px"/>
+            <Bitmap profile="wtEditDivider" position="0px -298px"/>
 
-            <Text profile="wtPosText" id="posText" position="0px -266px" text="Position: X=0  Z=0"/>
+            <Text profile="wtPosText" id="posText" position="0px -312px" text="Position: X=0  Z=0"/>
 
-            <Bitmap profile="wtSnapBg"   id="snapBg"  position="0px -284px"/>
-            <Text   profile="wtSnapText" id="snapTxt" position="0px -285px" text="Snap to Player Position"/>
-            <Button profile="wtSnapHit"  id="snapBtn" position="0px -284px" onClick="onClickSnap"/>
+            <Bitmap profile="wtSnapBg"   id="snapBg"  position="0px -330px"/>
+            <Text   profile="wtSnapText" id="snapTxt" position="0px -331px" text="Snap to Player Position"/>
+            <Button profile="wtSnapHit"  id="snapBtn" position="0px -330px" onClick="onClickSnap"/>
 
             <!-- Status -->
-            <Text profile="wtStatusText" id="statusText" position="0px -306px" text=""/>
+            <Text profile="wtStatusText" id="statusText" position="0px -352px" text=""/>
 
         </GuiElement>
 
