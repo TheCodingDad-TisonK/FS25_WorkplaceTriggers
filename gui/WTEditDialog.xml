@@ -24,7 +24,7 @@
     <GuiElement profile="newLayer" />
     <Bitmap profile="dialogFullscreenBg" id="dialogBg" />
 
-    <GuiElement profile="dialogBg" id="dialogElement" size="560px 540px">
+    <GuiElement profile="dialogBg" id="dialogElement" size="560px 578px">
         <ThreePartBitmap profile="fs25_dialogBgMiddle" />
         <ThreePartBitmap profile="fs25_dialogBgTop" />
         <ThreePartBitmap profile="fs25_dialogBgBottom" />
@@ -123,17 +123,28 @@
 
             <Text profile="wtSchedHint" id="timeModeHint" position="0px -284px" text=""/>
 
+            <!-- LEAVE ZONE -->
+            <Text profile="wtSectionLabel" position="0px -300px" text="Leave Zone"/>
+
+            <Bitmap profile="wtSchedBg"   id="leaveYesBg"  position="-45px -316px"/>
+            <Text   profile="wtSchedText" id="leaveYesTxt" position="-45px -317px" text="End Shift"/>
+            <Button profile="wtSchedHit"  id="leaveYes"    position="-45px -316px" onClick="onClickLeaveYes"/>
+
+            <Bitmap profile="wtSchedBg"   id="leaveNoBg"  position="45px -316px"/>
+            <Text   profile="wtSchedText" id="leaveNoTxt" position="45px -317px"  text="Stay Active"/>
+            <Button profile="wtSchedHit"  id="leaveNo"    position="45px -316px"  onClick="onClickLeaveNo"/>
+
             <!-- POSITION + SNAP -->
-            <Bitmap profile="wtEditDivider" position="0px -298px"/>
+            <Bitmap profile="wtEditDivider" position="0px -334px"/>
 
-            <Text profile="wtPosText" id="posText" position="0px -312px" text="Position: X=0  Z=0"/>
+            <Text profile="wtPosText" id="posText" position="0px -348px" text="Position: X=0  Z=0"/>
 
-            <Bitmap profile="wtSnapBg"   id="snapBg"  position="0px -330px"/>
-            <Text   profile="wtSnapText" id="snapTxt" position="0px -331px" text="Snap to Player Position"/>
-            <Button profile="wtSnapHit"  id="snapBtn" position="0px -330px" onClick="onClickSnap"/>
+            <Bitmap profile="wtSnapBg"   id="snapBg"  position="0px -366px"/>
+            <Text   profile="wtSnapText" id="snapTxt" position="0px -367px" text="Snap to Player Position"/>
+            <Button profile="wtSnapHit"  id="snapBtn" position="0px -366px" onClick="onClickSnap"/>
 
             <!-- Status -->
-            <Text profile="wtStatusText" id="statusText" position="0px -352px" text=""/>
+            <Text profile="wtStatusText" id="statusText" position="0px -388px" text=""/>
 
         </GuiElement>
 

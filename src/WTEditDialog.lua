@@ -23,8 +23,9 @@ function WTEditDialog.new(target, custom_mt)
     self.wage        = 500
     self.radius      = 4
     self.wageStep    = 10     -- current wage adjustment step
-    self.paySchedule     = WorkplaceShiftTracker.PAY_HOURLY
-    self.timeMultiplier  = 0  -- 0=Auto, 1=x1(real time), 3=x3, 5=x5, 10=x10
+    self.paySchedule      = WorkplaceShiftTracker.PAY_HOURLY
+    self.timeMultiplier   = 0  -- 0=Auto, 1=x1(real time), 3=x3, 5=x5, 10=x10
+    self.endShiftOnLeave  = true
     self.posX        = 0
     self.posY        = 0
     self.posZ        = 0
@@ -50,8 +51,9 @@ function WTEditDialog:setData(system, trigger, isNew)
         self.wage           = 500
         self.radius         = 5
         self.wageStep       = 10
-        self.paySchedule    = WorkplaceShiftTracker.PAY_HOURLY
-        self.timeMultiplier = 0
+        self.paySchedule     = WorkplaceShiftTracker.PAY_HOURLY
+        self.timeMultiplier  = 0
+        self.endShiftOnLeave = true
         -- Snap position to player immediately
         self:snapToPlayer()
     else
@@ -62,8 +64,9 @@ function WTEditDialog:setData(system, trigger, isNew)
         self.posY        = trigger.posY or 0
         self.posZ        = trigger.posZ or 0
         self.wageStep       = 10
-        self.paySchedule    = trigger.paySchedule or WorkplaceShiftTracker.PAY_HOURLY
-        self.timeMultiplier = trigger.timeMultiplier or 0
+        self.paySchedule     = trigger.paySchedule or WorkplaceShiftTracker.PAY_HOURLY
+        self.timeMultiplier  = trigger.timeMultiplier or 0
+        self.endShiftOnLeave = trigger.endShiftOnLeave ~= false  -- default true
     end
 end
 
@@ -128,6 +131,7 @@ function WTEditDialog:onOpen()
     self:updateStepDisplay()
     self:updateSchedDisplay()
     self:updateTimeModeDisplay()
+    self:updateLeaveDisplay()
 end
 
 -- =========================================================
@@ -330,6 +334,29 @@ function WTEditDialog:onClickTimeMult10()
 end
 
 -- =========================================================
+-- Leave zone toggle
+-- =========================================================
+function WTEditDialog:updateLeaveDisplay()
+    local yes = self.endShiftOnLeave ~= false
+    local ACTIVE_R, ACTIVE_G, ACTIVE_B = 0.18, 0.30, 0.55
+    local DIM_R,    DIM_G,    DIM_B    = 0.10, 0.14, 0.28
+    if self.leaveYesBg then self.leaveYesBg:setImageColor(yes and ACTIVE_R or DIM_R, yes and ACTIVE_G or DIM_G, yes and ACTIVE_B or DIM_B, 1) end
+    if self.leaveNoBg  then self.leaveNoBg: setImageColor(yes and DIM_R or ACTIVE_R, yes and DIM_G or ACTIVE_G, yes and DIM_B or ACTIVE_B, 1) end
+    if self.leaveYesTxt then self.leaveYesTxt:setTextColor(yes and 1 or 0.65, yes and 1 or 0.75, 1, 1) end
+    if self.leaveNoTxt  then self.leaveNoTxt: setTextColor(yes and 0.65 or 1, yes and 0.75 or 1, 1, 1) end
+end
+
+function WTEditDialog:onClickLeaveYes()
+    self.endShiftOnLeave = true
+    self:updateLeaveDisplay()
+end
+
+function WTEditDialog:onClickLeaveNo()
+    self.endShiftOnLeave = false
+    self:updateLeaveDisplay()
+end
+
+-- =========================================================
 -- Wage adjustment
 -- =========================================================
 function WTEditDialog:onClickWageDec()
@@ -397,15 +424,16 @@ function WTEditDialog:onClickSave()
         local farmId = g_currentMission and g_currentMission:getFarmId() or 1
         local ok, err = pcall(function()
             WorkplaceMultiplayerEvent.sendCreateTrigger({
-                workplaceName = name,
-                hourlyWage    = self.wage,
-                triggerRadius = self.radius,
-                paySchedule   = self.paySchedule,
+                workplaceName  = name,
+                hourlyWage     = self.wage,
+                triggerRadius  = self.radius,
+                paySchedule    = self.paySchedule,
                 timeMultiplier = self.timeMultiplier or 0,
-                posX          = self.posX or 0,
-                posY          = self.posY or 0,
-                posZ          = self.posZ or 0,
-                farmId        = farmId,
+                endShiftOnLeave = self.endShiftOnLeave ~= false,
+                posX           = self.posX or 0,
+                posY           = self.posY or 0,
+                posZ           = self.posZ or 0,
+                farmId         = farmId,
             })
         end)
         if not ok then
@@ -418,11 +446,12 @@ function WTEditDialog:onClickSave()
         local t = self.trigger
         if t then
             WorkplaceMultiplayerEvent.sendUpdateTrigger(tostring(t.id), {
-                workplaceName = name,
-                hourlyWage    = self.wage,
-                triggerRadius = self.radius,
-                paySchedule   = self.paySchedule,
-                timeMultiplier = self.timeMultiplier or 0,
+                workplaceName   = name,
+                hourlyWage      = self.wage,
+                triggerRadius   = self.radius,
+                paySchedule     = self.paySchedule,
+                timeMultiplier  = self.timeMultiplier or 0,
+                endShiftOnLeave = self.endShiftOnLeave ~= false,
             })
         end
         print("[WorkplaceTriggers] Requested trigger update: " .. name)

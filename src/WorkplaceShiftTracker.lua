@@ -221,9 +221,23 @@ function WorkplaceShiftTracker:updateZoneCheck(dtSec)
     if not g_currentMission:getIsClient() then return end
     if self.shiftOwnerIsLocal == false then return end
 
-    -- Respect the endShiftOnLeave setting
-    local settings = self.system and self.system.settings
-    if settings and settings.endShiftOnLeave == false then
+    local tm = self.system.triggerManager
+    if not tm then return end
+
+    local activeTrigger = tm:getTriggerById(self.activeTriggerId)
+
+    -- Respect the endShiftOnLeave setting on the active trigger.
+    -- Falls back to the global setting for triggers created before this field existed.
+    local endOnLeave = true
+    if activeTrigger and activeTrigger.endShiftOnLeave ~= nil then
+        endOnLeave = activeTrigger.endShiftOnLeave ~= false
+    else
+        local settings = self.system and self.system.settings
+        if settings and settings.endShiftOnLeave == false then
+            endOnLeave = false
+        end
+    end
+    if not endOnLeave then
         if self.leaveWarnActive then
             self.leaveWarnActive = false
             self.leaveWarnTimer  = 0
@@ -231,11 +245,6 @@ function WorkplaceShiftTracker:updateZoneCheck(dtSec)
         end
         return
     end
-
-    local tm = self.system.triggerManager
-    if not tm then return end
-
-    local activeTrigger = tm:getTriggerById(self.activeTriggerId)
     if not activeTrigger then return end
 
     local playerPos = tm:getPlayerPosition()
