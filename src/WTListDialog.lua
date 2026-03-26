@@ -25,10 +25,31 @@ local function isAdmin()
     return g_currentMission ~= nil and g_currentMission:getIsServer()
 end
 
+-- =========================================================
+-- Schedule display helpers
+-- =========================================================
+local function getSchedSuffix(paySchedule)
+    if paySchedule == WorkplaceShiftTracker.PAY_FLAT then
+        return " flat"
+    elseif paySchedule == WorkplaceShiftTracker.PAY_DAILY then
+        return "/day"
+    end
+    return "/hr"
+end
+
+local function getSchedLabel(paySchedule)
+    if paySchedule == WorkplaceShiftTracker.PAY_FLAT then
+        return "Flat"
+    elseif paySchedule == WorkplaceShiftTracker.PAY_DAILY then
+        return "Daily"
+    end
+    return "Hourly"
+end
+
 function WTListDialog.new(target, custom_mt)
     local self = MessageDialog.new(target, custom_mt or WTListDialog_mt)
     self.system      = nil
-    self.scrollOffset = 0
+    self._page       = 1
     self.rowTriggerIndex = {}   -- rowNum (1-8) -> trigger list index
     return self
 end
@@ -54,7 +75,7 @@ function WTListDialog:onOpen()
         print("[WorkplaceTriggers] WTListDialog:onOpen error: " .. tostring(err))
         return
     end
-    self.scrollOffset = 0
+    self._page = 1
     self:refresh()
 end
 
@@ -64,6 +85,11 @@ end
 function WTListDialog:refresh()
     local triggers = self:getTriggers()
     local total    = #triggers
+
+    -- Clamp page to valid range
+    local maxPage = math.max(1, math.ceil(total / self.MAX_ROWS))
+    if self._page > maxPage then self._page = maxPage end
+    if self._page < 1       then self._page = 1       end
 
     -- Title
     if self.titleText then
@@ -89,35 +115,33 @@ function WTListDialog:refresh()
     end
     self.rowTriggerIndex = {}
 
-    -- Fill visible rows
-    local startIdx = self.scrollOffset + 1
-    local endIdx   = math.min(total, self.scrollOffset + self.MAX_ROWS)
-    local rowNum   = 0
+    -- Fill visible rows for current page
+    local pageStart = (self._page - 1) * self.MAX_ROWS + 1
+    local pageEnd   = math.min(total, self._page * self.MAX_ROWS)
+    local rowNum    = 0
 
-    for i = startIdx, endIdx do
+    for i = pageStart, pageEnd do
         rowNum = rowNum + 1
         self.rowTriggerIndex[rowNum] = i
         self:fillRow(rowNum, triggers[i])
     end
 
-    -- Empty state message
+    -- Status / empty-state text
     if self.statusText then
         if total == 0 then
             local emptyStr = g_i18n:getText("wt_dialog_list_empty")
             self.statusText:setText((emptyStr and emptyStr ~= "") and emptyStr or "No triggers placed. Click '+ New Trigger' to add one.")
         else
-            local showing = (startIdx == endIdx) and tostring(startIdx)
-                or (tostring(startIdx) .. "-" .. tostring(endIdx))
+            local showing = (pageStart == pageEnd) and tostring(pageStart)
+                or (tostring(pageStart) .. "-" .. tostring(pageEnd))
             local fmt = g_i18n:getText("wt_dialog_list_showing")
             fmt = (fmt and fmt ~= "") and fmt or "Showing %s of %d"
             self.statusText:setText(string.format(fmt, showing, total))
         end
     end
 
-    -- Scroll button visibility
-    local hasUp = (self.scrollOffset > 0)
-    local hasDn = (endIdx < total)
-    self:setScrollVisible(hasUp, hasDn)
+    -- Pagination
+    self:setPaginationVisible(self._page > 1, self._page < maxPage, maxPage)
 
     -- "New Trigger" button: admin only
     local adminVis = isAdmin()
@@ -172,27 +196,37 @@ function WTListDialog:fillRow(rowNum, trigger)
 
     show(p .. "bg")
 
-    -- Name (truncate at 24 chars)
+    -- Name (truncate at 26 chars)
     local nameEl = show(p .. "name")
     if nameEl then
         local name = trigger.workplaceName or "Workplace"
-        if #name > 24 then name = string.sub(name, 1, 21) .. "..." end
+        if #name > 26 then name = string.sub(name, 1, 23) .. "..." end
         nameEl:setText(name)
     end
 
-    -- Wage
+    -- Wage with schedule-correct suffix
     local wageEl = show(p .. "wage")
     if wageEl then
-        wageEl:setText("$" .. tostring(trigger.hourlyWage or 0) .. "/hr")
+        local suffix = getSchedSuffix(trigger.paySchedule)
+        wageEl:setText("$" .. tostring(trigger.hourlyWage or 0) .. suffix)
     end
 
-    -- Position
+    -- Schedule type + radius (replaces raw position coords)
     local posEl = show(p .. "pos")
     if posEl then
-        posEl:setText(string.format("%.0f, %.0f", trigger.posX or 0, trigger.posZ or 0))
+        local schedLabel = getSchedLabel(trigger.paySchedule)
+        local radius     = tostring(trigger.triggerRadius or 0)
+        posEl:setText(schedLabel .. " / " .. radius .. "m")
     end
 
-    -- Edit button (3 layers) - admin only
+    -- Edit and Delete buttons: admin only.
+    -- clearRow() calls setText("") on all Text elements including button labels,
+    -- so we must restore the static text here before making them visible.
+    local editTxtEl = self[p .. "edittxt"]
+    if editTxtEl and editTxtEl.setText then editTxtEl:setText("Edit") end
+    local delTxtEl = self[p .. "deltxt"]
+    if delTxtEl and delTxtEl.setText then delTxtEl:setText("Del") end
+
     local adminVis = isAdmin()
     local function setAdminVis(id)
         local el = self[id]
@@ -201,24 +235,29 @@ function WTListDialog:fillRow(rowNum, trigger)
     setAdminVis(p .. "editbg")
     setAdminVis(p .. "edittxt")
     setAdminVis(p .. "edit")
-
-    -- Delete button (3 layers) - admin only
     setAdminVis(p .. "delbg")
     setAdminVis(p .. "deltxt")
     setAdminVis(p .. "del")
 end
 
-function WTListDialog:setScrollVisible(showUp, showDn)
+function WTListDialog:setPaginationVisible(showPrev, showNext, maxPage)
     local function setVis(id, vis)
         local el = self[id]
         if el then el:setVisible(vis) end
     end
-    setVis("scrollUpBg",  showUp)
-    setVis("scrollUpTxt", showUp)
-    setVis("scrollUp",    showUp)
-    setVis("scrollDnBg",  showDn)
-    setVis("scrollDnTxt", showDn)
-    setVis("scrollDn",    showDn)
+    setVis("prevBg",   showPrev)
+    setVis("prevText", showPrev)
+    setVis("prevBtn",  showPrev)
+    setVis("nextBg",   showNext)
+    setVis("nextText", showNext)
+    setVis("nextBtn",  showNext)
+
+    -- Page info always visible when there is more than one page
+    local showInfo = (maxPage and maxPage > 1)
+    setVis("pageInfo", showInfo)
+    if showInfo and self.pageInfo then
+        self.pageInfo:setText(self._page .. " / " .. maxPage)
+    end
 end
 
 -- =========================================================
@@ -247,11 +286,10 @@ for i = 1, WTListDialog.MAX_ROWS do
         if not t then return end
         -- Route through MP event so all machines sync
         WorkplaceMultiplayerEvent.sendDeleteTrigger(t.id)
-        -- Clamp scroll
+        -- Clamp page after deletion
         local remaining = #self:getTriggers()
-        if self.scrollOffset > 0 and self.scrollOffset >= remaining then
-            self.scrollOffset = math.max(0, remaining - self.MAX_ROWS)
-        end
+        local maxPage = math.max(1, math.ceil(remaining / self.MAX_ROWS))
+        if self._page > maxPage then self._page = maxPage end
         self:refresh()
     end
 end
@@ -267,16 +305,20 @@ function WTListDialog:onClickNew()
     end
 end
 
-function WTListDialog:onClickScrollUp()
-    self.scrollOffset = math.max(0, self.scrollOffset - 1)
-    self:refresh()
+function WTListDialog:onClickPrev()
+    if self._page > 1 then
+        self._page = self._page - 1
+        self:refresh()
+    end
 end
 
-function WTListDialog:onClickScrollDown()
-    local total = #self:getTriggers()
-    local maxOffset = math.max(0, total - self.MAX_ROWS)
-    self.scrollOffset = math.min(maxOffset, self.scrollOffset + 1)
-    self:refresh()
+function WTListDialog:onClickNext()
+    local total   = #self:getTriggers()
+    local maxPage = math.max(1, math.ceil(total / self.MAX_ROWS))
+    if self._page < maxPage then
+        self._page = self._page + 1
+        self:refresh()
+    end
 end
 
 function WTListDialog:onClickClose()
