@@ -329,25 +329,6 @@ end
 
 hookWTHudEditInput()
 
--- =========================================================
--- Mouse Event Hook (routes mouse clicks to HUD in edit mode)
--- Pattern: NPCFavorHUD mouseEvent wiring
--- =========================================================
-if Player and Player.mouseEvent then
-    Player.mouseEvent = Utils.appendedFunction(Player.mouseEvent,
-        function(player, posX, posY, isDown, isUp, button)
-            if workplaceSystem and workplaceSystem.hud then
-                workplaceSystem.hud:mouseEvent(posX, posY, isDown, isUp, button)
-            end
-        end)
-elseif FSBaseMission and FSBaseMission.mouseEvent then
-    FSBaseMission.mouseEvent = Utils.appendedFunction(FSBaseMission.mouseEvent,
-        function(mission, posX, posY, isDown, isUp, button)
-            if workplaceSystem and workplaceSystem.hud then
-                workplaceSystem.hud:mouseEvent(posX, posY, isDown, isUp, button)
-            end
-        end)
-end
 
 -- Update loop: control E-key prompt visibility based on trigger proximity
 if FSBaseMission and FSBaseMission.update then
@@ -427,6 +408,18 @@ addModEventListener({
         print("[WorkplaceTriggers] onSavegameLoaded")
         if workplaceSystem then
             workplaceSystem:onMissionLoaded()
+        end
+    end,
+    -- Mouse event hook for HUD drag/resize in edit mode.
+    -- addModEventListener is the correct pattern (mirrors NPCFavor): the engine
+    -- calls mouseEvent on all registered listeners with normalized 0-1 coords.
+    -- The old FSBaseMission.mouseEvent = Utils.appendedFunction(...) approach
+    -- silently no-ops when FSBaseMission.mouseEvent is nil at load time, which
+    -- is why drag and resize never worked.
+    mouseEvent = function(self, posX, posY, isDown, isUp, button)
+        local isGuiOpen = g_gui and (g_gui:getIsGuiVisible() or g_gui:getIsDialogVisible())
+        if workplaceSystem and workplaceSystem.hud and workplaceSystem.hud.editMode and not isGuiOpen then
+            workplaceSystem.hud:mouseEvent(posX, posY, isDown, isUp, button)
         end
     end
 })

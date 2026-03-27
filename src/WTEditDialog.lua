@@ -149,7 +149,14 @@ end
 -- =========================================================
 function WTEditDialog:updateWageDisplay()
     if self.wageText then
-        self.wageText:setText("$" .. tostring(self.wage) .. "/hr")
+        local sched = self.paySchedule or WorkplaceShiftTracker.PAY_HOURLY
+        local suffix = "/hr"
+        if sched == WorkplaceShiftTracker.PAY_FLAT then
+            suffix = " flat"
+        elseif sched == WorkplaceShiftTracker.PAY_DAILY then
+            suffix = "/day"
+        end
+        self.wageText:setText("$" .. tostring(self.wage) .. suffix)
     end
 end
 
