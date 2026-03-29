@@ -230,6 +230,26 @@ function WorkplaceMultiplayerEvent:handleShiftEnd(sys, connection)
                 { triggerId = "", workplaceName = name or "", earnings = earned,
                   farmId = farmId }
             ))
+        else
+            -- BUG FIX (issue #17): the server has no active shift but the client
+            -- sent TYPE_SHIFT_END. This can happen when a prior penalty-end event
+            -- cleared the server state while the client never received (or lost)
+            -- the SHIFT_CONFIRM that would have cleared the client state.
+            -- Without this branch the server sends nothing back, leaving the client
+            -- permanently stuck with activeTriggerId set -- pressing E to clock out
+            -- keeps firing but is silently dropped every time.
+            -- Send a zero-earnings end-confirm to unstick the client.
+            -- Use the farmId that the client sent with the event.
+            -- activeFarmId on the server has already been reset to 1, so we use
+            -- self.farmId (populated from the client's getFarmId() in sendShiftEnd).
+            local unstickFarmId = (self.farmId and self.farmId > 0) and self.farmId or 1
+            wtLog("Server: SHIFT_END received but no active shift -- sending zero CONFIRM to unstick client")
+            if g_server then
+                g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
+                    WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM,
+                    { triggerId = "", workplaceName = "", earnings = 0, farmId = unstickFarmId }
+                ))
+            end
         end
     end
     -- FIX: no client-side HUD update here either
@@ -480,8 +500,10 @@ function WorkplaceMultiplayerEvent.sendShiftEnd(isPenalty)
         if g_client == nil then wtLog("sendShiftEnd: g_client is nil"); return end
         local conn = g_client:getServerConnection()
         if conn == nil then wtLog("sendShiftEnd: getServerConnection() nil"); return end
+        local clientFarmId = g_currentMission:getFarmId() or 1
         conn:sendEvent(WorkplaceMultiplayerEvent.new(
-            WorkplaceMultiplayerEvent.TYPE_SHIFT_END, { isPenalty = isPenalty or false }))
+            WorkplaceMultiplayerEvent.TYPE_SHIFT_END,
+            { isPenalty = isPenalty or false, farmId = clientFarmId }))
     end
 end
 

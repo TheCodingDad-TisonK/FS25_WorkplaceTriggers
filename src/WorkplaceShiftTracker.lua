@@ -15,11 +15,11 @@ WorkplaceShiftTracker.PAY_HOURLY = "hourly"   -- wage * in-game hours elapsed
 WorkplaceShiftTracker.PAY_FLAT   = "flat"     -- fixed amount paid at end of shift
 WorkplaceShiftTracker.PAY_DAILY  = "daily"    -- wage paid once per in-game day worked
 
--- In-game time multiplier: FS25 default is 1 real second = 1 in-game minute
--- g_currentMission.missionDuration stores the speed factor.
+-- In-game time multiplier: FS25 default is 120x (1 real second = 2 in-game minutes).
+-- g_currentMission.missionInfo.timeScale stores the speed factor.
 -- We calculate real elapsed ms and convert to in-game hours:
 --   inGameHours = (elapsedRealMs * timeScale) / (1000 * 60 * 60)
--- where timeScale is mission time scale (default 1).
+-- where timeScale is e.g. 120 for the FS25 default 120x speed.
 
 local function wtLog(msg)
     print("[WorkplaceTriggers] ShiftTracker: " .. tostring(msg))
@@ -380,13 +380,18 @@ function WorkplaceShiftTracker:getCurrentMissionTime()
     return 0
 end
 
--- FS25 time scale: g_currentMission.environment.timeScale is the raw multiplier.
+-- FS25 time scale: g_currentMission.missionInfo.timeScale is the raw multiplier.
 -- e.g. 120 means 120 in-game seconds pass per real second.
 -- Returns the raw multiplier; getElapsedHours() handles the /3600 conversion.
 function WorkplaceShiftTracker:getMissionTimeScale()
-    if g_currentMission and g_currentMission.environment
-       and g_currentMission.environment.timeScale then
-        return g_currentMission.environment.timeScale
+    -- BUG FIX (issue #17): environment.timeScale does NOT exist in FS25.
+    -- The correct authoritative field is missionInfo.timeScale.
+    -- Using the wrong field returned nil, so the fallback of 120 was
+    -- always used regardless of the server actual time setting, causing
+    -- earnings to be miscalculated on servers running at non-120x speed.
+    if g_currentMission and g_currentMission.missionInfo
+       and g_currentMission.missionInfo.timeScale then
+        return g_currentMission.missionInfo.timeScale
     end
     -- Fallback: FS25 default is 120x speed
     return 120.0
