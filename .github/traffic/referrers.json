@@ -10,5 +10,17 @@
       "count": 1,
       "uniques": 1
     }
+  ],
+  "2026-03-30": [
+    {
+      "referrer": "github.com",
+      "count": 64,
+      "uniques": 22
+    },
+    {
+      "referrer": "Google",
+      "count": 1,
+      "uniques": 1
+    }
   ]
 }

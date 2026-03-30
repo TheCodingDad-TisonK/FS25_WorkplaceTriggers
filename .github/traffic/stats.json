@@ -160,5 +160,167 @@
     "stars": 2,
     "forks": 0,
     "watchers": 1
+  },
+  {
+    "timestamp": "2026-03-30T18:59:41Z",
+    "date": "2026-03-30",
+    "views": {
+      "count": 148,
+      "uniques": 39
+    },
+    "clones": {
+      "count": 291,
+      "uniques": 127
+    },
+    "referrers": [
+      {
+        "referrer": "github.com",
+        "count": 64,
+        "uniques": 22
+      },
+      {
+        "referrer": "Google",
+        "count": 1,
+        "uniques": 1
+      }
+    ],
+    "popular_paths": [
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers",
+        "title": "GitHub - TheCodingDad-TisonK/FS25_WorkplaceTriggers: Turn any location on any...",
+        "count": 61,
+        "uniques": 25
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases/tag/v1.0.9.0",
+        "title": "Release v1.0.9.0 - List Dialog Layout Fix · TheCodingDad-TisonK/FS25_Workplac...",
+        "count": 10,
+        "uniques": 4
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases",
+        "title": "Releases · TheCodingDad-TisonK/FS25_WorkplaceTriggers · GitHub",
+        "count": 9,
+        "uniques": 6
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues/7",
+        "title": "Issues I found · Issue #7 · TheCodingDad-TisonK/FS25_WorkplaceTriggers",
+        "count": 8,
+        "uniques": 6
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues",
+        "title": "GitHub · Where software is built",
+        "count": 8,
+        "uniques": 4
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/pulls",
+        "title": "Pull requests · TheCodingDad-TisonK/FS25_WorkplaceTriggers · GitHub",
+        "count": 6,
+        "uniques": 5
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases/tag/v1.0.8.0",
+        "title": "Release v1.0.8.0 · TheCodingDad-TisonK/FS25_WorkplaceTriggers",
+        "count": 6,
+        "uniques": 2
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases/tag/v1.0.2.1",
+        "title": "Release v1.0.2.1 · TheCodingDad-TisonK/FS25_WorkplaceTriggers",
+        "count": 3,
+        "uniques": 2
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues/17",
+        "title": "not beeing able to clock out after longer peroids of work · Issue #17 · TheCo...",
+        "count": 2,
+        "uniques": 2
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues/new",
+        "title": "Issues · TheCodingDad-TisonK/FS25_WorkplaceTriggers",
+        "count": 2,
+        "uniques": 2
+      }
+    ],
+    "releases": [
+      {
+        "assets": [],
+        "tag": "v1.0.9.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 1,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.8.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 0,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.6.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 0,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.5.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 0,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.4.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 0,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.2.1"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 0,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.2.0"
+      },
+      {
+        "assets": [],
+        "tag": "v1.0.1.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 2,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.0.0"
+      }
+    ],
+    "stars": 2,
+    "forks": 0,
+    "watchers": 1
   }
 ]
