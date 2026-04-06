@@ -1,7 +1,7 @@
 # Repository Traffic Dashboard
 
-**Last updated:** 2026-04-05T18:43:05Z
-**Days tracked:** 6 | **Download snapshots:** 12 (hourly)
+**Last updated:** 2026-04-06T18:59:05Z
+**Days tracked:** 7 | **Download snapshots:** 13 (hourly)
 
 ---
 
@@ -11,8 +11,8 @@
 
 | Metric | 14-Day Total | Unique |
 |--------|-------------|--------|
-| Page Views | 129 | 31 |
-| Git Clones | 313 | 109 |
+| Page Views | 121 | 29 |
+| Git Clones | 265 | 92 |
 
 > **Engagement:** 4.1 pages per visitor (14-day avg)
 
@@ -30,9 +30,9 @@
 
 ![Conversion](charts/conversion.png)
 
-> **14-day conversion:** 114 of 31 visitors cloned or downloaded (**367.7%**)
+> **14-day conversion:** 97 of 29 visitors cloned or downloaded (**334.4%**)
 >
-> Unique cloners: 109 | Release downloads: 5
+> Unique cloners: 92 | Release downloads: 5
 
 ---
 
@@ -43,8 +43,8 @@
 | Channel | Count |
 |---------|-------|
 | Zip Downloads | 5 |
-| Git Clones (14-day) | 313 |
-| **Total Acquisitions** | **318** |
+| Git Clones (14-day) | 265 |
+| **Total Acquisitions** | **270** |
 
 ---
 
@@ -54,7 +54,7 @@
 
 | Source | Views | Unique |
 |--------|-------|--------|
-| github.com | 75 | 20 |
+| github.com | 72 | 17 |
 
 ---
 
@@ -74,14 +74,14 @@
 
 | Page | Views | Unique |
 |------|-------|--------|
-| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers` | 73 | 23 |
+| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers` | 71 | 20 |
 | `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases/tag/v1.0.9.0` | 14 | 6 |
-| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases/tag/v1.0.8.0` | 6 | 2 |
 | `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/pulls` | 5 | 5 |
 | `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues` | 5 | 3 |
 | `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases` | 4 | 3 |
 | `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues/17` | 2 | 2 |
 | `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues/new` | 2 | 2 |
+| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases/tag/v1.0.8.0` | 2 | 2 |
 | `/thecodingdad-tisonk/fs25_workplacetriggers/tree/main/docs` | 2 | 2 |
 | `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/pulse` | 2 | 1 |
 
