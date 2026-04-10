@@ -1,7 +1,7 @@
 # Repository Traffic Dashboard
 
-**Last updated:** 2026-04-07T18:02:48Z
-**Days tracked:** 8 | **Download snapshots:** 14 (hourly)
+**Last updated:** 2026-04-10T18:52:05Z
+**Days tracked:** 9 | **Download snapshots:** 16 (hourly)
 
 ---
 
@@ -11,10 +11,10 @@
 
 | Metric | 14-Day Total | Unique |
 |--------|-------------|--------|
-| Page Views | 119 | 27 |
-| Git Clones | 285 | 95 |
+| Page Views | 107 | 28 |
+| Git Clones | 318 | 91 |
 
-> **Engagement:** 4.4 pages per visitor (14-day avg)
+> **Engagement:** 3.8 pages per visitor (14-day avg)
 
 ---
 
@@ -30,9 +30,9 @@
 
 ![Conversion](charts/conversion.png)
 
-> **14-day conversion:** 100 of 27 visitors cloned or downloaded (**370.3%**)
+> **14-day conversion:** 97 of 28 visitors cloned or downloaded (**346.4%**)
 >
-> Unique cloners: 95 | Release downloads: 5
+> Unique cloners: 91 | Release downloads: 6
 
 ---
 
@@ -42,9 +42,9 @@
 
 | Channel | Count |
 |---------|-------|
-| Zip Downloads | 5 |
-| Git Clones (14-day) | 285 |
-| **Total Acquisitions** | **290** |
+| Zip Downloads | 6 |
+| Git Clones (14-day) | 318 |
+| **Total Acquisitions** | **324** |
 
 ---
 
@@ -54,7 +54,7 @@
 
 | Source | Views | Unique |
 |--------|-------|--------|
-| github.com | 75 | 15 |
+| github.com | 78 | 17 |
 
 ---
 
@@ -74,16 +74,16 @@
 
 | Page | Views | Unique |
 |------|-------|--------|
-| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers` | 73 | 18 |
-| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases/tag/v1.0.9.0` | 14 | 6 |
-| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/pulls` | 5 | 5 |
-| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues` | 5 | 3 |
-| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases` | 4 | 3 |
+| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers` | 73 | 19 |
+| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases/tag/v1.0.9.0` | 17 | 8 |
+| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases` | 3 | 3 |
 | `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues/17` | 2 | 2 |
-| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues/new` | 2 | 2 |
-| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases/tag/v1.0.8.0` | 2 | 2 |
-| `/thecodingdad-tisonk/fs25_workplacetriggers/tree/main/docs` | 2 | 2 |
-| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/actions` | 1 | 1 |
+| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/pulls` | 2 | 2 |
+| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues` | 2 | 1 |
+| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/compare/v1.0.9.0...main` | 1 | 1 |
+| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues/new` | 1 | 1 |
+| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/pull/2/commits` | 1 | 1 |
+| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/pull/3/commits` | 1 | 1 |
 
 ---
 
