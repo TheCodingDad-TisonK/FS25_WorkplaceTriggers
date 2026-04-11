@@ -1421,5 +1421,162 @@
     "stars": 2,
     "forks": 0,
     "watchers": 1
+  },
+  {
+    "timestamp": "2026-04-11T06:00:28Z",
+    "date": "2026-04-11",
+    "views": {
+      "count": 93,
+      "uniques": 26
+    },
+    "clones": {
+      "count": 338,
+      "uniques": 91
+    },
+    "referrers": [
+      {
+        "referrer": "github.com",
+        "count": 66,
+        "uniques": 15
+      }
+    ],
+    "popular_paths": [
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers",
+        "title": "Overview",
+        "count": 66,
+        "uniques": 18
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases/tag/v1.0.9.0",
+        "title": "/releases/tag/v1.0.9.0",
+        "count": 13,
+        "uniques": 7
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues/17",
+        "title": "/issues/17",
+        "count": 2,
+        "uniques": 2
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/pulls",
+        "title": "/pulls",
+        "count": 2,
+        "uniques": 2
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues",
+        "title": "/issues",
+        "count": 2,
+        "uniques": 1
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/compare/v1.0.9.0...main",
+        "title": "/compare/v1.0.9.0...main",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues/new",
+        "title": "/issues/new",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/pull/2/commits",
+        "title": "/pull/2/commits",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases",
+        "title": "/releases",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/thecodingdad-tisonk/fs25_workplacetriggers",
+        "title": "Overview",
+        "count": 1,
+        "uniques": 1
+      }
+    ],
+    "releases": [
+      {
+        "assets": [],
+        "tag": "v1.0.9.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 3,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.8.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 0,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.6.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 0,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.5.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 1,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.4.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 0,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.2.1"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 0,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.2.0"
+      },
+      {
+        "assets": [],
+        "tag": "v1.0.1.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 2,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.0.0"
+      }
+    ],
+    "stars": 2,
+    "forks": 0,
+    "watchers": 1
   }
 ]
