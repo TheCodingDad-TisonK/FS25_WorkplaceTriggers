@@ -1735,5 +1735,162 @@
     "stars": 2,
     "forks": 0,
     "watchers": 1
+  },
+  {
+    "timestamp": "2026-04-13T12:02:06Z",
+    "date": "2026-04-13",
+    "views": {
+      "count": 86,
+      "uniques": 26
+    },
+    "clones": {
+      "count": 355,
+      "uniques": 82
+    },
+    "referrers": [
+      {
+        "referrer": "github.com",
+        "count": 69,
+        "uniques": 15
+      }
+    ],
+    "popular_paths": [
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers",
+        "title": "Overview",
+        "count": 70,
+        "uniques": 19
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases/tag/v1.0.9.0",
+        "title": "/releases/tag/v1.0.9.0",
+        "count": 7,
+        "uniques": 5
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/pulls",
+        "title": "/pulls",
+        "count": 2,
+        "uniques": 2
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/compare/v1.0.9.0...main",
+        "title": "/compare/v1.0.9.0...main",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues",
+        "title": "/issues",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases",
+        "title": "/releases",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/thecodingdad-tisonk/fs25_workplacetriggers",
+        "title": "Overview",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/thecodingdad-tisonk/fs25_workplacetriggers/blob/main/src/workplacegui.lua",
+        "title": "/blob/main/src/workplacegui.lua",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/thecodingdad-tisonk/fs25_workplacetriggers/blob/main/src/workplacetrigger.lua",
+        "title": "/blob/main/src/workplacetrigger.lua",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/thecodingdad-tisonk/fs25_workplacetriggers/issues",
+        "title": "/issues",
+        "count": 1,
+        "uniques": 1
+      }
+    ],
+    "releases": [
+      {
+        "assets": [],
+        "tag": "v1.0.9.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 3,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.8.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 0,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.6.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 0,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.5.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 1,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.4.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 0,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.2.1"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 0,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.2.0"
+      },
+      {
+        "assets": [],
+        "tag": "v1.0.1.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 2,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.0.0"
+      }
+    ],
+    "stars": 2,
+    "forks": 0,
+    "watchers": 1
   }
 ]
