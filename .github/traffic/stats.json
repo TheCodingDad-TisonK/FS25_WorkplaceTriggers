@@ -1892,5 +1892,156 @@
     "stars": 2,
     "forks": 0,
     "watchers": 1
+  },
+  {
+    "timestamp": "2026-04-15T12:01:49Z",
+    "date": "2026-04-15",
+    "views": {
+      "count": 74,
+      "uniques": 26
+    },
+    "clones": {
+      "count": 354,
+      "uniques": 86
+    },
+    "referrers": [
+      {
+        "referrer": "github.com",
+        "count": 58,
+        "uniques": 12
+      }
+    ],
+    "popular_paths": [
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers",
+        "title": "Overview",
+        "count": 62,
+        "uniques": 17
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/pulls",
+        "title": "/pulls",
+        "count": 3,
+        "uniques": 3
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases/tag/v1.0.9.0",
+        "title": "/releases/tag/v1.0.9.0",
+        "count": 3,
+        "uniques": 2
+      },
+      {
+        "path": "/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues",
+        "title": "/issues",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/thecodingdad-tisonk/fs25_workplacetriggers",
+        "title": "Overview",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/thecodingdad-tisonk/fs25_workplacetriggers/blob/main/docs/save-format.md",
+        "title": "/blob/main/docs/save-format.md",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/thecodingdad-tisonk/fs25_workplacetriggers/blob/main/src/workplacegui.lua",
+        "title": "/blob/main/src/workplacegui.lua",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/thecodingdad-tisonk/fs25_workplacetriggers/blob/main/src/workplacetrigger.lua",
+        "title": "/blob/main/src/workplacetrigger.lua",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/thecodingdad-tisonk/fs25_workplacetriggers/issues",
+        "title": "/issues",
+        "count": 1,
+        "uniques": 1
+      }
+    ],
+    "releases": [
+      {
+        "assets": [],
+        "tag": "v1.0.9.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 3,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.8.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 0,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.6.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 0,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.5.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 1,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.4.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 0,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.2.1"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 0,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.2.0"
+      },
+      {
+        "assets": [],
+        "tag": "v1.0.1.0"
+      },
+      {
+        "assets": [
+          {
+            "downloads": 2,
+            "name": "FS25_WorkplaceTriggers.zip"
+          }
+        ],
+        "tag": "v1.0.0.0"
+      }
+    ],
+    "stars": 2,
+    "forks": 0,
+    "watchers": 1
   }
 ]
