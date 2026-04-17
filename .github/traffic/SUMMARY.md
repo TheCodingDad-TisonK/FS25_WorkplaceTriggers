@@ -1,7 +1,7 @@
 # Repository Traffic Dashboard
 
-**Last updated:** 2026-04-15T18:04:52Z
-**Days tracked:** 13 | **Download snapshots:** 25 (hourly)
+**Last updated:** 2026-04-17T19:00:11Z
+**Days tracked:** 14 | **Download snapshots:** 27 (hourly)
 
 ---
 
@@ -11,10 +11,10 @@
 
 | Metric | 14-Day Total | Unique |
 |--------|-------------|--------|
-| Page Views | 74 | 26 |
-| Git Clones | 354 | 86 |
+| Page Views | 99 | 33 |
+| Git Clones | 379 | 98 |
 
-> **Engagement:** 2.8 pages per visitor (14-day avg)
+> **Engagement:** 3.0 pages per visitor (14-day avg)
 
 ---
 
@@ -30,9 +30,9 @@
 
 ![Conversion](charts/conversion.png)
 
-> **14-day conversion:** 93 of 26 visitors cloned or downloaded (**357.6%**)
+> **14-day conversion:** 108 of 33 visitors cloned or downloaded (**327.2%**)
 >
-> Unique cloners: 86 | Release downloads: 7
+> Unique cloners: 98 | Release downloads: 10
 
 ---
 
@@ -42,9 +42,9 @@
 
 | Channel | Count |
 |---------|-------|
-| Zip Downloads | 7 |
-| Git Clones (14-day) | 354 |
-| **Total Acquisitions** | **361** |
+| Zip Downloads | 10 |
+| Git Clones (14-day) | 379 |
+| **Total Acquisitions** | **389** |
 
 ---
 
@@ -54,7 +54,7 @@
 
 | Source | Views | Unique |
 |--------|-------|--------|
-| github.com | 58 | 12 |
+| github.com | 78 | 18 |
 
 ---
 
@@ -74,15 +74,16 @@
 
 | Page | Views | Unique |
 |------|-------|--------|
-| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers` | 62 | 17 |
+| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers` | 75 | 24 |
+| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases/tag/v1.0.9.0` | 7 | 5 |
+| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases` | 5 | 3 |
 | `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/pulls` | 3 | 3 |
-| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/releases/tag/v1.0.9.0` | 3 | 2 |
+| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/blob/main/docs/architecture.md` | 1 | 1 |
+| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/blob/main/readme.md` | 1 | 1 |
 | `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/issues` | 1 | 1 |
+| `/TheCodingDad-TisonK/FS25_WorkplaceTriggers/tree/main/docs` | 1 | 1 |
 | `/thecodingdad-tisonk/fs25_workplacetriggers` | 1 | 1 |
 | `/thecodingdad-tisonk/fs25_workplacetriggers/blob/main/docs/save-format.md` | 1 | 1 |
-| `/thecodingdad-tisonk/fs25_workplacetriggers/blob/main/src/workplacegui.lua` | 1 | 1 |
-| `/thecodingdad-tisonk/fs25_workplacetriggers/blob/main/src/workplacetrigger.lua` | 1 | 1 |
-| `/thecodingdad-tisonk/fs25_workplacetriggers/issues` | 1 | 1 |
 
 ---
 
