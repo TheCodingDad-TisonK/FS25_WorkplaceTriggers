@@ -15,11 +15,11 @@ WorkplaceShiftTracker.PAY_HOURLY = "hourly"   -- wage * in-game hours elapsed
 WorkplaceShiftTracker.PAY_FLAT   = "flat"     -- fixed amount paid at end of shift
 WorkplaceShiftTracker.PAY_DAILY  = "daily"    -- wage paid once per in-game day worked
 
--- In-game time multiplier: FS25 default is 1 real second = 1 in-game minute
--- g_currentMission.missionDuration stores the speed factor.
+-- In-game time multiplier: FS25 default is 120x (1 real second = 2 in-game minutes).
+-- g_currentMission.missionInfo.timeScale stores the speed factor.
 -- We calculate real elapsed ms and convert to in-game hours:
 --   inGameHours = (elapsedRealMs * timeScale) / (1000 * 60 * 60)
--- where timeScale is mission time scale (default 1).
+-- where timeScale is e.g. 120 for the FS25 default 120x speed.
 
 local function wtLog(msg)
     print("[WorkplaceTriggers] ShiftTracker: " .. tostring(msg))
@@ -40,6 +40,17 @@ function WorkplaceShiftTracker.new(system)
     self.shiftOwnerIsLocal  = true  -- false when shift belongs to a remote MP client
     self.totalEarned        = 0     -- lifetime earnings this session
 
+    -- -------------------------------------------------------
+    -- Per-farm shift table (SERVER ONLY).
+    -- Keyed by farmId (integer).  Each entry mirrors the single-
+    -- slot fields above so multiple farms can have concurrent
+    -- active shifts without clobbering each other.
+    -- Structure per entry:
+    --   { triggerId, workplaceName, hourlyWage, paySchedule,
+    --     timeMultiplier, shiftStartTime }
+    -- -------------------------------------------------------
+    self._farmShifts = {}
+
     -- Shift history log (capped at 50 entries)
     self.shiftHistory      = {}
     self.MAX_HISTORY       = 50
@@ -51,6 +62,155 @@ end
 function WorkplaceShiftTracker:initialize()
     self.isInitialized = true
     wtLog("Initialized")
+end
+
+-- =========================================================
+-- Per-farm shift helpers (SERVER ONLY)
+-- These allow multiple farms to have concurrent active shifts
+-- without the single-slot fields interfering with each other.
+-- =========================================================
+
+function WorkplaceShiftTracker:startShiftForFarm(farmId, trigger)
+    if trigger == nil then
+        wtLog("startShiftForFarm: nil trigger for farm " .. tostring(farmId))
+        return
+    end
+    local fid = farmId or 1
+    -- End any previously active shift for this same farm first
+    if self._farmShifts[fid] then
+        wtLog("startShiftForFarm: farm " .. tostring(fid) .. " already has a shift — ending it first")
+        self:endShiftForFarm(fid)
+    end
+    self._farmShifts[fid] = {
+        triggerId      = trigger.id,
+        workplaceName  = trigger.workplaceName  or "Workplace",
+        hourlyWage     = trigger.hourlyWage     or 500,
+        paySchedule    = trigger.paySchedule    or WorkplaceShiftTracker.PAY_HOURLY,
+        timeMultiplier = trigger.timeMultiplier or 0,
+        shiftStartTime = self:getCurrentMissionTime(),
+    }
+    wtLog(string.format("startShiftForFarm: farm=%d trigger='%s' $%d/hr",
+        fid, trigger.workplaceName or "?", trigger.hourlyWage or 500))
+end
+
+function WorkplaceShiftTracker:isShiftActiveForFarm(farmId)
+    return self._farmShifts[farmId or 1] ~= nil
+end
+
+-- Returns current earnings for a specific farm's active shift (server-side).
+function WorkplaceShiftTracker:getCurrentEarningsForFarm(farmId)
+    local fid    = farmId or 1
+    local entry  = self._farmShifts[fid]
+    if entry == nil then return 0 end
+
+    local mult   = (self.system and self.system.settings and self.system.settings.wageMultiplier) or 1.0
+    local sched  = entry.paySchedule or WorkplaceShiftTracker.PAY_HOURLY
+
+    -- Compute elapsed hours for this specific farm's shift
+    local realElapsedMs = self:getCurrentMissionTime() - (entry.shiftStartTime or 0)
+    if realElapsedMs < 0 then realElapsedMs = 0 end
+    local timeScale
+    if (entry.timeMultiplier or 0) == 0 then
+        timeScale = self:getMissionTimeScale()
+    else
+        timeScale = entry.timeMultiplier
+    end
+    local hours = (realElapsedMs * timeScale) / (1000.0 * 60.0 * 60.0)
+
+    if sched == WorkplaceShiftTracker.PAY_FLAT then
+        return math.floor(entry.hourlyWage * mult)
+    elseif sched == WorkplaceShiftTracker.PAY_DAILY then
+        return math.floor(entry.hourlyWage * (hours / 24.0) * mult)
+    else
+        return math.floor(entry.hourlyWage * hours * mult)
+    end
+end
+
+-- Ends a specific farm's shift, pays them, and returns the amount earned.
+-- Does NOT touch the single-slot fields used by client-side logic.
+function WorkplaceShiftTracker:endShiftForFarm(farmId)
+    local fid   = farmId or 1
+    local entry = self._farmShifts[fid]
+    if entry == nil then
+        wtLog("endShiftForFarm: no active shift for farm " .. tostring(fid))
+        return 0
+    end
+
+    local earnings     = self:getCurrentEarningsForFarm(fid)
+    local realElapsedMs = self:getCurrentMissionTime() - (entry.shiftStartTime or 0)
+    if realElapsedMs < 0 then realElapsedMs = 0 end
+    local timeScale    = ((entry.timeMultiplier or 0) == 0)
+                         and self:getMissionTimeScale() or entry.timeMultiplier
+    local elapsedHours = (realElapsedMs * timeScale) / (1000.0 * 60.0 * 60.0)
+
+    wtLog(string.format("endShiftForFarm: farm=%d '%s' %.2f hrs $%d",
+        fid, entry.workplaceName or "?", elapsedHours, earnings))
+
+    -- Record in history
+    self:recordHistory(entry.workplaceName, elapsedHours, earnings, entry.paySchedule)
+
+    -- Pay the farm
+    if earnings > 0 then
+        self.system.financeIntegration:addMoney(earnings, entry.workplaceName, fid)
+    end
+    self.totalEarned = self.totalEarned + earnings
+
+    -- Integration hooks
+    local activeTrigger = self.system.triggerManager
+        and self.system.triggerManager:getTriggerById(entry.triggerId)
+    if self.system.npcFavorIntegration then
+        self.system.npcFavorIntegration:onShiftCompleted(activeTrigger, elapsedHours)
+    end
+    if self.system.workerCostsInteg then
+        self.system.workerCostsInteg:onShiftCompleted(activeTrigger, earnings)
+    end
+
+    -- Remove from table
+    local workplaceName = entry.workplaceName
+    self._farmShifts[fid] = nil
+    return earnings, workplaceName
+end
+
+-- Penalty variant: pays 20% and clears the slot.
+function WorkplaceShiftTracker:endShiftPenaltyForFarm(farmId)
+    local fid   = farmId or 1
+    local entry = self._farmShifts[fid]
+    if entry == nil then
+        wtLog("endShiftPenaltyForFarm: no active shift for farm " .. tostring(fid))
+        return 0
+    end
+
+    local fullEarnings = self:getCurrentEarningsForFarm(fid)
+    local penaltyPay   = math.floor(fullEarnings * WorkplaceShiftTracker.ABANDON_PAY_FRACTION)
+
+    local realElapsedMs = self:getCurrentMissionTime() - (entry.shiftStartTime or 0)
+    if realElapsedMs < 0 then realElapsedMs = 0 end
+    local timeScale    = ((entry.timeMultiplier or 0) == 0)
+                         and self:getMissionTimeScale() or entry.timeMultiplier
+    local elapsedHours = (realElapsedMs * timeScale) / (1000.0 * 60.0 * 60.0)
+
+    wtLog(string.format("endShiftPenaltyForFarm: farm=%d '%s' %.2f hrs full=$%d penalty=$%d",
+        fid, entry.workplaceName or "?", elapsedHours, fullEarnings, penaltyPay))
+
+    self:recordHistory(entry.workplaceName, elapsedHours, penaltyPay, entry.paySchedule)
+
+    if penaltyPay > 0 then
+        self.system.financeIntegration:addMoney(penaltyPay, entry.workplaceName, fid)
+    end
+    self.totalEarned = self.totalEarned + penaltyPay
+
+    local activeTrigger = self.system.triggerManager
+        and self.system.triggerManager:getTriggerById(entry.triggerId)
+    if self.system.npcFavorIntegration then
+        self.system.npcFavorIntegration:onShiftCompleted(activeTrigger, elapsedHours)
+    end
+    if self.system.workerCostsInteg then
+        self.system.workerCostsInteg:onShiftCompleted(activeTrigger, penaltyPay)
+    end
+
+    local workplaceName = entry.workplaceName
+    self._farmShifts[fid] = nil
+    return penaltyPay, workplaceName
 end
 
 -- =========================================================
@@ -221,9 +381,23 @@ function WorkplaceShiftTracker:updateZoneCheck(dtSec)
     if not g_currentMission:getIsClient() then return end
     if self.shiftOwnerIsLocal == false then return end
 
-    -- Respect the endShiftOnLeave setting
-    local settings = self.system and self.system.settings
-    if settings and settings.endShiftOnLeave == false then
+    local tm = self.system.triggerManager
+    if not tm then return end
+
+    local activeTrigger = tm:getTriggerById(self.activeTriggerId)
+
+    -- Respect the endShiftOnLeave setting on the active trigger.
+    -- Falls back to the global setting for triggers created before this field existed.
+    local endOnLeave = true
+    if activeTrigger and activeTrigger.endShiftOnLeave ~= nil then
+        endOnLeave = activeTrigger.endShiftOnLeave ~= false
+    else
+        local settings = self.system and self.system.settings
+        if settings and settings.endShiftOnLeave == false then
+            endOnLeave = false
+        end
+    end
+    if not endOnLeave then
         if self.leaveWarnActive then
             self.leaveWarnActive = false
             self.leaveWarnTimer  = 0
@@ -231,11 +405,6 @@ function WorkplaceShiftTracker:updateZoneCheck(dtSec)
         end
         return
     end
-
-    local tm = self.system.triggerManager
-    if not tm then return end
-
-    local activeTrigger = tm:getTriggerById(self.activeTriggerId)
     if not activeTrigger then return end
 
     local playerPos = tm:getPlayerPosition()
@@ -244,29 +413,17 @@ function WorkplaceShiftTracker:updateZoneCheck(dtSec)
     local dx   = (activeTrigger.posX or 0) - playerPos.x
     local dz   = (activeTrigger.posZ or 0) - playerPos.z
     local dist = math.sqrt(dx * dx + dz * dz)
-    local radius     = activeTrigger.triggerRadius or 4.0
-    local warnRadius = radius + self.WARN_EXTRA_RADIUS
+    local radius = activeTrigger.triggerRadius or 4.0
 
     if dist <= radius then
-        -- Back inside zone - cancel warning
+        -- Back inside zone - cancel warning and reset timer
         if self.leaveWarnActive then
             self.leaveWarnActive = false
             self.leaveWarnTimer  = 0
             if self.system.hud then self.system.hud:hideLeaveWarning() end
         end
-
-    elseif dist <= warnRadius then
-        -- In the warning ring - show warning but freeze timer
-        if not self.leaveWarnActive then
-            self.leaveWarnActive = true
-            self.leaveWarnTimer  = 0
-        end
-        if self.system.hud then
-            self.system.hud:showLeaveWarning(self.WARN_GRACE_SECONDS - self.leaveWarnTimer)
-        end
-
     else
-        -- Beyond warning radius - countdown to auto-cancel
+        -- Outside zone - countdown starts immediately on leaving the radius
         if not self.leaveWarnActive then
             self.leaveWarnActive = true
             self.leaveWarnTimer  = 0
@@ -383,13 +540,18 @@ function WorkplaceShiftTracker:getCurrentMissionTime()
     return 0
 end
 
--- FS25 time scale: g_currentMission.environment.timeScale is the raw multiplier.
+-- FS25 time scale: g_currentMission.missionInfo.timeScale is the raw multiplier.
 -- e.g. 120 means 120 in-game seconds pass per real second.
 -- Returns the raw multiplier; getElapsedHours() handles the /3600 conversion.
 function WorkplaceShiftTracker:getMissionTimeScale()
-    if g_currentMission and g_currentMission.environment
-       and g_currentMission.environment.timeScale then
-        return g_currentMission.environment.timeScale
+    -- BUG FIX (issue #17): environment.timeScale does NOT exist in FS25.
+    -- The correct authoritative field is missionInfo.timeScale.
+    -- Using the wrong field returned nil, so the fallback of 120 was
+    -- always used regardless of the server actual time setting, causing
+    -- earnings to be miscalculated on servers running at non-120x speed.
+    if g_currentMission and g_currentMission.missionInfo
+       and g_currentMission.missionInfo.timeScale then
+        return g_currentMission.missionInfo.timeScale
     end
     -- Fallback: FS25 default is 120x speed
     return 120.0

@@ -201,6 +201,25 @@ function WorkplaceSystem:loadFromXMLFile(missionInfo)
 end
 
 -- =========================================================
+-- =========================================================
+-- Admin helper
+-- Returns true if the local player has admin rights.
+-- On a dedicated server, clients must authenticate with the
+-- server admin password; the flag is stored in isMasterUser.
+-- SP and listen-server hosts are always admin.
+-- =========================================================
+function WorkplaceSystem.isLocalPlayerAdmin()
+    if g_currentMission == nil then return false end
+    -- SP / listen-server host: always admin
+    if g_currentMission:getIsServer() then return true end
+    -- Dedicated server client: check isMasterUser flag
+    if g_currentMission.isMasterUser ~= nil then
+        return g_currentMission.isMasterUser == true
+    end
+    return false
+end
+
+-- =========================================================
 -- Console Commands
 -- Pattern: NPCFavor console command approach
 -- =========================================================
@@ -276,12 +295,6 @@ function WorkplaceSystem:delete()
     if self.inputHandler then self.inputHandler:delete()      end
     if self.triggerManager then self.triggerManager:delete()  end
     if self.shiftTracker   then self.shiftTracker:delete()    end
-    if self.serverShiftTrackers then
-        for _, tracker in pairs(self.serverShiftTrackers) do
-            tracker:delete()
-        end
-        self.serverShiftTrackers = nil
-    end
     if self.financeIntegration then self.financeIntegration:delete() end
     if self.saveLoad       then self.saveLoad:delete()        end
     if self.settingsIntegration then self.settingsIntegration:delete() end
