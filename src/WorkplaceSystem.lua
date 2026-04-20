@@ -295,6 +295,12 @@ function WorkplaceSystem:delete()
     if self.inputHandler then self.inputHandler:delete()      end
     if self.triggerManager then self.triggerManager:delete()  end
     if self.shiftTracker   then self.shiftTracker:delete()    end
+    if self.serverShiftTrackers then
+        for _, tracker in pairs(self.serverShiftTrackers) do
+            tracker:delete()
+        end
+        self.serverShiftTrackers = nil
+    end
     if self.financeIntegration then self.financeIntegration:delete() end
     if self.saveLoad       then self.saveLoad:delete()        end
     if self.settingsIntegration then self.settingsIntegration:delete() end
