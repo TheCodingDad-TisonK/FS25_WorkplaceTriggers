@@ -40,6 +40,17 @@ function WorkplaceShiftTracker.new(system)
     self.shiftOwnerIsLocal  = true  -- false when shift belongs to a remote MP client
     self.totalEarned        = 0     -- lifetime earnings this session
 
+    -- -------------------------------------------------------
+    -- Per-farm shift table (SERVER ONLY).
+    -- Keyed by farmId (integer).  Each entry mirrors the single-
+    -- slot fields above so multiple farms can have concurrent
+    -- active shifts without clobbering each other.
+    -- Structure per entry:
+    --   { triggerId, workplaceName, hourlyWage, paySchedule,
+    --     timeMultiplier, shiftStartTime }
+    -- -------------------------------------------------------
+    self._farmShifts = {}
+
     -- Shift history log (capped at 50 entries)
     self.shiftHistory      = {}
     self.MAX_HISTORY       = 50
@@ -51,6 +62,155 @@ end
 function WorkplaceShiftTracker:initialize()
     self.isInitialized = true
     wtLog("Initialized")
+end
+
+-- =========================================================
+-- Per-farm shift helpers (SERVER ONLY)
+-- These allow multiple farms to have concurrent active shifts
+-- without the single-slot fields interfering with each other.
+-- =========================================================
+
+function WorkplaceShiftTracker:startShiftForFarm(farmId, trigger)
+    if trigger == nil then
+        wtLog("startShiftForFarm: nil trigger for farm " .. tostring(farmId))
+        return
+    end
+    local fid = farmId or 1
+    -- End any previously active shift for this same farm first
+    if self._farmShifts[fid] then
+        wtLog("startShiftForFarm: farm " .. tostring(fid) .. " already has a shift — ending it first")
+        self:endShiftForFarm(fid)
+    end
+    self._farmShifts[fid] = {
+        triggerId      = trigger.id,
+        workplaceName  = trigger.workplaceName  or "Workplace",
+        hourlyWage     = trigger.hourlyWage     or 500,
+        paySchedule    = trigger.paySchedule    or WorkplaceShiftTracker.PAY_HOURLY,
+        timeMultiplier = trigger.timeMultiplier or 0,
+        shiftStartTime = self:getCurrentMissionTime(),
+    }
+    wtLog(string.format("startShiftForFarm: farm=%d trigger='%s' $%d/hr",
+        fid, trigger.workplaceName or "?", trigger.hourlyWage or 500))
+end
+
+function WorkplaceShiftTracker:isShiftActiveForFarm(farmId)
+    return self._farmShifts[farmId or 1] ~= nil
+end
+
+-- Returns current earnings for a specific farm's active shift (server-side).
+function WorkplaceShiftTracker:getCurrentEarningsForFarm(farmId)
+    local fid    = farmId or 1
+    local entry  = self._farmShifts[fid]
+    if entry == nil then return 0 end
+
+    local mult   = (self.system and self.system.settings and self.system.settings.wageMultiplier) or 1.0
+    local sched  = entry.paySchedule or WorkplaceShiftTracker.PAY_HOURLY
+
+    -- Compute elapsed hours for this specific farm's shift
+    local realElapsedMs = self:getCurrentMissionTime() - (entry.shiftStartTime or 0)
+    if realElapsedMs < 0 then realElapsedMs = 0 end
+    local timeScale
+    if (entry.timeMultiplier or 0) == 0 then
+        timeScale = self:getMissionTimeScale()
+    else
+        timeScale = entry.timeMultiplier
+    end
+    local hours = (realElapsedMs * timeScale) / (1000.0 * 60.0 * 60.0)
+
+    if sched == WorkplaceShiftTracker.PAY_FLAT then
+        return math.floor(entry.hourlyWage * mult)
+    elseif sched == WorkplaceShiftTracker.PAY_DAILY then
+        return math.floor(entry.hourlyWage * (hours / 24.0) * mult)
+    else
+        return math.floor(entry.hourlyWage * hours * mult)
+    end
+end
+
+-- Ends a specific farm's shift, pays them, and returns the amount earned.
+-- Does NOT touch the single-slot fields used by client-side logic.
+function WorkplaceShiftTracker:endShiftForFarm(farmId)
+    local fid   = farmId or 1
+    local entry = self._farmShifts[fid]
+    if entry == nil then
+        wtLog("endShiftForFarm: no active shift for farm " .. tostring(fid))
+        return 0
+    end
+
+    local earnings     = self:getCurrentEarningsForFarm(fid)
+    local realElapsedMs = self:getCurrentMissionTime() - (entry.shiftStartTime or 0)
+    if realElapsedMs < 0 then realElapsedMs = 0 end
+    local timeScale    = ((entry.timeMultiplier or 0) == 0)
+                         and self:getMissionTimeScale() or entry.timeMultiplier
+    local elapsedHours = (realElapsedMs * timeScale) / (1000.0 * 60.0 * 60.0)
+
+    wtLog(string.format("endShiftForFarm: farm=%d '%s' %.2f hrs $%d",
+        fid, entry.workplaceName or "?", elapsedHours, earnings))
+
+    -- Record in history
+    self:recordHistory(entry.workplaceName, elapsedHours, earnings, entry.paySchedule)
+
+    -- Pay the farm
+    if earnings > 0 then
+        self.system.financeIntegration:addMoney(earnings, entry.workplaceName, fid)
+    end
+    self.totalEarned = self.totalEarned + earnings
+
+    -- Integration hooks
+    local activeTrigger = self.system.triggerManager
+        and self.system.triggerManager:getTriggerById(entry.triggerId)
+    if self.system.npcFavorIntegration then
+        self.system.npcFavorIntegration:onShiftCompleted(activeTrigger, elapsedHours)
+    end
+    if self.system.workerCostsInteg then
+        self.system.workerCostsInteg:onShiftCompleted(activeTrigger, earnings)
+    end
+
+    -- Remove from table
+    local workplaceName = entry.workplaceName
+    self._farmShifts[fid] = nil
+    return earnings, workplaceName
+end
+
+-- Penalty variant: pays 20% and clears the slot.
+function WorkplaceShiftTracker:endShiftPenaltyForFarm(farmId)
+    local fid   = farmId or 1
+    local entry = self._farmShifts[fid]
+    if entry == nil then
+        wtLog("endShiftPenaltyForFarm: no active shift for farm " .. tostring(fid))
+        return 0
+    end
+
+    local fullEarnings = self:getCurrentEarningsForFarm(fid)
+    local penaltyPay   = math.floor(fullEarnings * WorkplaceShiftTracker.ABANDON_PAY_FRACTION)
+
+    local realElapsedMs = self:getCurrentMissionTime() - (entry.shiftStartTime or 0)
+    if realElapsedMs < 0 then realElapsedMs = 0 end
+    local timeScale    = ((entry.timeMultiplier or 0) == 0)
+                         and self:getMissionTimeScale() or entry.timeMultiplier
+    local elapsedHours = (realElapsedMs * timeScale) / (1000.0 * 60.0 * 60.0)
+
+    wtLog(string.format("endShiftPenaltyForFarm: farm=%d '%s' %.2f hrs full=$%d penalty=$%d",
+        fid, entry.workplaceName or "?", elapsedHours, fullEarnings, penaltyPay))
+
+    self:recordHistory(entry.workplaceName, elapsedHours, penaltyPay, entry.paySchedule)
+
+    if penaltyPay > 0 then
+        self.system.financeIntegration:addMoney(penaltyPay, entry.workplaceName, fid)
+    end
+    self.totalEarned = self.totalEarned + penaltyPay
+
+    local activeTrigger = self.system.triggerManager
+        and self.system.triggerManager:getTriggerById(entry.triggerId)
+    if self.system.npcFavorIntegration then
+        self.system.npcFavorIntegration:onShiftCompleted(activeTrigger, elapsedHours)
+    end
+    if self.system.workerCostsInteg then
+        self.system.workerCostsInteg:onShiftCompleted(activeTrigger, penaltyPay)
+    end
+
+    local workplaceName = entry.workplaceName
+    self._farmShifts[fid] = nil
+    return penaltyPay, workplaceName
 end
 
 -- =========================================================

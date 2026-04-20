@@ -159,23 +159,38 @@ function WorkplaceMultiplayerEvent:handleShiftStart(sys, connection)
     if g_currentMission:getIsServer() then
         local trigger = sys.triggerManager:getTriggerById(self.triggerId)
         if trigger then
-            -- startShift is called silently (no HUD notification) on the server.
-            -- On a listen-server the host player must not see a shift-started popup for
-            -- another farm's shift; the owning client receives its HUD update via the
-            -- TYPE_SHIFT_CONFIRM broadcast instead.
-            -- pcall: still needed in case of any edge-case crash (e.g. headless server).
-            local clientId = self.clientId
-            if not clientId or clientId == "" then clientId = "unknown" end
-            local tracker = sys:getServerShiftTracker(clientId)
+            local clientFarmId = self.farmId or 1
 
-            local ok, err = pcall(function() tracker:startShift(trigger, true) end)
-            if not ok then
-                wtLog("Server: startShift error (harmless on headless): " .. tostring(err))
+            -- Guard: reject if this farm already has an active shift
+            if sys.shiftTracker:isShiftActiveForFarm(clientFarmId) then
+                wtLog("Server: farm " .. tostring(clientFarmId) .. " already has an active shift — ignoring duplicate start")
+                return
             end
-            tracker.activeFarmId = self.farmId or 1
-            tracker.shiftOwnerIsLocal = false
 
-            wtLog("Server: started shift at '" .. (trigger.workplaceName or "?") .. "' for client " .. clientId)
+            -- Start a per-farm shift slot on the server (no HUD, no single-slot mutation)
+            sys.shiftTracker:startShiftForFarm(clientFarmId, trigger)
+
+            -- Also update the single-slot fields ONLY when this is the local farm
+            -- on a listen-server (so SP / listen-server host payout still works via
+            -- the old endShift() path used by sendShiftEnd on the server branch).
+            local localFarmId = (g_currentMission and g_currentMission:getIsClient()
+                                 and g_currentMission:getFarmId()) or -1
+            if clientFarmId == localFarmId then
+                local ok, err = pcall(function() sys.shiftTracker:startShift(trigger, true) end)
+                if not ok then
+                    wtLog("Server: startShift (single-slot) error: " .. tostring(err))
+                end
+                sys.shiftTracker.activeFarmId      = clientFarmId
+                sys.shiftTracker.shiftOwnerIsLocal = true
+            else
+                -- Remote farm: keep single-slot state untouched for the listen-server
+                -- host's own shift, and set shiftOwnerIsLocal=false so zone checks
+                -- don't fire using the host's position.
+                sys.shiftTracker.shiftOwnerIsLocal = false
+            end
+
+            wtLog("Server: started shift for farm " .. tostring(clientFarmId)
+                  .. " at '" .. (trigger.workplaceName or "?") .. "'")
             g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
                 WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM,
                 { triggerId      = self.triggerId,
@@ -184,8 +199,7 @@ function WorkplaceMultiplayerEvent:handleShiftStart(sys, connection)
                   hourlyWage     = trigger.hourlyWage     or 500,
                   paySchedule    = trigger.paySchedule    or "hourly",
                   timeMultiplier = trigger.timeMultiplier or 0,
-                  farmId         = self.farmId or 1,
-                  clientId       = clientId }
+                  farmId         = clientFarmId }
             ))
         else
             wtLog("Server: shift start rejected - trigger not found: " .. tostring(self.triggerId))
@@ -199,52 +213,51 @@ end
 
 function WorkplaceMultiplayerEvent:handleShiftEnd(sys, connection)
     if g_currentMission:getIsServer() then
-        if sys.shiftTracker:isShiftActive() then
-            local name   = sys.shiftTracker:getActiveWorkplaceName()
-            -- CRITICAL: save farmId NOW — endShift/endShiftPenalty both reset activeFarmId to 1.
-            -- If we read it after the call the CONFIRM would always go to farm1,
-            -- making it impossible for any other farm to stop their own shift.
-            local farmId = sys.shiftTracker.activeFarmId or 1
-            local earned
+        local clientFarmId = (self.farmId and self.farmId > 0) and self.farmId or 1
+
+        if sys.shiftTracker:isShiftActiveForFarm(clientFarmId) then
+            local earned, name
             if self.isPenalty then
-                local full = tracker:getCurrentEarnings()
-                earned = math.floor(full * WorkplaceShiftTracker.ABANDON_PAY_FRACTION)
-                local ok, err = pcall(function() tracker:endShiftPenalty() end)
-                if not ok then
-                    wtLog("Server: endShiftPenalty error (harmless on headless): " .. tostring(err))
-                end
-                wtLog(string.format("Server: penalty-ended shift for client %s, paid $%d from '%s'", clientId, earned, name or "?"))
+                earned, name = sys.shiftTracker:endShiftPenaltyForFarm(clientFarmId)
+                wtLog(string.format("Server: penalty-ended shift for farm %d, paid $%d from '%s'",
+                    clientFarmId, earned or 0, name or "?"))
             else
-                earned = tracker:getCurrentEarnings()
-                local ok, err = pcall(function() tracker:endShift() end)
-                if not ok then
-                    wtLog("Server: endShift error (harmless on headless): " .. tostring(err))
-                end
-                wtLog(string.format("Server: ended shift for client %s, paid $%d from '%s'", clientId, earned, name or "?"))
+                earned, name = sys.shiftTracker:endShiftForFarm(clientFarmId)
+                wtLog(string.format("Server: ended shift for farm %d, paid $%d from '%s'",
+                    clientFarmId, earned or 0, name or "?"))
             end
+
+            -- Also clear the single-slot state if this farm owned it
+            -- (listen-server host ended their own shift)
+            if sys.shiftTracker.activeFarmId == clientFarmId
+               and sys.shiftTracker:isShiftActive() then
+                local ok, err = pcall(function()
+                    if self.isPenalty then
+                        sys.shiftTracker:endShiftPenalty()
+                    else
+                        sys.shiftTracker:endShift()
+                    end
+                end)
+                if not ok then
+                    wtLog("Server: single-slot endShift error (harmless): " .. tostring(err))
+                end
+            end
+
             g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
                 WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM,
-                { triggerId = "", workplaceName = name or "", earnings = earned,
-                  farmId = farmId }
+                { triggerId = "", workplaceName = name or "", earnings = earned or 0,
+                  farmId = clientFarmId }
             ))
         else
-            -- BUG FIX (issue #17): the server has no active shift but the client
-            -- sent TYPE_SHIFT_END. This can happen when a prior penalty-end event
-            -- cleared the server state while the client never received (or lost)
-            -- the SHIFT_CONFIRM that would have cleared the client state.
-            -- Without this branch the server sends nothing back, leaving the client
-            -- permanently stuck with activeTriggerId set -- pressing E to clock out
-            -- keeps firing but is silently dropped every time.
-            -- Send a zero-earnings end-confirm to unstick the client.
-            -- Use the farmId that the client sent with the event.
-            -- activeFarmId on the server has already been reset to 1, so we use
-            -- self.farmId (populated from the client's getFarmId() in sendShiftEnd).
-            local unstickFarmId = (self.farmId and self.farmId > 0) and self.farmId or 1
-            wtLog("Server: SHIFT_END received but no active shift -- sending zero CONFIRM to unstick client")
+            -- BUG FIX (issue #17): the server has no active shift for this farm but
+            -- the client sent TYPE_SHIFT_END. Send a zero-earnings end-confirm to
+            -- unstick the client.
+            wtLog("Server: SHIFT_END for farm " .. tostring(clientFarmId)
+                  .. " but no active shift — sending zero CONFIRM to unstick client")
             if g_server then
                 g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
                     WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM,
-                    { triggerId = "", workplaceName = "", earnings = 0, farmId = unstickFarmId }
+                    { triggerId = "", workplaceName = "", earnings = 0, farmId = clientFarmId }
                 ))
             end
         end
@@ -259,11 +272,11 @@ function WorkplaceMultiplayerEvent:handleShiftConfirm(sys)
     -- misread the end-confirm as a start-confirm and leave the shift stuck active.
     local isEnd = (self.triggerId == "")
 
-    -- Determine if this confirm belongs to the local player.
-    local isOwner = false
-    if sys.clientId and self.clientId == sys.clientId then
-        isOwner = true
-    end
+    -- Determine if this confirm belongs to the local player's farm.
+    -- Only the owning farm sees the HUD update; others ignore it.
+    local confirmFarmId = self.farmId or 1
+    local localFarmId   = (g_currentMission and g_currentMission:getFarmId()) or 1
+    local isOwner       = (confirmFarmId == localFarmId)
 
     -- Only update HUD for the client that owns this shift
     if sys.hud and isOwner then
@@ -469,17 +482,39 @@ function WorkplaceMultiplayerEvent.sendShiftStart(triggerId)
         local sys = g_WorkplaceSystem
         if sys then
             local trigger = sys.triggerManager:getTriggerById(triggerId)
-            if trigger then sys.shiftTracker:startShift(trigger) end
+            if trigger then
+                local localFarmId = g_currentMission:getFarmId() or 1
+                if sys.shiftTracker:isShiftActiveForFarm(localFarmId) then
+                    wtLog("sendShiftStart: farm " .. tostring(localFarmId) .. " already has an active shift")
+                    return
+                end
+                sys.shiftTracker:startShiftForFarm(localFarmId, trigger)
+                -- Also update single-slot so zone-check / HUD still work for SP host
+                sys.shiftTracker:startShift(trigger)
+                sys.shiftTracker.activeFarmId = localFarmId
+                -- Broadcast CONFIRM so listen-server clients and the host HUD all update
+                if g_server then
+                    g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
+                        WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM,
+                        { triggerId      = tostring(triggerId),
+                          workplaceName  = trigger.workplaceName  or "",
+                          earnings       = 0,
+                          hourlyWage     = trigger.hourlyWage     or 500,
+                          paySchedule    = trigger.paySchedule    or "hourly",
+                          timeMultiplier = trigger.timeMultiplier or 0,
+                          farmId         = localFarmId }
+                    ))
+                end
+            end
         end
     else
         if g_client == nil then wtLog("sendShiftStart: g_client is nil"); return end
         local conn = g_client:getServerConnection()
         if conn == nil then wtLog("sendShiftStart: getServerConnection() nil"); return end
         local clientFarmId = g_currentMission:getFarmId() or 1
-        local clientId = (g_WorkplaceSystem and g_WorkplaceSystem.clientId) or "unknown"
         conn:sendEvent(WorkplaceMultiplayerEvent.new(
             WorkplaceMultiplayerEvent.TYPE_SHIFT_START,
-            { triggerId = triggerId, farmId = clientFarmId, clientId = clientId }))
+            { triggerId = triggerId, farmId = clientFarmId }))
     end
 end
 
@@ -487,11 +522,40 @@ function WorkplaceMultiplayerEvent.sendShiftEnd(isPenalty)
     if g_currentMission == nil then return end
     if g_currentMission:getIsServer() then
         local sys = g_WorkplaceSystem
-        if sys and sys.shiftTracker:isShiftActive() then
-            if isPenalty then
-                sys.shiftTracker:endShiftPenalty()
-            else
-                sys.shiftTracker:endShift()
+        if sys then
+            local localFarmId = g_currentMission:getFarmId() or 1
+            if sys.shiftTracker:isShiftActiveForFarm(localFarmId) then
+                local earned, name
+                if isPenalty then
+                    earned, name = sys.shiftTracker:endShiftPenaltyForFarm(localFarmId)
+                else
+                    earned, name = sys.shiftTracker:endShiftForFarm(localFarmId)
+                end
+                -- Also clear single-slot state for the listen-server host
+                if sys.shiftTracker:isShiftActive()
+                   and sys.shiftTracker.activeFarmId == localFarmId then
+                    pcall(function()
+                        if isPenalty then sys.shiftTracker:endShiftPenalty()
+                        else              sys.shiftTracker:endShift() end
+                    end)
+                end
+                -- Broadcast confirm so all clients know (including listen-server host's own HUD)
+                if g_server then
+                    g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
+                        WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM,
+                        { triggerId = "", workplaceName = name or "", earnings = earned or 0,
+                          farmId = localFarmId }
+                    ))
+                else
+                    -- SP: update HUD directly
+                    if sys.hud then sys.hud:onShiftEnded(name or "", earned or 0) end
+                    if sys.shiftTracker then
+                        sys.shiftTracker.activeTriggerId     = nil
+                        sys.shiftTracker.activeWorkplaceName = nil
+                        sys.shiftTracker.shiftStartTime      = nil
+                        sys.shiftTracker.shiftElapsedMs      = 0
+                    end
+                end
             end
         end
     else
@@ -637,10 +701,11 @@ function WorkplaceMultiplayerEvent:handleDeleteTrigger(sys)
             sys.shiftTracker:endShift()
         end
     end
-    if sys.serverShiftTrackers then
-        for _, tracker in pairs(sys.serverShiftTrackers) do
-            if tracker:isShiftActive() and tostring(tracker.activeTriggerId) == self.triggerId then
-                tracker:endShift()
+    -- Also end any per-farm shifts using this trigger
+    if sys.shiftTracker and sys.shiftTracker._farmShifts then
+        for farmId, entry in pairs(sys.shiftTracker._farmShifts) do
+            if tostring(entry.triggerId) == tostring(self.triggerId) then
+                sys.shiftTracker:endShiftForFarm(farmId)
             end
         end
     end
