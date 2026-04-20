@@ -77,8 +77,6 @@ function WorkplaceMultiplayerEvent.new(eventType, data)
     self.paySchedule   = (data and data.paySchedule)   or "hourly"
     self.timeMultiplier  = (data and data.timeMultiplier)  or 0
     self.farmId          = (data and data.farmId)          or 1
-<<<<<<< Updated upstream
-=======
     self.clientId        = (data and data.clientId)        or ""
     -- per-trigger zone behaviour
     -- NOTE: cannot use (a and b or c) here because b may be boolean false, which
@@ -88,7 +86,6 @@ function WorkplaceMultiplayerEvent.new(eventType, data)
     else
         self.endShiftOnLeave = true
     end
->>>>>>> Stashed changes
     -- TYPE_SYNC_SETTINGS payload (server -> all clients)
     self.wageMultiplier  = (data and data.wageMultiplier)  or 1.0
     self.endShiftOnLeave = (data and data.endShiftOnLeave ~= nil) and data.endShiftOnLeave or true
@@ -115,11 +112,7 @@ function WorkplaceMultiplayerEvent:writeStream(streamId, connection)
     streamWriteInt32(streamId,   math.floor(self.farmId or 1))
     -- TYPE_SYNC_SETTINGS fields (written for all types; cheap and avoids type-switching)
     streamWriteFloat32(streamId, self.wageMultiplier  or 1.0)
-<<<<<<< Updated upstream
-    streamWriteBool(streamId,    self.endShiftOnLeave ~= false)
-=======
     streamWriteString(streamId,  self.clientId or "")
->>>>>>> Stashed changes
 end
 
 function WorkplaceMultiplayerEvent:readStream(streamId, connection)
@@ -137,11 +130,7 @@ function WorkplaceMultiplayerEvent:readStream(streamId, connection)
     self.timeMultiplier  = streamReadInt32(streamId)
     self.farmId          = streamReadInt32(streamId)
     self.wageMultiplier  = streamReadFloat32(streamId)
-<<<<<<< Updated upstream
-    self.endShiftOnLeave = streamReadBool(streamId)
-=======
     self.clientId        = streamReadString(streamId)
->>>>>>> Stashed changes
     self:run(connection)   -- FS25 requirement
 end
 
@@ -212,10 +201,6 @@ end
 
 function WorkplaceMultiplayerEvent:handleShiftEnd(sys, connection)
     if g_currentMission:getIsServer() then
-<<<<<<< Updated upstream
-        if sys.shiftTracker:isShiftActive() then
-            local name   = sys.shiftTracker:getActiveWorkplaceName()
-=======
         local clientId = self.clientId
         if not clientId or clientId == "" then clientId = "unknown" end
         local tracker = sys:getServerShiftTracker(clientId)
@@ -223,7 +208,6 @@ function WorkplaceMultiplayerEvent:handleShiftEnd(sys, connection)
         if tracker:isShiftActive() then
             local name   = tracker:getActiveWorkplaceName()
             local farmId = tracker.activeFarmId or 1
->>>>>>> Stashed changes
             local earned
             if self.isPenalty then
                 local full = tracker:getCurrentEarnings()
@@ -244,10 +228,6 @@ function WorkplaceMultiplayerEvent:handleShiftEnd(sys, connection)
             g_server:broadcastEvent(WorkplaceMultiplayerEvent.new(
                 WorkplaceMultiplayerEvent.TYPE_SHIFT_CONFIRM,
                 { triggerId = "", workplaceName = name or "", earnings = earned,
-<<<<<<< Updated upstream
-                  farmId = sys.shiftTracker.activeFarmId or 1 }
-            ))
-=======
                   farmId = farmId, clientId = clientId }
             ))
         else
@@ -259,7 +239,6 @@ function WorkplaceMultiplayerEvent:handleShiftEnd(sys, connection)
                     { triggerId = "", workplaceName = "", earnings = 0, farmId = unstickFarmId, clientId = clientId }
                 ))
             end
->>>>>>> Stashed changes
         end
     end
     -- FIX: no client-side HUD update here either
@@ -499,16 +478,11 @@ function WorkplaceMultiplayerEvent.sendShiftEnd(isPenalty)
         if g_client == nil then wtLog("sendShiftEnd: g_client is nil"); return end
         local conn = g_client:getServerConnection()
         if conn == nil then wtLog("sendShiftEnd: getServerConnection() nil"); return end
-<<<<<<< Updated upstream
-        conn:sendEvent(WorkplaceMultiplayerEvent.new(
-            WorkplaceMultiplayerEvent.TYPE_SHIFT_END, { isPenalty = isPenalty or false }))
-=======
         local clientFarmId = g_currentMission:getFarmId() or 1
         local clientId = (g_WorkplaceSystem and g_WorkplaceSystem.clientId) or "unknown"
         conn:sendEvent(WorkplaceMultiplayerEvent.new(
             WorkplaceMultiplayerEvent.TYPE_SHIFT_END,
             { isPenalty = isPenalty or false, farmId = clientFarmId, clientId = clientId }))
->>>>>>> Stashed changes
     end
 end
 
